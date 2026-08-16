@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#46583D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=EB+Garamond:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="vendor/qrcode.min.js"></script>
 <style>
   *{box-sizing:border-box;}
   body{
@@ -203,12 +203,19 @@ if(!guestId || !guestName){
     couple:`${d.p1} & ${d.p2}`
   });
 
-  new QRCode(document.getElementById('sealBox'), {
-    text: payload,
-    width: 88, height: 88,
-    colorDark: d.cInk, colorLight: d.cBg,
-    correctLevel: QRCode.CorrectLevel.M
-  });
+  try{
+    if(typeof QRCode === 'undefined') throw new Error('QRCode library did not load');
+    new QRCode(document.getElementById('sealBox'), {
+      text: payload,
+      width: 88, height: 88,
+      colorDark: d.cInk, colorLight: d.cBg,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch(err){
+    document.getElementById('sealBox').innerHTML =
+      `<div style="font-size:9px; padding:6px; word-break:break-all; font-family:monospace; line-height:1.3;">${guestId}</div>`;
+    document.getElementById('sealBox').title = 'QR code failed to generate — reload this page. Door staff can paste this ID manually.';
+  }
 }
 
 if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
