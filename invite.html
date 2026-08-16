@@ -33,6 +33,14 @@
   .guestname{font-family:var(--headfont,'Cormorant Garamond',serif); font-size:23px; font-style:italic; margin-top:3px;}
   .invite-card.no-italic .guestname{font-style:normal;}
   .mono-mark{display:none; font-family:var(--headfont); font-size:calc(var(--namesize,42px) * 1.15); opacity:.16; line-height:1; margin-bottom:-2px;}
+  .photoblock{width:100px; height:100px; margin:0 auto 16px; border-radius:50%; overflow:hidden; border:2px solid var(--seal,#000); flex:none;}
+  .photoblock img{width:100%; height:100%; object-fit:cover; display:block;}
+  .eventcolors{margin-top:20px;}
+  .eventcolors .eclabel{font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.2em; text-transform:uppercase; opacity:.65; margin-bottom:8px;}
+  .ecolors-row{display:flex; justify-content:center; gap:9px;}
+  .ecolor{width:20px; height:20px; border-radius:4px; display:inline-block; border:1px solid rgba(0,0,0,.15);}
+  .sealrow{display:flex; align-items:center; justify-content:center; gap:14px;}
+  .ptag{font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; border:1px solid currentColor; opacity:.8; padding:5px 11px; border-radius:20px;}
   .seal{
     width:calc(var(--qrsize,200px) + 24px); height:calc(var(--qrsize,200px) + 24px); border-radius:50%; margin:26px auto 8px;
     display:flex; align-items:center; justify-content:center; position:relative; border:2px solid var(--seal,#000);
@@ -57,16 +65,18 @@
   [data-layout="split"]{
     max-width:480px; width:100%; display:grid; row-gap:6px; column-gap:24px; text-align:left; align-items:start;
     grid-template-columns:1.15fr 1fr;
-    grid-template-areas:"mono mono" "eyebrow eyebrow" "names names" "divider divider" "details seal" "guest seal";
+    grid-template-areas:"photo photo" "mono mono" "eyebrow eyebrow" "names names" "divider divider" "colors colors" "details seal" "guest seal";
   }
+  [data-layout="split"] .photoblock{grid-area:photo; justify-self:start; margin:0 0 6px;}
   [data-layout="split"] .mono-mark{grid-area:mono;}
   [data-layout="split"] .eyebrow{grid-area:eyebrow;}
   [data-layout="split"] .names{grid-area:names;}
   [data-layout="split"] .divider{grid-area:divider; margin-left:0;}
+  [data-layout="split"] .eventcolors{grid-area:colors;}
   [data-layout="split"] .details{grid-area:details;}
   [data-layout="split"] .guestblock{grid-area:guest;}
   [data-layout="split"] .sealblock{grid-area:seal; align-self:center; justify-self:center;}
-  [data-layout="split"] .addwallet{grid-column:1 / -1; grid-row:7; justify-self:center;}
+  [data-layout="split"] .addwallet{grid-column:1 / -1; grid-row:9; justify-self:center;}
 
   [data-layout="monogram"] .mono-mark{display:block;}
 
@@ -106,6 +116,11 @@ const INVITE_DEFAULTS = {
   venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
   cBg:'#f6f1e9', cInk:'#2b2a26', cAccent:'#b08d57', cSeal:'#46583d',
   layout:'classic', hf:0, bf:0, sc:1,
+  // The couple's photo is baked in here rather than ever traveling in a guest link —
+  // as a compressed data URL it can be tens of KB, which would make every link huge.
+  // index.html never adds a `photo` URL param; update this value (and redeploy) when
+  // the couple sets/changes their photo.
+  photo:'', showEventColors:true, ec1:'#46583d', ec2:'#b08d57', ec3:'#6c7f60', ec4:'#c88b87',
 };
 
 const d = {
@@ -119,6 +134,12 @@ const d = {
   hf: parseInt(get('hf', INVITE_DEFAULTS.hf), 10) || 0,
   bf: parseInt(get('bf', INVITE_DEFAULTS.bf), 10) || 0,
   sc: parseInt(get('sc', INVITE_DEFAULTS.sc), 10) || 0,
+  photo: get('photo', INVITE_DEFAULTS.photo),
+  showEventColors: get('showEventColors', INVITE_DEFAULTS.showEventColors ? '1' : '0') === '1',
+  eventColors: [
+    get('ec1', INVITE_DEFAULTS.ec1), get('ec2', INVITE_DEFAULTS.ec2),
+    get('ec3', INVITE_DEFAULTS.ec3), get('ec4', INVITE_DEFAULTS.ec4),
+  ],
 };
 const guestId = get('id');
 const guestName = get('name');
@@ -167,6 +188,18 @@ function fmtTime(t){
   const h12 = ((h+11)%12)+1;
   return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
 }
+function partyTag(seats){
+  if(seats<=1) return 'SINGLE';
+  if(seats===2) return 'DOUBLE';
+  return 'PARTY OF ' + seats;
+}
+function eventColorsHTML(design){
+  if(!design.showEventColors || !design.eventColors) return '';
+  const cols = design.eventColors.filter(Boolean);
+  if(!cols.length) return '';
+  const dots = cols.map(c=>`<span class="ecolor" style="background:${c}"></span>`).join('');
+  return `<div class="eventcolors"><div class="eclabel">Event Colors</div><div class="ecolors-row">${dots}</div></div>`;
+}
 
 if(!guestId || !guestName){
   document.getElementById('card').style.display='none';
@@ -193,7 +226,10 @@ if(!guestId || !guestName){
   ensureFont(hf.gf);
   ensureFont(bf.gf);
 
+  const photoBlock = d.photo ? `<div class="photoblock"><img src="${d.photo}" alt=""></div>` : '';
+
   card.innerHTML = `
+    ${photoBlock}
     <div class="mono-mark">${mono}</div>
     <div class="eyebrow">${d.eyebrow}</div>
     <div class="names">${d.p1}<span class="amp">&amp;</span>${d.p2}</div>
@@ -207,8 +243,12 @@ if(!guestId || !guestName){
       <div class="guestline">Reserved for</div>
       <div class="guestname">${guestName}${seats>1?` &amp; party of ${seats}`:''}</div>
     </div>
+    ${eventColorsHTML(d)}
     <div class="sealblock">
-      <div class="seal" id="sealBox"></div>
+      <div class="sealrow">
+        <div class="seal" id="sealBox"></div>
+        <div class="ptag">${partyTag(seats)}</div>
+      </div>
       <div class="seal-cap">present this code at entry</div>
     </div>
     <button class="addwallet" onclick="window.print()">Save / print this invite</button>

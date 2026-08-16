@@ -50,9 +50,14 @@
     width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:4px;
     font-family:'EB Garamond',serif; font-size:16px; background:var(--ivory); color:var(--ink);
   }
+  input[type=file]{width:100%; font-family:'Inter',sans-serif; font-size:12.5px; padding:8px 0;}
   input[type=color]{width:52px; height:36px; border:1px solid var(--line); border-radius:4px; padding:2px; background:#fff;}
   .swatchrow{display:flex; align-items:center; gap:10px; margin-bottom:14px;}
   .swatchrow span{font-family:'Inter',sans-serif; font-size:12px; color:var(--sage-light); width:110px;}
+  .checkrow{display:flex; align-items:center; gap:8px; font-family:'Inter',sans-serif; font-size:12.5px; color:var(--sage-light); margin-bottom:14px;}
+  .hint{font-family:'Inter',sans-serif; font-size:11.5px; color:var(--sage-light); line-height:1.6; margin-top:6px;}
+  #photoPreviewWrap{display:flex; align-items:center; margin-top:10px;}
+  #photoPreview{width:84px; height:84px; object-fit:cover; border-radius:8px; border:1px solid var(--line); display:block;}
   button.primary{
     font-family:'Inter',sans-serif; font-size:13px; letter-spacing:.03em; font-weight:600;
     background:var(--sage); color:#fff; border:none; padding:11px 20px; border-radius:4px; cursor:pointer;
@@ -98,6 +103,14 @@
   .invite-card .guestname{font-family:var(--headfont,'Cormorant Garamond',serif); font-size:20px; font-style:italic; margin-top:2px;}
   .invite-card.no-italic .guestname{font-style:normal;}
   .invite-card .mono-mark{display:none; font-family:var(--headfont); font-size:calc(var(--namesize,38px) * 1.15); opacity:.16; line-height:1; margin-bottom:-2px;}
+  .invite-card .photoblock{width:92px; height:92px; margin:0 auto 14px; border-radius:50%; overflow:hidden; border:2px solid var(--seal,rgba(0,0,0,.18)); flex:none;}
+  .invite-card .photoblock img{width:100%; height:100%; object-fit:cover; display:block;}
+  .invite-card .eventcolors{margin-top:18px;}
+  .invite-card .eventcolors .eclabel{font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.2em; text-transform:uppercase; opacity:.65; margin-bottom:8px;}
+  .invite-card .ecolors-row{display:flex; justify-content:center; gap:8px;}
+  .invite-card .ecolor{width:18px; height:18px; border-radius:4px; display:inline-block; border:1px solid rgba(0,0,0,.15);}
+  .invite-card .sealrow{display:flex; align-items:center; justify-content:center; gap:12px;}
+  .invite-card .ptag{font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.14em; text-transform:uppercase; border:1px solid currentColor; opacity:.8; padding:4px 10px; border-radius:20px;}
   .invite-card .seal{
     width:104px; height:104px; border-radius:50%; margin:22px auto 6px;
     display:flex; align-items:center; justify-content:center; position:relative;
@@ -118,12 +131,14 @@
   [data-layout="split"]{
     width:440px; display:grid; row-gap:6px; column-gap:22px; text-align:left; align-items:start;
     grid-template-columns:1.15fr 1fr;
-    grid-template-areas:"mono mono" "eyebrow eyebrow" "names names" "divider divider" "details seal" "guest seal";
+    grid-template-areas:"photo photo" "mono mono" "eyebrow eyebrow" "names names" "divider divider" "colors colors" "details seal" "guest seal";
   }
+  [data-layout="split"] .photoblock{grid-area:photo; justify-self:start; margin:0 0 6px;}
   [data-layout="split"] .mono-mark{grid-area:mono;}
   [data-layout="split"] .eyebrow{grid-area:eyebrow;}
   [data-layout="split"] .names{grid-area:names;}
   [data-layout="split"] .divider{grid-area:divider; margin-left:0;}
+  [data-layout="split"] .eventcolors{grid-area:colors;}
   [data-layout="split"] .details{grid-area:details;}
   [data-layout="split"] .guestblock{grid-area:guest;}
   [data-layout="split"] .sealblock{grid-area:seal; align-self:center; justify-self:center;}
@@ -232,11 +247,28 @@
         <div class="field"><label>City</label><input id="city" type="text" value="Dar es Salaam"></div>
         <div class="field"><label>Eyebrow text</label><input id="eyebrow" type="text" value="Together with their families"></div>
 
+        <h3>Couple / host photo <span class="label" style="text-transform:none; letter-spacing:0;">(optional)</span></h3>
+        <div class="field">
+          <input type="file" id="photoInput" accept="image/*">
+          <div id="photoPreviewWrap" style="display:none;">
+            <img id="photoPreview" alt="">
+            <button type="button" class="ghost" style="margin-left:10px;" onclick="removePhoto()">Remove photo</button>
+          </div>
+          <div class="hint">Photo is compressed and embedded directly in each guest's invite link, so it still works with no server. A clear headshot or couple photo works best — very large images make the invite link longer.</div>
+        </div>
+
         <h3>Palette (fine-tune)</h3>
         <div class="swatchrow"><span>Background</span><input type="color" id="cBg" value="#F6F1E9"></div>
         <div class="swatchrow"><span>Text / ink</span><input type="color" id="cInk" value="#2B2A26"></div>
         <div class="swatchrow"><span>Accent line</span><input type="color" id="cAccent" value="#B08D57"></div>
         <div class="swatchrow"><span>Seal ring</span><input type="color" id="cSeal" value="#46583D"></div>
+
+        <h3>Event colors <span class="label" style="text-transform:none; letter-spacing:0;">(optional, shown on card)</span></h3>
+        <label class="checkrow"><input type="checkbox" id="showEventColors" checked> Show event colors on card</label>
+        <div class="swatchrow"><span>Color 1</span><input type="color" id="ec1" value="#46583D"></div>
+        <div class="swatchrow"><span>Color 2</span><input type="color" id="ec2" value="#B08D57"></div>
+        <div class="swatchrow"><span>Color 3</span><input type="color" id="ec3" value="#6C7F60"></div>
+        <div class="swatchrow"><span>Color 4</span><input type="color" id="ec4" value="#C88B87"></div>
 
         <button class="primary" onclick="renderPreview()">Update preview</button>
       </div>
@@ -389,9 +421,23 @@ function ensureFont(gf){
 function ensureFonts(hf, bf){ ensureFont(hf.gf); ensureFont(bf.gf); }
 
 // ---------- CARD RENDERING (shared by Design preview and Template preview) ----------
+function partyTag(seats){
+  if(seats<=1) return 'SINGLE';
+  if(seats===2) return 'DOUBLE';
+  return 'PARTY OF ' + seats;
+}
+function eventColorsHTML(d){
+  if(!d.showEventColors || !d.eventColors) return '';
+  const cols = d.eventColors.filter(Boolean);
+  if(!cols.length) return '';
+  const dots = cols.map(c=>`<span class="ecolor" style="background:${c}"></span>`).join('');
+  return `<div class="eventcolors"><div class="eclabel">Event Colors</div><div class="ecolors-row">${dots}</div></div>`;
+}
 function buildCardInner(d, guestName, seats, showSeal){
   const mono = ((d.p1||'')[0]||'').toUpperCase() + ((d.p2||'')[0]||'').toUpperCase();
+  const photoBlock = d.photo ? `<div class="photoblock"><img src="${d.photo}" alt=""></div>` : '';
   return `
+    ${photoBlock}
     <div class="mono-mark">${mono}</div>
     <div class="eyebrow">${d.eyebrow || ''}</div>
     <div class="names">${d.p1}<span class="amp">&amp;</span>${d.p2}</div>
@@ -406,9 +452,13 @@ function buildCardInner(d, guestName, seats, showSeal){
       <div class="guestline">Reserved for</div>
       <div class="guestname">${guestName}${seats>1?` &amp; party of ${seats}`:''}</div>
     </div>` : ''}
+    ${eventColorsHTML(d)}
     ${showSeal ? `
     <div class="sealblock">
-      <div class="seal"></div>
+      <div class="sealrow">
+        <div class="seal"></div>
+        ${guestName ? `<div class="ptag">${partyTag(seats)}</div>` : ''}
+      </div>
       <div class="seal-cap">present for entry</div>
     </div>` : ''}
   `;
@@ -463,6 +513,14 @@ function currentDesign(){
     hf: prev.hf ?? 0,
     bf: prev.bf ?? 0,
     sc: prev.sc ?? 1,
+    photo: prev.photo || '',
+    showEventColors: document.getElementById('showEventColors').checked,
+    eventColors: [
+      document.getElementById('ec1').value,
+      document.getElementById('ec2').value,
+      document.getElementById('ec3').value,
+      document.getElementById('ec4').value
+    ],
   };
 }
 function renderPreview(){
@@ -476,9 +534,60 @@ function renderPreview(){
   // defaults, so the table's links must stay in sync with every design edit.
   renderGuests();
 }
-['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal'].forEach(id=>{
+['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal','showEventColors','ec1','ec2','ec3','ec4'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
 });
+
+// ---------- PHOTO UPLOAD ----------
+function resizeImageFile(file, maxDim, quality){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        let {width, height} = img;
+        if(width > height){ if(width > maxDim){ height = Math.round(height*maxDim/width); width = maxDim; } }
+        else { if(height > maxDim){ width = Math.round(width*maxDim/height); height = maxDim; } }
+        const canvas = document.createElement('canvas');
+        canvas.width = width; canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+document.getElementById('photoInput').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  try{
+    const dataUrl = await resizeImageFile(file, 480, 0.72);
+    state.design = state.design || {};
+    state.design.photo = dataUrl;
+    saveState(state);
+    showPhotoPreview(dataUrl);
+    renderPreview();
+    renderTemplatePreview();
+  }catch(err){
+    alert('Could not read that image, please try another file.');
+  }
+});
+function showPhotoPreview(dataUrl){
+  document.getElementById('photoPreview').src = dataUrl;
+  document.getElementById('photoPreviewWrap').style.display = 'flex';
+}
+function removePhoto(){
+  state.design = state.design || {};
+  state.design.photo = '';
+  saveState(state);
+  document.getElementById('photoPreviewWrap').style.display = 'none';
+  document.getElementById('photoInput').value = '';
+  renderPreview();
+  renderTemplatePreview();
+}
 
 // ---------- TEMPLATE PICKER ----------
 let tplState = { layoutIdx:0, hueIdx:4, moodIdx:0, headingIdx:0, bodyIdx:0, scaleIdx:1 };
@@ -526,6 +635,7 @@ function renderTemplatePreview(){
     eyebrow: base.eyebrow || 'Together with their families',
     cBg: pal.cBg, cInk: pal.cInk, cAccent: pal.cAccent, cSeal: pal.cSeal,
     layout: LAYOUTS[tplState.layoutIdx].key, hf: tplState.headingIdx, bf: tplState.bodyIdx, sc: tplState.scaleIdx,
+    photo: base.photo || '', showEventColors: base.showEventColors !== false, eventColors: base.eventColors || ['#46583D','#B08D57','#6C7F60','#C88B87'],
   };
   const card = document.getElementById('templatePreview');
   card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
@@ -596,6 +706,7 @@ const INVITE_DEFAULTS = {
   venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
   cBg:'#f6f1e9', cInk:'#2b2a26', cAccent:'#b08d57', cSeal:'#46583d',
   layout:'classic', hf:0, bf:0, sc:1,
+  photo:'', showEventColors:true, ec1:'#46583d', ec2:'#b08d57', ec3:'#6c7f60', ec4:'#c88b87',
 };
 function inviteLink(g){
   const d = state.design || {};
@@ -605,10 +716,17 @@ function inviteLink(g){
     p1:d.p1, p2:d.p2, wdate:d.wdate, wtime:d.wtime, venue:d.venue, city:d.city, eyebrow:d.eyebrow,
     cBg:d.cBg, cInk:d.cInk, cAccent:d.cAccent, cSeal:d.cSeal,
     layout:d.layout||'classic', hf:d.hf??0, bf:d.bf??0, sc:d.sc??1,
+    showEventColors: d.showEventColors!==false,
+    ec1:(d.eventColors&&d.eventColors[0])||INVITE_DEFAULTS.ec1,
+    ec2:(d.eventColors&&d.eventColors[1])||INVITE_DEFAULTS.ec2,
+    ec3:(d.eventColors&&d.eventColors[2])||INVITE_DEFAULTS.ec3,
+    ec4:(d.eventColors&&d.eventColors[3])||INVITE_DEFAULTS.ec4,
+    // photo intentionally excluded: it's never diffed/added to the URL (see
+    // INVITE_DEFAULTS.photo in invite.html — always baked in, never per-link).
   };
   // Colors from <input type=color> are always lowercase hex; compare case-insensitively
   // so an unchanged color never gets re-added to the URL just because of casing.
-  Object.keys(INVITE_DEFAULTS).forEach(key=>{
+  Object.keys(design).forEach(key=>{
     if (String(design[key]).toLowerCase() !== String(INVITE_DEFAULTS[key]).toLowerCase()) params[key] = design[key];
   });
   return 'invite.html?' + new URLSearchParams(params).toString();
@@ -653,6 +771,14 @@ function renderGuests(){
     document.getElementById('cAccent').value = d.cAccent;
     document.getElementById('cSeal').value = d.cSeal;
   }
+  document.getElementById('showEventColors').checked = !(d && d.showEventColors === false);
+  if(d && d.eventColors){
+    document.getElementById('ec1').value = d.eventColors[0] || '#46583D';
+    document.getElementById('ec2').value = d.eventColors[1] || '#B08D57';
+    document.getElementById('ec3').value = d.eventColors[2] || '#6C7F60';
+    document.getElementById('ec4').value = d.eventColors[3] || '#C88B87';
+  }
+  if(d && d.photo) showPhotoPreview(d.photo);
   buildPickers();
   renderTemplatePreview();
   renderPreview();
