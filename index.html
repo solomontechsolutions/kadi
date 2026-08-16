@@ -34,7 +34,7 @@
   header h1{font-size:28px; margin:0; font-weight:600; color:var(--sage);}
   header .sub{font-family:'Inter',sans-serif; font-size:12px; color:var(--sage-light); letter-spacing:.04em;}
   .wrap{max-width:1100px; margin:0 auto; padding:0 24px;}
-  nav{display:flex; gap:6px; margin:20px auto 0; max-width:1100px; padding:0 24px;}
+  nav{display:flex; gap:6px; margin:20px auto 0; max-width:1100px; padding:0 24px; flex-wrap:wrap;}
   nav button{
     font-family:'Inter',sans-serif; font-size:13px; letter-spacing:.03em;
     background:none; border:1px solid var(--line); border-bottom:none;
@@ -63,31 +63,91 @@
     font-family:'Inter',sans-serif; font-size:12px; background:none; border:1px solid var(--line);
     padding:8px 14px; border-radius:4px; cursor:pointer; color:var(--sage);
   }
-  /* --- Invitation card preview --- */
+  /* --- Template picker controls --- */
+  .callout{background:var(--blush); border-radius:6px; padding:16px 18px; font-family:'Inter',sans-serif; font-size:13px; color:#5c4038; margin-bottom:22px; line-height:1.6;}
+  .callout b{color:#46312c;}
+  .chiprow{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+  .chip{
+    font-family:'Inter',sans-serif; font-size:12.5px; background:#fff; border:1px solid var(--line);
+    padding:7px 13px; border-radius:20px; cursor:pointer; color:var(--ink);
+  }
+  .chip.active{background:var(--sage); border-color:var(--sage); color:#fff;}
+  .huerow{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px;}
+  .hueswatch{width:24px; height:24px; border-radius:50%; cursor:pointer; border:2px solid transparent; box-shadow:0 0 0 1px var(--line); padding:0;}
+  .hueswatch.active{border-color:var(--ink);}
+  .tplcode{font-family:'Inter',sans-serif; font-size:11.5px; color:var(--sage-light); display:block; margin-top:8px;}
+  .codebar{display:flex; gap:8px;}
+  .codebar input{flex:1;}
+  /* --- Invitation card: shared layout/palette/type token system --- */
   .card-stage{display:flex; justify-content:center; align-items:flex-start; padding-top:4px;}
   .invite-card{
-    width:340px; min-height:480px; border-radius:2px;
-    padding:40px 28px 32px; text-align:center; position:relative;
+    width:340px; max-width:92vw; min-height:480px; border-radius:2px;
+    padding:40px 28px 32px; text-align:center; position:relative; overflow:hidden;
     box-shadow:0 18px 40px -12px rgba(43,42,38,.28);
     border:1px solid rgba(0,0,0,.06);
+    display:flex; flex-direction:column; align-items:center;
+    font-family:var(--bodyfont,'EB Garamond',serif);
   }
   .invite-card .eyebrow{font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.28em; text-transform:uppercase; opacity:.75;}
-  .invite-card .names{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:38px; line-height:1.15; margin:14px 0 10px;}
+  .invite-card .names{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-weight:500; font-size:var(--namesize,38px); line-height:1.15; margin:14px 0 10px;}
+  .invite-card.no-italic .names{font-style:normal;}
   .invite-card .amp{display:block; font-size:22px; opacity:.6; margin:2px 0;}
-  .invite-card .divider{width:46px; height:1px; margin:16px auto; opacity:.55;}
-  .invite-card .details{font-family:'EB Garamond',serif; font-size:15.5px; line-height:1.9;}
+  .invite-card .divider{width:46px; height:1px; margin:16px auto; background:var(--accent,#B08D57);}
+  .invite-card .details{font-size:var(--detailsize,15.5px); line-height:1.9;}
+  .invite-card .dline{margin:1px 0;}
   .invite-card .guestline{margin-top:20px; font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.05em; opacity:.75;}
-  .invite-card .guestname{font-family:'Cormorant Garamond',serif; font-size:20px; font-style:italic; margin-top:2px;}
-  .seal{
+  .invite-card .guestname{font-family:var(--headfont,'Cormorant Garamond',serif); font-size:20px; font-style:italic; margin-top:2px;}
+  .invite-card.no-italic .guestname{font-style:normal;}
+  .invite-card .mono-mark{display:none; font-family:var(--headfont); font-size:calc(var(--namesize,38px) * 1.15); opacity:.16; line-height:1; margin-bottom:-2px;}
+  .invite-card .seal{
     width:104px; height:104px; border-radius:50%; margin:22px auto 6px;
     display:flex; align-items:center; justify-content:center; position:relative;
-    border:2px solid rgba(0,0,0,.18);
+    border:2px solid var(--seal,rgba(0,0,0,.18));
   }
-  .seal::before{
-    content:''; position:absolute; inset:-6px; border-radius:50%; border:1px dashed rgba(0,0,0,.18);
+  .invite-card .seal::before{content:''; position:absolute; inset:-6px; border-radius:inherit; border:1px dashed var(--seal,rgba(0,0,0,.18)); opacity:.6;}
+  .invite-card .seal img,.invite-card .seal canvas{width:76px; height:76px; border-radius:inherit;}
+  .invite-card .seal-cap{font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-top:6px;}
+
+  [data-layout="banner"] .eyebrow{margin:-40px -28px 0; padding:26px 28px 8px; background:var(--accent); color:var(--bg,#F6F1E9);}
+  [data-layout="banner"] .names{margin:0 -28px 14px; padding:0 28px 22px; background:var(--accent); color:var(--bg,#F6F1E9);}
+
+  [data-layout="framed"]{padding:52px 34px 38px;}
+  [data-layout="framed"]::before{content:''; position:absolute; inset:12px; border:1px solid var(--accent); pointer-events:none;}
+
+  [data-layout="arch"]{border-radius:170px 170px 6px 6px; padding-top:60px;}
+
+  [data-layout="split"]{
+    width:440px; display:grid; row-gap:6px; column-gap:22px; text-align:left; align-items:start;
+    grid-template-columns:1.15fr 1fr;
+    grid-template-areas:"mono mono" "eyebrow eyebrow" "names names" "divider divider" "details seal" "guest seal";
   }
-  .seal img{width:76px; height:76px; border-radius:50%;}
-  .seal-cap{font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-top:6px;}
+  [data-layout="split"] .mono-mark{grid-area:mono;}
+  [data-layout="split"] .eyebrow{grid-area:eyebrow;}
+  [data-layout="split"] .names{grid-area:names;}
+  [data-layout="split"] .divider{grid-area:divider; margin-left:0;}
+  [data-layout="split"] .details{grid-area:details;}
+  [data-layout="split"] .guestblock{grid-area:guest;}
+  [data-layout="split"] .sealblock{grid-area:seal; align-self:center; justify-self:center;}
+
+  [data-layout="monogram"] .mono-mark{display:block;}
+
+  [data-layout="minimalLine"] .seal{border-radius:10px;}
+  [data-layout="minimalLine"] .dline{border-bottom:1px solid var(--accent); padding-bottom:5px; margin-bottom:5px; opacity:.92;}
+  [data-layout="minimalLine"] .dline:last-child{border-bottom:none; margin-bottom:0;}
+
+  [data-layout="editorial"]{align-items:flex-start; text-align:left; padding-left:38px;}
+  [data-layout="editorial"]::before{content:''; position:absolute; left:16px; top:26px; bottom:26px; width:3px; background:var(--accent);}
+  [data-layout="editorial"] .divider{margin-left:0;}
+
+  [data-layout="botanical"]::before,[data-layout="botanical"]::after{content:''; position:absolute; width:26px; height:26px; border:1px solid var(--accent); opacity:.65;}
+  [data-layout="botanical"]::before{top:14px; left:14px; border-right:none; border-bottom:none;}
+  [data-layout="botanical"]::after{bottom:14px; right:14px; border-left:none; border-top:none;}
+
+  [data-layout="timeline"] .details{text-align:left; padding-left:16px; position:relative;}
+  [data-layout="timeline"] .details::before{content:''; position:absolute; left:3px; top:5px; bottom:5px; width:1px; background:var(--accent); opacity:.5;}
+  [data-layout="timeline"] .dline{position:relative; padding-left:14px;}
+  [data-layout="timeline"] .dline::before{content:''; position:absolute; left:-2px; top:6px; width:6px; height:6px; border-radius:50%; background:var(--accent);}
+
   /* Guest table */
   table{width:100%; border-collapse:collapse; margin-top:18px; font-family:'Inter',sans-serif; font-size:13.5px;}
   th{text-align:left; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--sage-light); padding:8px 10px; border-bottom:1px solid var(--line);}
@@ -97,8 +157,6 @@
   .addrow{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap; align-items:flex-end;}
   .addrow .field{margin-bottom:0; flex:1; min-width:140px;}
   .tag{display:inline-block; font-family:'Inter',sans-serif; font-size:10.5px; padding:3px 8px; border-radius:20px; background:var(--blush); color:#7a4a44;}
-  .callout{background:var(--blush); border-radius:6px; padding:16px 18px; font-family:'Inter',sans-serif; font-size:13px; color:#5c4038; margin-bottom:22px; line-height:1.6;}
-  .callout b{color:#46312c;}
   .empty{font-family:'Inter',sans-serif; color:var(--sage-light); font-size:13px; padding:26px 0; text-align:center;}
   footer{max-width:1100px; margin:26px auto 60px; padding:0 24px; font-family:'Inter',sans-serif; font-size:11.5px; color:var(--sage-light); text-align:center;}
 </style>
@@ -108,13 +166,14 @@
 <header>
   <div>
     <h1>Invite Studio</h1>
-    <div class="sub">Design your card &middot; build your guest list &middot; every invite carries its own entry code</div>
+    <div class="sub">Pick a template &middot; design your card &middot; build your guest list &middot; every invite carries its own entry code</div>
   </div>
   <div class="sub">Step 3 of 3: host this folder anywhere with HTTPS to activate camera scanning at <b>scanner.html</b></div>
 </header>
 
 <nav>
-  <button class="tab-btn active" data-tab="design">Design</button>
+  <button class="tab-btn active" data-tab="templates">Templates</button>
+  <button class="tab-btn" data-tab="design">Design</button>
   <button class="tab-btn" data-tab="guests">Guests</button>
   <button class="tab-btn" data-tab="help">Deploy &amp; Scan</button>
 </nav>
@@ -122,8 +181,47 @@
 <div class="wrap">
 <main>
 
+  <!-- TEMPLATES PANEL -->
+  <div class="panel active" id="panel-templates">
+    <div class="callout"><b>50,000 combinations:</b> 10 layouts &times; 100 palettes (20 hues &times; 5 moods) &times; 50 type pairings (5 heading fonts &times; 5 body fonts &times; 2 scales). Mix and match below, hit <b>Shuffle</b> for a random one, or paste a code to jump straight to a combination.</div>
+    <div class="grid">
+      <div>
+        <h3 style="margin-top:0;">Layout</h3>
+        <div class="chiprow" id="layoutPicker"></div>
+
+        <h3>Palette</h3>
+        <div class="huerow" id="huePicker"></div>
+        <div class="chiprow" id="moodPicker"></div>
+
+        <h3>Type</h3>
+        <div class="field"><label>Heading font</label><select id="headingPicker"></select></div>
+        <div class="field"><label>Body font</label><select id="bodyPicker"></select></div>
+        <div class="chiprow" id="scalePicker"></div>
+
+        <div style="display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; align-items:center;">
+          <button class="primary" onclick="shuffleTemplate()">Shuffle</button>
+          <button class="ghost" onclick="applyTemplate()">Use this template</button>
+        </div>
+        <span class="tplcode" id="templateCode"></span>
+
+        <div class="field" style="margin-top:18px;">
+          <label>Jump to a template code</label>
+          <div class="codebar">
+            <input type="text" id="codeInput" placeholder="L03-P047-T18">
+            <button class="ghost" onclick="loadTemplateCode()">Go</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="margin-top:0;">Live preview</h3>
+        <div class="card-stage"><div class="invite-card" id="templatePreview"></div></div>
+      </div>
+    </div>
+  </div>
+
   <!-- DESIGN PANEL -->
-  <div class="panel active" id="panel-design">
+  <div class="panel" id="panel-design">
     <div class="grid">
       <div>
         <h3 style="margin-top:0;">Card details</h3>
@@ -135,7 +233,7 @@
         <div class="field"><label>City</label><input id="city" type="text" value="Dar es Salaam"></div>
         <div class="field"><label>Eyebrow text</label><input id="eyebrow" type="text" value="Together with their families"></div>
 
-        <h3>Palette</h3>
+        <h3>Palette (fine-tune)</h3>
         <div class="swatchrow"><span>Background</span><input type="color" id="cBg" value="#F6F1E9"></div>
         <div class="swatchrow"><span>Text / ink</span><input type="color" id="cInk" value="#2B2A26"></div>
         <div class="swatchrow"><span>Accent line</span><input type="color" id="cAccent" value="#B08D57"></div>
@@ -173,6 +271,7 @@
   <div class="panel" id="panel-help">
     <h3 style="margin-top:0;">Getting this live in front of guests</h3>
     <ol style="line-height:2; font-size:15.5px;">
+      <li>Pick a look on the <b>Templates</b> tab (or fine-tune colors on <b>Design</b>).</li>
       <li>Download this folder (index.html, invite.html, scanner.html, manifest.json, sw.js).</li>
       <li>Deploy it as a static site — drag-and-drop the folder onto <b>Netlify Drop</b>, or push it to a <b>GitHub repo</b> and enable GitHub Pages, or use <b>Vercel</b>. All are free and give you an HTTPS URL, which is required for camera access.</li>
       <li>Once live, come back to the <b>Guests</b> tab, click <b>Copy invite link</b> for each guest, and send it to them individually.</li>
@@ -207,21 +306,131 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
   });
 });
 
-// ---------- DESIGN ----------
-function currentDesign(){
+// ---------- TEMPLATE TOKEN SYSTEM ----------
+// 10 layouts x 100 palettes (20 hues x 5 moods) x 50 type pairings (5 heading x 5 body x 2 scales) = 50,000
+function hslToHex(h,s,l){
+  s/=100; l/=100;
+  const k = n => (n + h/30) % 12;
+  const a = s * Math.min(l, 1-l);
+  const f = n => l - a*Math.max(-1, Math.min(k(n)-3, Math.min(9-k(n),1)));
+  const toHex = x => Math.round(255*x).toString(16).padStart(2,'0');
+  return '#' + toHex(f(0)) + toHex(f(8)) + toHex(f(4));
+}
+const HUES = ['Rose','Poppy','Amber','Marigold','Gold','Olive','Moss','Sage','Emerald','Jade','Teal','Cyan','Sky','Azure','Cornflower','Indigo','Violet','Orchid','Magenta','Blush'];
+function hueDeg(i){ return (i * 18) % 360; }
+const MOODS = [
+  { name:'Classic',  fn:h=>({cBg:hslToHex(h,22,94), cInk:hslToHex(h,25,16), cAccent:hslToHex(h,38,45), cSeal:hslToHex(h,45,30)}) },
+  { name:'Romantic', fn:h=>({cBg:hslToHex(h,45,95), cInk:hslToHex(h,30,22), cAccent:hslToHex(h,55,68), cSeal:hslToHex(h,40,55)}) },
+  { name:'Modern',   fn:h=>({cBg:hslToHex(h,10,98), cInk:hslToHex(h,15,12), cAccent:hslToHex(h,70,45), cSeal:hslToHex(h,20,10)}) },
+  { name:'Bold',     fn:h=>({cBg:hslToHex(h,35,14), cInk:hslToHex(h,20,94), cAccent:hslToHex(h,65,62), cSeal:hslToHex(h,55,70)}) },
+  { name:'Minimal',  fn:h=>({cBg:hslToHex(h,8,97),  cInk:hslToHex(h,6,20),  cAccent:hslToHex(h,18,55), cSeal:hslToHex(h,10,40)}) },
+];
+function paletteFromIndices(hueIdx, moodIdx){ return MOODS[moodIdx].fn(hueDeg(hueIdx)); }
+
+const HEADING_FONTS = [
+  {name:'Cormorant Garamond', css:"'Cormorant Garamond',serif", gf:'Cormorant+Garamond:ital,wght@0,500;0,600;1,500', italic:true},
+  {name:'Playfair Display',   css:"'Playfair Display',serif",   gf:'Playfair+Display:ital,wght@0,500;0,700;1,500',   italic:true},
+  {name:'Marcellus',          css:"'Marcellus',serif",          gf:'Marcellus',                                     italic:false},
+  {name:'Italiana',           css:"'Italiana',serif",           gf:'Italiana',                                      italic:false},
+  {name:'Cormorant',          css:"'Cormorant',serif",          gf:'Cormorant:ital,wght@0,500;0,600;1,500',         italic:true},
+];
+const BODY_FONTS = [
+  {name:'EB Garamond',  css:"'EB Garamond',serif",     gf:'EB+Garamond:ital,wght@0,400;0,500;1,400'},
+  {name:'Lora',         css:"'Lora',serif",            gf:'Lora:ital,wght@0,400;0,500;1,400'},
+  {name:'Jost',         css:"'Jost',sans-serif",       gf:'Jost:wght@400;500'},
+  {name:'Inter',        css:"'Inter',sans-serif",      gf:'Inter:wght@400;500'},
+  {name:'Crimson Text', css:"'Crimson Text',serif",    gf:'Crimson+Text:ital,wght@0,400;0,600;1,400'},
+];
+const SCALES = [
+  {name:'Intimate', nameSize:'28px', detailSize:'13.5px'},
+  {name:'Grand',    nameSize:'40px', detailSize:'16px'},
+];
+const LAYOUTS = [
+  {key:'classic',     name:'Classic Centered'},
+  {key:'banner',      name:'Color Banner'},
+  {key:'framed',      name:'Framed Border'},
+  {key:'arch',        name:'Arched Top'},
+  {key:'split',       name:'Split Column'},
+  {key:'monogram',    name:'Monogram'},
+  {key:'minimalLine', name:'Minimal Rule'},
+  {key:'editorial',   name:'Editorial Left'},
+  {key:'botanical',   name:'Botanical Corners'},
+  {key:'timeline',    name:'Timeline Detail'},
+];
+
+function pad(n,len){ return String(n).padStart(len,'0'); }
+function templateCode(layoutIdx,hueIdx,moodIdx,headingIdx,bodyIdx,scaleIdx){
+  const paletteIdx = hueIdx*5 + moodIdx;
+  const typeIdx = headingIdx*10 + bodyIdx*2 + scaleIdx;
+  return `L${pad(layoutIdx,2)}-P${pad(paletteIdx,3)}-T${pad(typeIdx,2)}`;
+}
+function parseTemplateCode(code){
+  const m = /^L(\d{1,2})-P(\d{1,3})-T(\d{1,2})$/i.exec((code||'').trim());
+  if(!m) return null;
+  const layoutIdx = parseInt(m[1],10), paletteIdx = parseInt(m[2],10), typeIdx = parseInt(m[3],10);
+  if(layoutIdx<0||layoutIdx>=LAYOUTS.length) return null;
+  if(paletteIdx<0||paletteIdx>=100) return null;
+  if(typeIdx<0||typeIdx>=50) return null;
   return {
-    p1: document.getElementById('p1').value || 'Partner One',
-    p2: document.getElementById('p2').value || 'Partner Two',
-    wdate: document.getElementById('wdate').value,
-    wtime: document.getElementById('wtime').value,
-    venue: document.getElementById('venue').value,
-    city: document.getElementById('city').value,
-    eyebrow: document.getElementById('eyebrow').value,
-    cBg: document.getElementById('cBg').value,
-    cInk: document.getElementById('cInk').value,
-    cAccent: document.getElementById('cAccent').value,
-    cSeal: document.getElementById('cSeal').value,
+    layoutIdx,
+    hueIdx: Math.floor(paletteIdx/5), moodIdx: paletteIdx%5,
+    headingIdx: Math.floor(typeIdx/10), bodyIdx: Math.floor((typeIdx%10)/2), scaleIdx: typeIdx%2,
   };
+}
+
+const loadedFonts = new Set();
+function ensureFont(gf){
+  if(loadedFonts.has(gf)) return;
+  loadedFonts.add(gf);
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=' + gf + '&display=swap';
+  document.head.appendChild(link);
+}
+function ensureFonts(hf, bf){ ensureFont(hf.gf); ensureFont(bf.gf); }
+
+// ---------- CARD RENDERING (shared by Design preview and Template preview) ----------
+function buildCardInner(d, guestName, seats, showSeal){
+  const mono = ((d.p1||'')[0]||'').toUpperCase() + ((d.p2||'')[0]||'').toUpperCase();
+  return `
+    <div class="mono-mark">${mono}</div>
+    <div class="eyebrow">${d.eyebrow || ''}</div>
+    <div class="names">${d.p1}<span class="amp">&amp;</span>${d.p2}</div>
+    <div class="divider"></div>
+    <div class="details">
+      <div class="dline">${fmtDate(d.wdate)}</div>
+      <div class="dline">${fmtTime(d.wtime)}</div>
+      <div class="dline">${[d.venue,d.city].filter(Boolean).join(', ')}</div>
+    </div>
+    ${guestName ? `
+    <div class="guestblock">
+      <div class="guestline">Reserved for</div>
+      <div class="guestname">${guestName}${seats>1?` &amp; party of ${seats}`:''}</div>
+    </div>` : ''}
+    ${showSeal ? `
+    <div class="sealblock">
+      <div class="seal"></div>
+      <div class="seal-cap">present for entry</div>
+    </div>` : ''}
+  `;
+}
+function applyCardTokens(card, d){
+  const layout = LAYOUTS.some(l=>l.key===d.layout) ? d.layout : 'classic';
+  card.dataset.layout = layout;
+  card.style.background = d.cBg;
+  card.style.color = d.cInk;
+  card.style.setProperty('--bg', d.cBg);
+  card.style.setProperty('--accent', d.cAccent);
+  card.style.setProperty('--seal', d.cSeal);
+  const hf = HEADING_FONTS[d.hf] || HEADING_FONTS[0];
+  const bf = BODY_FONTS[d.bf] || BODY_FONTS[0];
+  const sc = SCALES[d.sc] || SCALES[1];
+  card.style.setProperty('--headfont', hf.css);
+  card.style.setProperty('--bodyfont', bf.css);
+  card.style.setProperty('--namesize', sc.nameSize);
+  card.style.setProperty('--detailsize', sc.detailSize);
+  card.classList.toggle('no-italic', !hf.italic);
+  ensureFonts(hf, bf);
 }
 function fmtDate(iso){
   if(!iso) return '';
@@ -235,40 +444,127 @@ function fmtTime(t){
   const h12 = ((h+11)%12)+1;
   return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
 }
-function buildCardHTML(d, guestName, seats, qrDataUrl){
-  return `
-    <div class="eyebrow">${d.eyebrow || ''}</div>
-    <div class="names">${d.p1}<span class="amp">&amp;</span>${d.p2}</div>
-    <div class="divider" style="background:${d.cAccent}"></div>
-    <div class="details">
-      ${fmtDate(d.wdate)}<br>
-      ${fmtTime(d.wtime)}<br>
-      ${d.venue}${d.venue&&d.city?', ':''}${d.city}
-    </div>
-    ${guestName ? `
-    <div class="guestline">Reserved for</div>
-    <div class="guestname">${guestName}${seats>1?` &amp; party of ${seats}`:''}</div>
-    ` : ''}
-    ${qrDataUrl ? `
-    <div class="seal" style="border-color:${d.cSeal}"><img src="${qrDataUrl}" alt="entry code"></div>
-    <div class="seal-cap">present for entry</div>
-    ` : ''}
-  `;
+
+// ---------- DESIGN ----------
+function currentDesign(){
+  const prev = state.design || {};
+  return {
+    p1: document.getElementById('p1').value || 'Partner One',
+    p2: document.getElementById('p2').value || 'Partner Two',
+    wdate: document.getElementById('wdate').value,
+    wtime: document.getElementById('wtime').value,
+    venue: document.getElementById('venue').value,
+    city: document.getElementById('city').value,
+    eyebrow: document.getElementById('eyebrow').value,
+    cBg: document.getElementById('cBg').value,
+    cInk: document.getElementById('cInk').value,
+    cAccent: document.getElementById('cAccent').value,
+    cSeal: document.getElementById('cSeal').value,
+    layout: prev.layout || 'classic',
+    hf: prev.hf ?? 0,
+    bf: prev.bf ?? 0,
+    sc: prev.sc ?? 1,
+  };
 }
 function renderPreview(){
   const d = currentDesign();
   state.design = d;
   saveState(state);
   const card = document.getElementById('previewCard');
-  card.style.background = d.cBg;
-  card.style.color = d.cInk;
-  card.innerHTML = buildCardHTML(d, 'Guest Name', 2, null);
-  // fake seal placeholder in preview
-  const seal = document.createElement('div');
+  card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
+  applyCardTokens(card, d);
 }
 ['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
 });
+
+// ---------- TEMPLATE PICKER ----------
+let tplState = { layoutIdx:0, hueIdx:4, moodIdx:0, headingIdx:0, bodyIdx:0, scaleIdx:1 };
+
+function buildPickers(){
+  const layoutEl = document.getElementById('layoutPicker');
+  layoutEl.innerHTML = LAYOUTS.map((l,i)=>`<button class="chip" data-i="${i}">${l.name}</button>`).join('');
+  layoutEl.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{ tplState.layoutIdx=+btn.dataset.i; renderTemplatePreview(); }));
+
+  const hueEl = document.getElementById('huePicker');
+  hueEl.innerHTML = HUES.map((name,i)=>`<button class="hueswatch" data-i="${i}" title="${name}" style="background:${hslToHex(hueDeg(i),55,55)}"></button>`).join('');
+  hueEl.querySelectorAll('.hueswatch').forEach(sw=>sw.addEventListener('click', ()=>{ tplState.hueIdx=+sw.dataset.i; renderTemplatePreview(); }));
+
+  const moodEl = document.getElementById('moodPicker');
+  moodEl.innerHTML = MOODS.map((m,i)=>`<button class="chip" data-i="${i}">${m.name}</button>`).join('');
+  moodEl.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{ tplState.moodIdx=+btn.dataset.i; renderTemplatePreview(); }));
+
+  const headingEl = document.getElementById('headingPicker');
+  headingEl.innerHTML = HEADING_FONTS.map((f,i)=>`<option value="${i}">${f.name}</option>`).join('');
+  headingEl.addEventListener('change', ()=>{ tplState.headingIdx = +headingEl.value; renderTemplatePreview(); });
+
+  const bodyEl = document.getElementById('bodyPicker');
+  bodyEl.innerHTML = BODY_FONTS.map((f,i)=>`<option value="${i}">${f.name}</option>`).join('');
+  bodyEl.addEventListener('change', ()=>{ tplState.bodyIdx = +bodyEl.value; renderTemplatePreview(); });
+
+  const scaleEl = document.getElementById('scalePicker');
+  scaleEl.innerHTML = SCALES.map((s,i)=>`<button class="chip" data-i="${i}">${s.name}</button>`).join('');
+  scaleEl.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{ tplState.scaleIdx=+btn.dataset.i; renderTemplatePreview(); }));
+}
+function syncPickerUI(){
+  document.querySelectorAll('#layoutPicker .chip').forEach(b=>b.classList.toggle('active', +b.dataset.i===tplState.layoutIdx));
+  document.querySelectorAll('#huePicker .hueswatch').forEach(s=>s.classList.toggle('active', +s.dataset.i===tplState.hueIdx));
+  document.querySelectorAll('#moodPicker .chip').forEach(b=>b.classList.toggle('active', +b.dataset.i===tplState.moodIdx));
+  document.querySelectorAll('#scalePicker .chip').forEach(b=>b.classList.toggle('active', +b.dataset.i===tplState.scaleIdx));
+  document.getElementById('headingPicker').value = tplState.headingIdx;
+  document.getElementById('bodyPicker').value = tplState.bodyIdx;
+}
+function renderTemplatePreview(){
+  const pal = paletteFromIndices(tplState.hueIdx, tplState.moodIdx);
+  const base = state.design || {};
+  const d = {
+    p1: base.p1 || 'Amara', p2: base.p2 || 'Julian',
+    wdate: base.wdate || '2027-02-14', wtime: base.wtime || '16:30',
+    venue: base.venue || 'The Old Botanical Hall', city: base.city || 'Dar es Salaam',
+    eyebrow: base.eyebrow || 'Together with their families',
+    cBg: pal.cBg, cInk: pal.cInk, cAccent: pal.cAccent, cSeal: pal.cSeal,
+    layout: LAYOUTS[tplState.layoutIdx].key, hf: tplState.headingIdx, bf: tplState.bodyIdx, sc: tplState.scaleIdx,
+  };
+  const card = document.getElementById('templatePreview');
+  card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
+  applyCardTokens(card, d);
+  document.getElementById('templateCode').textContent =
+    templateCode(tplState.layoutIdx, tplState.hueIdx, tplState.moodIdx, tplState.headingIdx, tplState.bodyIdx, tplState.scaleIdx)
+    + ' — ' + LAYOUTS[tplState.layoutIdx].name + ' · ' + HUES[tplState.hueIdx] + ' ' + MOODS[tplState.moodIdx].name
+    + ' · ' + HEADING_FONTS[tplState.headingIdx].name + ' + ' + BODY_FONTS[tplState.bodyIdx].name + ' (' + SCALES[tplState.scaleIdx].name + ')';
+  syncPickerUI();
+}
+function shuffleTemplate(){
+  tplState = {
+    layoutIdx: Math.floor(Math.random()*LAYOUTS.length),
+    hueIdx: Math.floor(Math.random()*HUES.length),
+    moodIdx: Math.floor(Math.random()*MOODS.length),
+    headingIdx: Math.floor(Math.random()*HEADING_FONTS.length),
+    bodyIdx: Math.floor(Math.random()*BODY_FONTS.length),
+    scaleIdx: Math.floor(Math.random()*SCALES.length),
+  };
+  renderTemplatePreview();
+}
+function loadTemplateCode(){
+  const parsed = parseTemplateCode(document.getElementById('codeInput').value);
+  if(!parsed){ alert('Enter a valid code like L03-P047-T18.'); return; }
+  tplState = parsed;
+  renderTemplatePreview();
+}
+function applyTemplate(){
+  const pal = paletteFromIndices(tplState.hueIdx, tplState.moodIdx);
+  document.getElementById('cBg').value = pal.cBg;
+  document.getElementById('cInk').value = pal.cInk;
+  document.getElementById('cAccent').value = pal.cAccent;
+  document.getElementById('cSeal').value = pal.cSeal;
+  state.design = state.design || {};
+  state.design.layout = LAYOUTS[tplState.layoutIdx].key;
+  state.design.hf = tplState.headingIdx;
+  state.design.bf = tplState.bodyIdx;
+  state.design.sc = tplState.scaleIdx;
+  renderPreview();
+  document.querySelector('.tab-btn[data-tab="design"]').click();
+}
 
 // ---------- GUESTS ----------
 function uid(){ return 'g' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4); }
@@ -294,7 +590,8 @@ function inviteLink(g){
   const params = new URLSearchParams({
     id:g.id, name:g.name, seats:g.seats,
     p1:d.p1,p2:d.p2,wdate:d.wdate,wtime:d.wtime,venue:d.venue,city:d.city,eyebrow:d.eyebrow,
-    cBg:d.cBg,cInk:d.cInk,cAccent:d.cAccent,cSeal:d.cSeal
+    cBg:d.cBg,cInk:d.cInk,cAccent:d.cAccent,cSeal:d.cSeal,
+    layout:d.layout||'classic', hf:d.hf??0, bf:d.bf??0, sc:d.sc??1
   });
   return 'invite.html?' + params.toString();
 }
@@ -338,6 +635,8 @@ function renderGuests(){
     document.getElementById('cAccent').value = d.cAccent;
     document.getElementById('cSeal').value = d.cSeal;
   }
+  buildPickers();
+  renderTemplatePreview();
   renderPreview();
   renderGuests();
   if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }

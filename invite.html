@@ -17,28 +17,74 @@
   }
   .invite-card{
     width:100%; max-width:380px; min-height:520px; border-radius:2px;
-    padding:46px 30px 36px; text-align:center; position:relative;
+    padding:46px 30px 36px; text-align:center; position:relative; overflow:hidden;
     box-shadow:0 24px 60px -16px rgba(0,0,0,.35);
+    display:flex; flex-direction:column; align-items:center;
+    font-family:var(--bodyfont,'EB Garamond',serif);
   }
   .eyebrow{font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.28em; text-transform:uppercase; opacity:.75;}
-  .names{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:42px; line-height:1.15; margin:16px 0 10px;}
+  .names{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-weight:500; font-size:var(--namesize,42px); line-height:1.15; margin:16px 0 10px;}
+  .invite-card.no-italic .names{font-style:normal;}
   .amp{display:block; font-size:24px; opacity:.6; margin:2px 0;}
-  .divider{width:52px; height:1px; margin:18px auto;}
-  .details{font-family:'EB Garamond',serif; font-size:17px; line-height:2;}
+  .divider{width:52px; height:1px; margin:18px auto; background:var(--accent,#B08D57);}
+  .details{font-size:var(--detailsize,17px); line-height:2;}
+  .dline{margin:1px 0;}
   .guestline{margin-top:24px; font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.06em; opacity:.75;}
-  .guestname{font-family:'Cormorant Garamond',serif; font-size:23px; font-style:italic; margin-top:3px;}
+  .guestname{font-family:var(--headfont,'Cormorant Garamond',serif); font-size:23px; font-style:italic; margin-top:3px;}
+  .invite-card.no-italic .guestname{font-style:normal;}
+  .mono-mark{display:none; font-family:var(--headfont); font-size:calc(var(--namesize,42px) * 1.15); opacity:.16; line-height:1; margin-bottom:-2px;}
   .seal{
     width:120px; height:120px; border-radius:50%; margin:26px auto 8px;
-    display:flex; align-items:center; justify-content:center; position:relative; border:2px solid;
+    display:flex; align-items:center; justify-content:center; position:relative; border:2px solid var(--seal,#000);
   }
-  .seal::before{content:''; position:absolute; inset:-7px; border-radius:50%; border:1px dashed; opacity:.5;}
-  .seal img{width:88px; height:88px; border-radius:50%;}
+  .seal::before{content:''; position:absolute; inset:-7px; border-radius:inherit; border:1px dashed var(--seal,#000); opacity:.5;}
+  .seal img,.seal canvas{width:88px; height:88px; border-radius:inherit;}
   .seal-cap{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-top:8px;}
   .addwallet{
     margin-top:20px; font-family:'Inter',sans-serif; font-size:11.5px; background:none;
     border:1px solid currentColor; opacity:.7; padding:8px 14px; border-radius:20px; cursor:pointer;
   }
   .fallback{display:none; font-family:'Inter',sans-serif; font-size:13px; padding:40px 20px; text-align:center; color:#46583D;}
+
+  [data-layout="banner"] .eyebrow{margin:-46px -30px 0; padding:28px 30px 8px; background:var(--accent); color:var(--bg,#F6F1E9);}
+  [data-layout="banner"] .names{margin:0 -30px 14px; padding:0 30px 22px; background:var(--accent); color:var(--bg,#F6F1E9);}
+
+  [data-layout="framed"]{padding:58px 38px 42px;}
+  [data-layout="framed"]::before{content:''; position:absolute; inset:13px; border:1px solid var(--accent); pointer-events:none;}
+
+  [data-layout="arch"]{border-radius:190px 190px 6px 6px; padding-top:66px;}
+
+  [data-layout="split"]{
+    max-width:480px; width:100%; display:grid; row-gap:6px; column-gap:24px; text-align:left; align-items:start;
+    grid-template-columns:1.15fr 1fr;
+    grid-template-areas:"mono mono" "eyebrow eyebrow" "names names" "divider divider" "details seal" "guest seal";
+  }
+  [data-layout="split"] .mono-mark{grid-area:mono;}
+  [data-layout="split"] .eyebrow{grid-area:eyebrow;}
+  [data-layout="split"] .names{grid-area:names;}
+  [data-layout="split"] .divider{grid-area:divider; margin-left:0;}
+  [data-layout="split"] .details{grid-area:details;}
+  [data-layout="split"] .guestblock{grid-area:guest;}
+  [data-layout="split"] .sealblock{grid-area:seal; align-self:center; justify-self:center;}
+
+  [data-layout="monogram"] .mono-mark{display:block;}
+
+  [data-layout="minimalLine"] .seal{border-radius:10px;}
+  [data-layout="minimalLine"] .dline{border-bottom:1px solid var(--accent); padding-bottom:5px; margin-bottom:5px; opacity:.92;}
+  [data-layout="minimalLine"] .dline:last-child{border-bottom:none; margin-bottom:0;}
+
+  [data-layout="editorial"]{align-items:flex-start; text-align:left; padding-left:42px;}
+  [data-layout="editorial"]::before{content:''; position:absolute; left:18px; top:30px; bottom:30px; width:3px; background:var(--accent);}
+  [data-layout="editorial"] .divider{margin-left:0;}
+
+  [data-layout="botanical"]::before,[data-layout="botanical"]::after{content:''; position:absolute; width:28px; height:28px; border:1px solid var(--accent); opacity:.65;}
+  [data-layout="botanical"]::before{top:15px; left:15px; border-right:none; border-bottom:none;}
+  [data-layout="botanical"]::after{bottom:15px; right:15px; border-left:none; border-top:none;}
+
+  [data-layout="timeline"] .details{text-align:left; padding-left:18px; position:relative;}
+  [data-layout="timeline"] .details::before{content:''; position:absolute; left:3px; top:6px; bottom:6px; width:1px; background:var(--accent); opacity:.5;}
+  [data-layout="timeline"] .dline{position:relative; padding-left:16px;}
+  [data-layout="timeline"] .dline::before{content:''; position:absolute; left:-2px; top:7px; width:6px; height:6px; border-radius:50%; background:var(--accent);}
 </style>
 </head>
 <body>
@@ -54,10 +100,42 @@ const d = {
   wdate: get('wdate'), wtime: get('wtime'), venue: get('venue'), city: get('city'),
   eyebrow: get('eyebrow'),
   cBg: get('cBg','#F6F1E9'), cInk: get('cInk','#2B2A26'), cAccent: get('cAccent','#B08D57'), cSeal: get('cSeal','#46583D'),
+  layout: get('layout','classic'), hf: parseInt(get('hf','0'),10) || 0, bf: parseInt(get('bf','0'),10) || 0, sc: parseInt(get('sc','1'),10) || 0,
 };
 const guestId = get('id');
 const guestName = get('name');
 const seats = parseInt(get('seats','1')) || 1;
+
+// Same layout/type token system as index.html's Template picker.
+const HEADING_FONTS = [
+  {name:'Cormorant Garamond', css:"'Cormorant Garamond',serif", gf:'Cormorant+Garamond:ital,wght@0,500;0,600;1,500', italic:true},
+  {name:'Playfair Display',   css:"'Playfair Display',serif",   gf:'Playfair+Display:ital,wght@0,500;0,700;1,500',   italic:true},
+  {name:'Marcellus',          css:"'Marcellus',serif",          gf:'Marcellus',                                     italic:false},
+  {name:'Italiana',           css:"'Italiana',serif",           gf:'Italiana',                                      italic:false},
+  {name:'Cormorant',          css:"'Cormorant',serif",          gf:'Cormorant:ital,wght@0,500;0,600;1,500',         italic:true},
+];
+const BODY_FONTS = [
+  {name:'EB Garamond',  css:"'EB Garamond',serif",     gf:'EB+Garamond:ital,wght@0,400;0,500;1,400'},
+  {name:'Lora',         css:"'Lora',serif",            gf:'Lora:ital,wght@0,400;0,500;1,400'},
+  {name:'Jost',         css:"'Jost',sans-serif",       gf:'Jost:wght@400;500'},
+  {name:'Inter',        css:"'Inter',sans-serif",      gf:'Inter:wght@400;500'},
+  {name:'Crimson Text', css:"'Crimson Text',serif",    gf:'Crimson+Text:ital,wght@0,400;0,600;1,400'},
+];
+const SCALES = [
+  {name:'Intimate', nameSize:'34px', detailSize:'15.5px'},
+  {name:'Grand',    nameSize:'46px', detailSize:'18px'},
+];
+const VALID_LAYOUTS = ['classic','banner','framed','arch','split','monogram','minimalLine','editorial','botanical','timeline'];
+
+const loadedFonts = new Set();
+function ensureFont(gf){
+  if(loadedFonts.has(gf)) return;
+  loadedFonts.add(gf);
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = 'https://fonts.googleapis.com/css2?family=' + gf + '&display=swap';
+  document.head.appendChild(link);
+}
 
 function fmtDate(iso){
   if(!iso) return '';
@@ -77,22 +155,44 @@ if(!guestId || !guestName){
   document.getElementById('fallback').style.display='block';
 } else {
   const card = document.getElementById('card');
+  const layout = VALID_LAYOUTS.includes(d.layout) ? d.layout : 'classic';
+  const hf = HEADING_FONTS[d.hf] || HEADING_FONTS[0];
+  const bf = BODY_FONTS[d.bf] || BODY_FONTS[0];
+  const sc = SCALES[d.sc] || SCALES[1];
+  const mono = ((d.p1||'')[0]||'').toUpperCase() + ((d.p2||'')[0]||'').toUpperCase();
+
+  card.dataset.layout = layout;
   card.style.background = d.cBg;
   card.style.color = d.cInk;
+  card.style.setProperty('--bg', d.cBg);
+  card.style.setProperty('--accent', d.cAccent);
+  card.style.setProperty('--seal', d.cSeal);
+  card.style.setProperty('--headfont', hf.css);
+  card.style.setProperty('--bodyfont', bf.css);
+  card.style.setProperty('--namesize', sc.nameSize);
+  card.style.setProperty('--detailsize', sc.detailSize);
+  card.classList.toggle('no-italic', !hf.italic);
+  ensureFont(hf.gf);
+  ensureFont(bf.gf);
 
   card.innerHTML = `
+    <div class="mono-mark">${mono}</div>
     <div class="eyebrow">${d.eyebrow}</div>
     <div class="names">${d.p1}<span class="amp">&amp;</span>${d.p2}</div>
-    <div class="divider" style="background:${d.cAccent}"></div>
+    <div class="divider"></div>
     <div class="details">
-      ${fmtDate(d.wdate)}<br>
-      ${fmtTime(d.wtime)}<br>
-      ${d.venue}${d.venue&&d.city?', ':''}${d.city}
+      <div class="dline">${fmtDate(d.wdate)}</div>
+      <div class="dline">${fmtTime(d.wtime)}</div>
+      <div class="dline">${[d.venue,d.city].filter(Boolean).join(', ')}</div>
     </div>
-    <div class="guestline">Reserved for</div>
-    <div class="guestname">${guestName}${seats>1?` &amp; party of ${seats}`:''}</div>
-    <div class="seal" id="sealBox" style="border-color:${d.cSeal}"></div>
-    <div class="seal-cap">present this code at entry</div>
+    <div class="guestblock">
+      <div class="guestline">Reserved for</div>
+      <div class="guestname">${guestName}${seats>1?` &amp; party of ${seats}`:''}</div>
+    </div>
+    <div class="sealblock">
+      <div class="seal" id="sealBox"></div>
+      <div class="seal-cap">present this code at entry</div>
+    </div>
     <button class="addwallet" onclick="window.print()">Save / print this invite</button>
   `;
 
@@ -103,9 +203,7 @@ if(!guestId || !guestName){
     couple:`${d.p1} & ${d.p2}`
   });
 
-  const qrHolder = document.createElement('div');
-  document.getElementById('sealBox').appendChild(qrHolder);
-  new QRCode(qrHolder, {
+  new QRCode(document.getElementById('sealBox'), {
     text: payload,
     width: 88, height: 88,
     colorDark: d.cInk, colorLight: d.cBg,
