@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You're Invited</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#46583D">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=EB+Garamond:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:#e9e3d8; font-family:'EB Garamond',serif; padding:28px 16px;
+  }
+  .invite-card{
+    width:100%; max-width:380px; min-height:520px; border-radius:2px;
+    padding:46px 30px 36px; text-align:center; position:relative;
+    box-shadow:0 24px 60px -16px rgba(0,0,0,.35);
+  }
+  .eyebrow{font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.28em; text-transform:uppercase; opacity:.75;}
+  .names{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:42px; line-height:1.15; margin:16px 0 10px;}
+  .amp{display:block; font-size:24px; opacity:.6; margin:2px 0;}
+  .divider{width:52px; height:1px; margin:18px auto;}
+  .details{font-family:'EB Garamond',serif; font-size:17px; line-height:2;}
+  .guestline{margin-top:24px; font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.06em; opacity:.75;}
+  .guestname{font-family:'Cormorant Garamond',serif; font-size:23px; font-style:italic; margin-top:3px;}
+  .seal{
+    width:120px; height:120px; border-radius:50%; margin:26px auto 8px;
+    display:flex; align-items:center; justify-content:center; position:relative; border:2px solid;
+  }
+  .seal::before{content:''; position:absolute; inset:-7px; border-radius:50%; border:1px dashed; opacity:.5;}
+  .seal img{width:88px; height:88px; border-radius:50%;}
+  .seal-cap{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-top:8px;}
+  .addwallet{
+    margin-top:20px; font-family:'Inter',sans-serif; font-size:11.5px; background:none;
+    border:1px solid currentColor; opacity:.7; padding:8px 14px; border-radius:20px; cursor:pointer;
+  }
+  .fallback{display:none; font-family:'Inter',sans-serif; font-size:13px; padding:40px 20px; text-align:center; color:#46583D;}
+</style>
+</head>
+<body>
+  <div class="invite-card" id="card"></div>
+  <div class="fallback" id="fallback">This invite link is missing its details — ask the couple to resend it to you.</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const get = (k, d='') => params.get(k) || d;
+
+const d = {
+  p1: get('p1','Partner One'), p2: get('p2','Partner Two'),
+  wdate: get('wdate'), wtime: get('wtime'), venue: get('venue'), city: get('city'),
+  eyebrow: get('eyebrow'),
+  cBg: get('cBg','#F6F1E9'), cInk: get('cInk','#2B2A26'), cAccent: get('cAccent','#B08D57'), cSeal: get('cSeal','#46583D'),
+};
+const guestId = get('id');
+const guestName = get('name');
+const seats = parseInt(get('seats','1')) || 1;
+
+function fmtDate(iso){
+  if(!iso) return '';
+  const dt = new Date(iso+'T00:00:00');
+  return dt.toLocaleDateString(undefined,{weekday:'long', year:'numeric', month:'long', day:'numeric'});
+}
+function fmtTime(t){
+  if(!t) return '';
+  const [h,m] = t.split(':').map(Number);
+  const ampm = h>=12?'PM':'AM';
+  const h12 = ((h+11)%12)+1;
+  return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
+}
+
+if(!guestId || !guestName){
+  document.getElementById('card').style.display='none';
+  document.getElementById('fallback').style.display='block';
+} else {
+  const card = document.getElementById('card');
+  card.style.background = d.cBg;
+  card.style.color = d.cInk;
+
+  card.innerHTML = `
+    <div class="eyebrow">${d.eyebrow}</div>
+    <div class="names">${d.p1}<span class="amp">&amp;</span>${d.p2}</div>
+    <div class="divider" style="background:${d.cAccent}"></div>
+    <div class="details">
+      ${fmtDate(d.wdate)}<br>
+      ${fmtTime(d.wtime)}<br>
+      ${d.venue}${d.venue&&d.city?', ':''}${d.city}
+    </div>
+    <div class="guestline">Reserved for</div>
+    <div class="guestname">${guestName}${seats>1?` &amp; party of ${seats}`:''}</div>
+    <div class="seal" id="sealBox" style="border-color:${d.cSeal}"></div>
+    <div class="seal-cap">present this code at entry</div>
+    <button class="addwallet" onclick="window.print()">Save / print this invite</button>
+  `;
+
+  // Payload the door-scanner will decode. Self-contained, no server lookup needed.
+  const payload = JSON.stringify({
+    t:'wedding-checkin', v:1,
+    id:guestId, name:guestName, seats:seats,
+    couple:`${d.p1} & ${d.p2}`
+  });
+
+  const qrHolder = document.createElement('div');
+  document.getElementById('sealBox').appendChild(qrHolder);
+  new QRCode(qrHolder, {
+    text: payload,
+    width: 88, height: 88,
+    colorDark: d.cInk, colorLight: d.cBg,
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>

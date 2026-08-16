@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entry Check-In</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2B2A26">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:#1B1B18; color:#F6F1E9; min-height:100vh;
+    font-family:'Inter',sans-serif; display:flex; flex-direction:column; align-items:center;
+  }
+  header{ width:100%; padding:18px 20px 12px; text-align:center; }
+  header h1{ font-family:'Cormorant Garamond',serif; font-weight:600; font-size:24px; margin:0; }
+  header .sub{ font-size:11.5px; letter-spacing:.05em; opacity:.6; margin-top:4px; }
+
+  #video-wrap{
+    position:relative; width:min(92vw, 420px); aspect-ratio:1/1; border-radius:14px; overflow:hidden;
+    background:#000; margin-top:10px; border:1px solid rgba(255,255,255,.12);
+  }
+  video{ width:100%; height:100%; object-fit:cover; }
+  .reticle{
+    position:absolute; inset:14%; border:2px solid rgba(246,241,233,.55); border-radius:14px;
+    box-shadow:0 0 0 999px rgba(0,0,0,.25);
+  }
+  #startBtn{
+    margin-top:22px; font-family:'Inter',sans-serif; font-weight:600; font-size:14.5px;
+    background:#B08D57; color:#1B1B18; border:none; padding:13px 26px; border-radius:30px; cursor:pointer;
+  }
+  #result{
+    width:min(92vw,420px); margin-top:20px; padding:18px 20px; border-radius:12px;
+    display:none; text-align:center;
+  }
+  #result.ok{ background:#3C4E33; }
+  #result.dup{ background:#5C4A22; }
+  #result.bad{ background:#5A2E2A; }
+  #result .name{ font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; margin-bottom:4px; }
+  #result .meta{ font-size:12.5px; opacity:.85; }
+  #status{ font-size:12.5px; opacity:.6; margin-top:16px; text-align:center; padding:0 20px;}
+
+  .stats{ display:flex; gap:22px; margin-top:22px; font-size:12px; opacity:.75; }
+  .stats b{ font-family:'Cormorant Garamond',serif; font-size:20px; display:block; color:#F6F1E9; opacity:1;}
+
+  #manualToggle{ margin-top:18px; background:none; border:none; color:#B08D57; font-size:12.5px; text-decoration:underline; cursor:pointer; }
+  #manualBox{ display:none; margin-top:10px; width:min(92vw,420px); }
+  #manualBox textarea{ width:100%; height:70px; border-radius:8px; border:1px solid rgba(255,255,255,.2); background:#111; color:#eee; padding:10px; font-family:monospace; font-size:12px;}
+  #manualBox button{ margin-top:8px; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Entry Check-In</h1>
+    <div class="sub">Point the camera at each guest's card</div>
+  </header>
+
+  <div id="video-wrap">
+    <video id="video" playsinline muted></video>
+    <div class="reticle"></div>
+  </div>
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <button id="startBtn">Start camera</button>
+  <div id="status"></div>
+
+  <div id="result">
+    <div class="name" id="resName"></div>
+    <div class="meta" id="resMeta"></div>
+  </div>
+
+  <div class="stats">
+    <div>Checked in <b id="statCount">0</b></div>
+    <div>Duplicates blocked <b id="statDup">0</b></div>
+  </div>
+
+  <button id="manualToggle">Camera not working? Paste a code manually</button>
+  <div id="manualBox">
+    <textarea id="manualInput" placeholder="Paste the scanned text/JSON here"></textarea>
+    <button class="ghost" style="background:#B08D57;color:#1B1B18;border:none;padding:9px 16px;border-radius:20px;font-family:'Inter',sans-serif;font-weight:600;cursor:pointer;" onclick="handlePayload(document.getElementById('manualInput').value)">Check in</button>
+  </div>
+
+<script>
+const STORE_KEY = 'wedding_checkin_log_v1';
+let checkedIn = JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+let scanning = false;
+let lastResultAt = 0;
+
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d', { willReadFrequently:true });
+const statusEl = document.getElementById('status');
+const resultEl = document.getElementById('result');
+
+function updateStats(){
+  const vals = Object.values(checkedIn);
+  document.getElementById('statCount').textContent = vals.filter(v=>v.status==='ok').length;
+  document.getElementById('statDup').textContent = vals.reduce((a,v)=>a+(v.dupCount||0),0);
+}
+updateStats();
+
+document.getElementById('startBtn').addEventListener('click', startCamera);
+document.getElementById('manualToggle').addEventListener('click', ()=>{
+  const box = document.getElementById('manualBox');
+  box.style.display = box.style.display==='block' ? 'none' : 'block';
+});
+
+async function startCamera(){
+  statusEl.textContent = 'Requesting camera access…';
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment' }
+    });
+    video.srcObject = stream;
+    await video.play();
+    document.getElementById('startBtn').style.display='none';
+    statusEl.textContent = 'Camera live — hold a guest\'s QR steady in the frame.';
+    scanning = true;
+    requestAnimationFrame(tick);
+  } catch(err){
+    statusEl.innerHTML = 'Camera access failed (' + err.message + ').<br>This usually means: not on HTTPS, permission denied, or no camera on this device. Use "paste a code manually" below as a fallback, or open this page on a phone browser over HTTPS.';
+  }
+}
+
+function tick(){
+  if(!scanning) return;
+  if(video.readyState === video.HAVE_ENOUGH_DATA){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+    if(code && code.data && (Date.now() - lastResultAt > 1800)){
+      lastResultAt = Date.now();
+      handlePayload(code.data);
+    }
+  }
+  requestAnimationFrame(tick);
+}
+
+function handlePayload(text){
+  let data;
+  try{ data = JSON.parse(text); }
+  catch(e){ return showResult('bad', 'Unrecognized code', 'This QR isn\'t a valid entry code.'); }
+
+  if(!data || data.t !== 'wedding-checkin' || !data.id){
+    return showResult('bad', 'Unrecognized code', 'This QR isn\'t a valid entry code.');
+  }
+
+  const existing = checkedIn[data.id];
+  if(existing && existing.status === 'ok'){
+    existing.dupCount = (existing.dupCount||0) + 1;
+    localStorage.setItem(STORE_KEY, JSON.stringify(checkedIn));
+    updateStats();
+    return showResult('dup', data.name, `Already checked in — this code has now been scanned ${existing.dupCount+1} times.`);
+  }
+
+  checkedIn[data.id] = { status:'ok', name:data.name, seats:data.seats, at: Date.now(), dupCount:0 };
+  localStorage.setItem(STORE_KEY, JSON.stringify(checkedIn));
+  updateStats();
+  showResult('ok', data.name, `Party of ${data.seats} welcomed · ${data.couple || ''}`);
+}
+
+function showResult(kind, name, meta){
+  resultEl.className = kind;
+  resultEl.style.display = 'block';
+  document.getElementById('resName').textContent = name;
+  document.getElementById('resMeta').textContent = meta;
+  if(navigator.vibrate){ navigator.vibrate(kind==='ok' ? 60 : [40,60,40]); }
+}
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "Wedding Entry Check-In",
+  "short_name": "Wedding Check-In",
+  "start_url": "scanner.html",
+  "display": "standalone",
+  "background_color": "#1B1B18",
+  "theme_color": "#2B2A26",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
