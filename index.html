@@ -63,9 +63,10 @@
     background:var(--sage); color:#fff; border:none; padding:11px 20px; border-radius:4px; cursor:pointer;
   }
   button.primary:hover{background:#38472f;}
-  button.ghost{
+  .ghost{
     font-family:'Inter',sans-serif; font-size:12px; background:none; border:1px solid var(--line);
     padding:8px 14px; border-radius:4px; cursor:pointer; color:var(--sage);
+    text-decoration:none; display:inline-block; box-sizing:border-box;
   }
   /* --- Template picker controls --- */
   .callout{background:var(--blush); border-radius:6px; padding:16px 18px; font-family:'Inter',sans-serif; font-size:13px; color:#5c4038; margin-bottom:22px; line-height:1.6;}
@@ -303,8 +304,8 @@
 
 <header>
   <div>
-    <h1>Invite Studio</h1>
-    <div class="sub">Pick a template &middot; design your card &middot; build your guest list &middot; every invite carries its own entry code</div>
+    <h1 id="headerTitle">Invite Studio</h1>
+    <div class="sub" id="headerSub">Pick a template &middot; design your card &middot; build your guest list &middot; every invite carries its own entry code</div>
   </div>
 </header>
 
@@ -336,7 +337,7 @@
 
         <div style="display:flex; gap:10px; margin-top:6px; flex-wrap:wrap; align-items:center;">
           <button class="primary" onclick="shuffleTemplate()">Shuffle</button>
-          <button class="ghost" onclick="applyTemplate()">Use this template</button>
+          <button class="ghost" id="applyTemplateBtn" onclick="applyTemplate()">Use this template</button>
         </div>
         <span class="tplcode" id="templateCode"></span>
 
@@ -345,6 +346,27 @@
           <div class="codebar">
             <input type="text" id="codeInput" placeholder="L03-P047-T18">
             <button class="ghost" onclick="loadTemplateCode()">Go</button>
+          </div>
+        </div>
+
+        <div class="field" id="pickerLinkBox" style="margin-top:18px;">
+          <label>Let the couple pick their own look</label>
+          <div class="codebar">
+            <input type="text" id="pickerLinkOut" readonly>
+            <button class="ghost" onclick="copyPickerLink()">Copy link</button>
+          </div>
+          <div class="hint">Opens a simplified version of this page with just the template picker &mdash; no guest list, no account. They pick a look and send the code shown there back to you to paste above.</div>
+        </div>
+
+        <div id="pickShare" style="display:none; margin-top:22px;">
+          <div class="callout"><b>Love this look?</b> Send this code back to whoever shared this link with you &mdash; they'll use it to set up your exact design.</div>
+          <div class="codebar">
+            <input type="text" id="pickShareCode" readonly>
+            <button class="ghost" onclick="copyPickCode()">Copy code</button>
+          </div>
+          <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+            <a class="ghost" id="pickShareWa" style="text-decoration:none; display:inline-block;" target="_blank" rel="noopener">Send via WhatsApp</a>
+            <a class="ghost" id="pickShareMail" style="text-decoration:none; display:inline-block;" target="_blank" rel="noopener">Send via Email</a>
           </div>
         </div>
       </div>
@@ -438,6 +460,12 @@
 
 <script>
 const STORE_KEY='wedding_studio_v1';
+// Picker mode (?mode=pick): a stripped-down view for sharing with the people
+// getting married so they can browse templates themselves, with no access to
+// guest data. There's no backend, so their pick can't sync automatically —
+// they send the template code back (copy/WhatsApp/email) for the admin to
+// paste into the normal "Jump to a template code" box on their own device.
+const PICKER_MODE = new URLSearchParams(location.search).get('mode') === 'pick';
 
 function loadState(){
   const raw = localStorage.getItem(STORE_KEY);
@@ -900,11 +928,29 @@ function renderTemplatePreview(){
   card.innerHTML = d.layout === 'premium' ? buildPremiumSite(d, 'Guest Name', 2, true) : buildCardInner(d, 'Guest Name', 2, true);
   applyCardTokens(card, d);
   if(d.layout === 'premium'){ templateCountdownTimer = startCountdown(card, d.wdate, d.wtime); }
+  const code = templateCode(tplState.layoutIdx, tplState.hueIdx, tplState.moodIdx, tplState.headingIdx, tplState.bodyIdx, tplState.scaleIdx);
   document.getElementById('templateCode').textContent =
-    templateCode(tplState.layoutIdx, tplState.hueIdx, tplState.moodIdx, tplState.headingIdx, tplState.bodyIdx, tplState.scaleIdx)
-    + ' — ' + LAYOUTS[tplState.layoutIdx].name + ' · ' + HUES[tplState.hueIdx] + ' ' + MOODS[tplState.moodIdx].name
+    code + ' — ' + LAYOUTS[tplState.layoutIdx].name + ' · ' + HUES[tplState.hueIdx] + ' ' + MOODS[tplState.moodIdx].name
     + ' · ' + HEADING_FONTS[tplState.headingIdx].name + ' + ' + BODY_FONTS[tplState.bodyIdx].name + ' (' + SCALES[tplState.scaleIdx].name + ')';
+  if(PICKER_MODE){
+    document.getElementById('pickShareCode').value = code;
+    const msg = `We picked this Kadi invite template — ${code} (${LAYOUTS[tplState.layoutIdx].name}, ${HUES[tplState.hueIdx]} ${MOODS[tplState.moodIdx].name}). Can you set it up?`;
+    document.getElementById('pickShareWa').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+    document.getElementById('pickShareMail').href = 'mailto:?subject=' + encodeURIComponent('Our invite template pick') + '&body=' + encodeURIComponent(msg);
+  }
   syncPickerUI();
+}
+function copyPickCode(){
+  const input = document.getElementById('pickShareCode');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(()=>alert('Code copied:\n\n'+input.value))
+    .catch(()=>prompt('Copy this code:', input.value));
+}
+function copyPickerLink(){
+  const input = document.getElementById('pickerLinkOut');
+  input.select();
+  navigator.clipboard.writeText(input.value).then(()=>alert('Link copied:\n\n'+input.value))
+    .catch(()=>prompt('Copy this link:', input.value));
 }
 function shuffleTemplate(){
   tplState = {
@@ -1054,6 +1100,19 @@ function renderGuests(){
     document.getElementById('ec4').value = d.eventColors[3] || '#C88B87';
   }
   if(d && d.photo) showPhotoPreview(d.photo);
+  if(PICKER_MODE){
+    document.getElementById('headerTitle').textContent = 'Pick Your Invite Look';
+    document.getElementById('headerSub').textContent = "Browse the templates below and pick whichever you love — there's no guest list or account here, just the design.";
+    const designTab = document.querySelector('.tab-btn[data-tab="design"]');
+    const guestsTab = document.querySelector('.tab-btn[data-tab="guests"]');
+    if(designTab) designTab.style.display = 'none';
+    if(guestsTab) guestsTab.style.display = 'none';
+    document.getElementById('applyTemplateBtn').style.display = 'none';
+    document.getElementById('pickShare').style.display = 'block';
+    document.getElementById('pickerLinkBox').style.display = 'none';
+  } else {
+    document.getElementById('pickerLinkOut').value = location.origin + location.pathname + '?mode=pick';
+  }
   buildPickers();
   renderTemplatePreview();
   renderPreview();
