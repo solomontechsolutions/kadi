@@ -104,7 +104,7 @@
     border:2px solid var(--seal,rgba(0,0,0,.18));
   }
   .invite-card .seal::before{content:''; position:absolute; inset:-6px; border-radius:inherit; border:1px dashed var(--seal,rgba(0,0,0,.18)); opacity:.6;}
-  .invite-card .seal img,.invite-card .seal canvas{width:76px; height:76px; border-radius:inherit;}
+  .invite-card .seal img,.invite-card .seal canvas{width:76px; height:76px;}
   .invite-card .seal-cap{font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-top:6px;}
 
   [data-layout="banner"] .eyebrow{margin:-40px -28px 0; padding:26px 28px 8px; background:var(--accent); color:var(--bg,#F6F1E9);}
@@ -569,7 +569,7 @@ function applyTemplate(){
 function uid(){ return 'g' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4); }
 
 function addGuest(){
-  const name = document.getElementById('gName').value.trim();
+  const name = document.getElementById('gName').value.trim().replace(/\|/g, '/');
   const seats = parseInt(document.getElementById('gSeats').value) || 1;
   if(!name){ alert('Please enter a guest name.'); return; }
   state.guests.push({ id: uid(), name, seats, addedAt: Date.now() });

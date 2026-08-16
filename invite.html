@@ -34,11 +34,11 @@
   .invite-card.no-italic .guestname{font-style:normal;}
   .mono-mark{display:none; font-family:var(--headfont); font-size:calc(var(--namesize,42px) * 1.15); opacity:.16; line-height:1; margin-bottom:-2px;}
   .seal{
-    width:120px; height:120px; border-radius:50%; margin:26px auto 8px;
+    width:calc(var(--qrsize,200px) + 24px); height:calc(var(--qrsize,200px) + 24px); border-radius:50%; margin:26px auto 8px;
     display:flex; align-items:center; justify-content:center; position:relative; border:2px solid var(--seal,#000);
   }
   .seal::before{content:''; position:absolute; inset:-7px; border-radius:inherit; border:1px dashed var(--seal,#000); opacity:.5;}
-  .seal img,.seal canvas{width:88px; height:88px; border-radius:inherit;}
+  .seal img,.seal canvas{width:var(--qrsize,200px); height:var(--qrsize,200px);}
   .seal-cap{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-top:8px;}
   .addwallet{
     margin-top:20px; font-family:'Inter',sans-serif; font-size:11.5px; background:none;
@@ -66,6 +66,7 @@
   [data-layout="split"] .details{grid-area:details;}
   [data-layout="split"] .guestblock{grid-area:guest;}
   [data-layout="split"] .sealblock{grid-area:seal; align-self:center; justify-self:center;}
+  [data-layout="split"] .addwallet{grid-column:1 / -1; grid-row:7; justify-self:center;}
 
   [data-layout="monogram"] .mono-mark{display:block;}
 
@@ -197,17 +198,23 @@ if(!guestId || !guestName){
   `;
 
   // Payload the door-scanner will decode. Self-contained, no server lookup needed.
-  const payload = JSON.stringify({
-    t:'wedding-checkin', v:1,
-    id:guestId, name:guestName, seats:seats,
-    couple:`${d.p1} & ${d.p2}`
-  });
+  // Compact pipe-delimited format (not JSON) keeps the QR small enough to scan reliably
+  // off a phone screen — every extra character here adds modules, and more modules
+  // packed into the same physical size means fewer pixels per module for a camera to resolve.
+  const payload = ['WED1', guestId, guestName, String(seats)].join('|');
+
+  // A denser QR (more characters -> more modules) needs proportionally more physical
+  // pixels to stay scannable; the split layout's QR sits in a narrower column so it
+  // gets a smaller-but-still-solid size. Keep the QRCode pixel size and the CSS display
+  // size identical so the canvas is never upscaled (which would blur it and break scans).
+  const qrSize = layout === 'split' ? 150 : 200;
+  card.style.setProperty('--qrsize', qrSize + 'px');
 
   try{
     if(typeof QRCode === 'undefined') throw new Error('QRCode library did not load');
     new QRCode(document.getElementById('sealBox'), {
       text: payload,
-      width: 88, height: 88,
+      width: qrSize, height: qrSize,
       colorDark: d.cInk, colorLight: d.cBg,
       correctLevel: QRCode.CorrectLevel.M
     });
