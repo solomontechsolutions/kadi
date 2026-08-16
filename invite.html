@@ -157,18 +157,47 @@
 const params = new URLSearchParams(window.location.search);
 const get = (k, d='') => params.get(k) || d;
 
+// The couple's card design, baked in so every guest link only needs to carry
+// that guest's own id/name/seats instead of repeating the whole design every time.
+// Kept in sync with index.html's INVITE_DEFAULTS — index.html only adds a URL
+// param when a guest's link actually differs from these (e.g. after the couple
+// customizes something), so this is the "nothing customized" baseline, not a cap.
+const INVITE_DEFAULTS = {
+  p1:'Amara', p2:'Julian', wdate:'2027-02-14', wtime:'16:30',
+  venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
+  cBg:'#f6f1e9', cInk:'#2b2a26', cAccent:'#b08d57', cSeal:'#46583d',
+  layout:'classic', hf:0, bf:0, sc:1,
+  // The couple's photo is baked in here rather than ever traveling in a guest link —
+  // as a compressed data URL it can be tens of KB, which would make every link huge.
+  // index.html never adds a `photo` URL param; update this value (and redeploy) when
+  // the couple sets/changes their photo.
+  photo:'', showEventColors:true, ec1:'#46583d', ec2:'#b08d57', ec3:'#6c7f60', ec4:'#c88b87',
+  introText:'With joyful hearts and the blessings of our families, we invite you to share the celebration of our love as we begin their life together.',
+  ev1Attire:'', ev2Name:'', ev2Date:'', ev2Time:'', ev2Venue:'', ev2Desc:'', ev2Attire:'', shareUrl:'', rsvpUrl:'',
+};
+
 const d = {
-  p1: get('p1','Partner One'), p2: get('p2','Partner Two'),
-  wdate: get('wdate'), wtime: get('wtime'), venue: get('venue'), city: get('city'),
-  eyebrow: get('eyebrow'),
-  cBg: get('cBg','#F6F1E9'), cInk: get('cInk','#2B2A26'), cAccent: get('cAccent','#B08D57'), cSeal: get('cSeal','#46583D'),
-  layout: get('layout','classic'), hf: parseInt(get('hf','0'),10) || 0, bf: parseInt(get('bf','0'),10) || 0, sc: parseInt(get('sc','1'),10) || 0,
-  photo: get('photo',''),
-  showEventColors: get('showEventColors','1') === '1',
-  eventColors: [get('ec1'), get('ec2'), get('ec3'), get('ec4')],
-  introText: get('introText'), ev1Attire: get('ev1Attire'),
-  ev2Name: get('ev2Name'), ev2Date: get('ev2Date'), ev2Time: get('ev2Time'), ev2Venue: get('ev2Venue'), ev2Desc: get('ev2Desc'), ev2Attire: get('ev2Attire'),
-  shareUrl: get('shareUrl'), rsvpUrl: get('rsvpUrl'),
+  p1: get('p1', INVITE_DEFAULTS.p1), p2: get('p2', INVITE_DEFAULTS.p2),
+  wdate: get('wdate', INVITE_DEFAULTS.wdate), wtime: get('wtime', INVITE_DEFAULTS.wtime),
+  venue: get('venue', INVITE_DEFAULTS.venue), city: get('city', INVITE_DEFAULTS.city),
+  eyebrow: get('eyebrow', INVITE_DEFAULTS.eyebrow),
+  cBg: get('cBg', INVITE_DEFAULTS.cBg), cInk: get('cInk', INVITE_DEFAULTS.cInk),
+  cAccent: get('cAccent', INVITE_DEFAULTS.cAccent), cSeal: get('cSeal', INVITE_DEFAULTS.cSeal),
+  layout: get('layout', INVITE_DEFAULTS.layout),
+  hf: parseInt(get('hf', INVITE_DEFAULTS.hf), 10) || 0,
+  bf: parseInt(get('bf', INVITE_DEFAULTS.bf), 10) || 0,
+  sc: parseInt(get('sc', INVITE_DEFAULTS.sc), 10) || 0,
+  photo: get('photo', INVITE_DEFAULTS.photo),
+  showEventColors: get('showEventColors', INVITE_DEFAULTS.showEventColors ? '1' : '0') === '1',
+  eventColors: [
+    get('ec1', INVITE_DEFAULTS.ec1), get('ec2', INVITE_DEFAULTS.ec2),
+    get('ec3', INVITE_DEFAULTS.ec3), get('ec4', INVITE_DEFAULTS.ec4),
+  ],
+  introText: get('introText', INVITE_DEFAULTS.introText), ev1Attire: get('ev1Attire', INVITE_DEFAULTS.ev1Attire),
+  ev2Name: get('ev2Name', INVITE_DEFAULTS.ev2Name), ev2Date: get('ev2Date', INVITE_DEFAULTS.ev2Date),
+  ev2Time: get('ev2Time', INVITE_DEFAULTS.ev2Time), ev2Venue: get('ev2Venue', INVITE_DEFAULTS.ev2Venue),
+  ev2Desc: get('ev2Desc', INVITE_DEFAULTS.ev2Desc), ev2Attire: get('ev2Attire', INVITE_DEFAULTS.ev2Attire),
+  shareUrl: get('shareUrl', INVITE_DEFAULTS.shareUrl), rsvpUrl: get('rsvpUrl', INVITE_DEFAULTS.rsvpUrl),
 };
 const guestId = get('id');
 const guestName = get('name');

@@ -208,8 +208,7 @@
   [data-layout="premium"] .p-countdown .p-clabel{font-family:'Inter',sans-serif; font-size:8px; letter-spacing:.1em; text-transform:uppercase; opacity:.6; display:block;}
   [data-layout="premium"] .p-entrypass{margin-top:26px; border:1px solid currentColor; border-radius:10px; padding:14px; display:flex; align-items:center; gap:14px; opacity:.95;}
   [data-layout="premium"] .p-entrypass-label{font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.16em; text-transform:uppercase; opacity:.6; margin-bottom:4px;}
-  [data-layout="premium"] .p-entrypass .seal{margin:0; width:64px; height:64px; flex:none;}
-  [data-layout="premium"] .p-entrypass .seal img,[data-layout="premium"] .p-entrypass .seal canvas{width:48px; height:48px;}
+  [data-layout="premium"] .p-entrypass .seal{margin:0; flex:none;}
   [data-layout="premium"] .p-entrypass-name{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:17px;}
   [data-layout="premium"] .p-entrypass-tag{font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.1em; text-transform:uppercase; opacity:.7; margin-top:2px;}
   [data-layout="premium"] .eventcolors{padding:0 24px 22px; margin-top:0;}
@@ -304,7 +303,7 @@
             <img id="photoPreview" alt="">
             <button type="button" class="ghost" style="margin-left:10px;" onclick="removePhoto()">Remove photo</button>
           </div>
-          <div class="hint">Photo is compressed and embedded directly in each guest's invite link, so it still works with no server. A clear headshot or couple photo works best — very large images make the invite link longer.</div>
+          <div class="hint">Photo is compressed and saved with your design (not repeated in every guest link, so links stay short). It still works with no server.</div>
         </div>
 
         <h3>Premium Website content <span class="label" style="text-transform:none; letter-spacing:0;">(used by the Premium Website layout)</span></h3>
@@ -703,6 +702,9 @@ function renderPreview(){
   card.innerHTML = d.layout === 'premium' ? buildPremiumSite(d, 'Guest Name', 2, true) : buildCardInner(d, 'Guest Name', 2, true);
   applyCardTokens(card, d);
   if(d.layout === 'premium'){ previewCountdownTimer = startCountdown(card, d.wdate, d.wtime); }
+  // Guest invite links embed whatever in the design differs from the baked-in
+  // defaults, so the table's links must stay in sync with every design edit.
+  renderGuests();
 }
 ['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal','showEventColors','ec1','ec2','ec3','ec4','introText','ev1Attire','ev2Name','ev2Date','ev2Time','ev2Venue','ev2Desc','ev2Attire','shareUrl','rsvpUrl'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
@@ -874,22 +876,44 @@ function removeGuest(id){
   saveState(state);
   renderGuests();
 }
+// Must match invite.html's INVITE_DEFAULTS exactly — invite.html falls back to these
+// when a URL param is missing, so a guest link only needs to carry a field when it
+// actually differs from this baseline. That keeps ordinary links down to just
+// id/name(/seats), while anything the couple customizes still reaches the guest.
+const INVITE_DEFAULTS = {
+  p1:'Amara', p2:'Julian', wdate:'2027-02-14', wtime:'16:30',
+  venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
+  cBg:'#f6f1e9', cInk:'#2b2a26', cAccent:'#b08d57', cSeal:'#46583d',
+  layout:'classic', hf:0, bf:0, sc:1,
+  photo:'', showEventColors:true, ec1:'#46583d', ec2:'#b08d57', ec3:'#6c7f60', ec4:'#c88b87',
+  introText:'With joyful hearts and the blessings of our families, we invite you to share the celebration of our love as we begin their life together.',
+  ev1Attire:'', ev2Name:'', ev2Date:'', ev2Time:'', ev2Venue:'', ev2Desc:'', ev2Attire:'', shareUrl:'', rsvpUrl:'',
+};
 function inviteLink(g){
-  const d = state.design;
-  const params = new URLSearchParams({
-    id:g.id, name:g.name, seats:g.seats,
-    p1:d.p1,p2:d.p2,wdate:d.wdate,wtime:d.wtime,venue:d.venue,city:d.city,eyebrow:d.eyebrow,
-    cBg:d.cBg,cInk:d.cInk,cAccent:d.cAccent,cSeal:d.cSeal,
+  const d = state.design || {};
+  const params = { id: g.id, name: g.name };
+  if (g.seats && Number(g.seats) !== 1) params.seats = g.seats;
+  const design = {
+    p1:d.p1, p2:d.p2, wdate:d.wdate, wtime:d.wtime, venue:d.venue, city:d.city, eyebrow:d.eyebrow,
+    cBg:d.cBg, cInk:d.cInk, cAccent:d.cAccent, cSeal:d.cSeal,
     layout:d.layout||'classic', hf:d.hf??0, bf:d.bf??0, sc:d.sc??1,
-    showEventColors: d.showEventColors!==false ? '1' : '0',
-    ec1:(d.eventColors&&d.eventColors[0])||'', ec2:(d.eventColors&&d.eventColors[1])||'',
-    ec3:(d.eventColors&&d.eventColors[2])||'', ec4:(d.eventColors&&d.eventColors[3])||'',
-    introText:d.introText||'', ev1Attire:d.ev1Attire||'',
+    showEventColors: d.showEventColors!==false,
+    ec1:(d.eventColors&&d.eventColors[0])||INVITE_DEFAULTS.ec1,
+    ec2:(d.eventColors&&d.eventColors[1])||INVITE_DEFAULTS.ec2,
+    ec3:(d.eventColors&&d.eventColors[2])||INVITE_DEFAULTS.ec3,
+    ec4:(d.eventColors&&d.eventColors[3])||INVITE_DEFAULTS.ec4,
+    introText:d.introText||INVITE_DEFAULTS.introText, ev1Attire:d.ev1Attire||'',
     ev2Name:d.ev2Name||'', ev2Date:d.ev2Date||'', ev2Time:d.ev2Time||'', ev2Venue:d.ev2Venue||'', ev2Desc:d.ev2Desc||'', ev2Attire:d.ev2Attire||'',
-    shareUrl:d.shareUrl||'', rsvpUrl:d.rsvpUrl||''
+    shareUrl:d.shareUrl||'', rsvpUrl:d.rsvpUrl||'',
+    // photo intentionally excluded: it's never diffed/added to the URL (see
+    // INVITE_DEFAULTS.photo in invite.html — always baked in, never per-link).
+  };
+  // Colors from <input type=color> are always lowercase hex; compare case-insensitively
+  // so an unchanged color never gets re-added to the URL just because of casing.
+  Object.keys(design).forEach(key=>{
+    if (String(design[key]).toLowerCase() !== String(INVITE_DEFAULTS[key]).toLowerCase()) params[key] = design[key];
   });
-  if(d.photo) params.set('photo', d.photo);
-  return 'invite.html?' + params.toString();
+  return 'invite.html?' + new URLSearchParams(params).toString();
 }
 function copyLink(g){
   const url = new URL(inviteLink(g), window.location.href).href;
