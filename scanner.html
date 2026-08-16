@@ -149,12 +149,27 @@ function tick(){
   requestAnimationFrame(tick);
 }
 
-function handlePayload(text){
-  let data;
-  try{ data = JSON.parse(text); }
-  catch(e){ return showResult('bad', 'Unrecognized code', 'This QR isn\'t a valid entry code.'); }
+function parseCheckinCode(text){
+  // Current invite links encode a compact "WED1|id|name|seats" string (kept short so the
+  // QR stays physically scannable). Older invites may still carry the original JSON form —
+  // support both so links already sent out keep working.
+  const raw = String(text || '');
+  const parts = raw.split('|');
+  if(parts[0] === 'WED1' && parts[1]){
+    return { id: parts[1], name: parts[2] || '', seats: parseInt(parts[3], 10) || 1 };
+  }
+  try{
+    const data = JSON.parse(raw);
+    if(data && data.t === 'wedding-checkin' && data.id){
+      return { id: data.id, name: data.name || '', seats: parseInt(data.seats, 10) || 1 };
+    }
+  } catch(e){ /* not JSON either — fall through to null */ }
+  return null;
+}
 
-  if(!data || data.t !== 'wedding-checkin' || !data.id){
+function handlePayload(text){
+  const data = parseCheckinCode(text);
+  if(!data){
     return showResult('bad', 'Unrecognized code', 'This QR isn\'t a valid entry code.');
   }
 
@@ -169,7 +184,7 @@ function handlePayload(text){
   checkedIn[data.id] = { status:'ok', name:data.name, seats:data.seats, at: Date.now(), dupCount:0 };
   localStorage.setItem(STORE_KEY, JSON.stringify(checkedIn));
   updateStats();
-  showResult('ok', data.name, `Party of ${data.seats} welcomed · ${data.couple || ''}`);
+  showResult('ok', data.name, `Party of ${data.seats} welcomed`);
 }
 
 function showResult(kind, name, meta){

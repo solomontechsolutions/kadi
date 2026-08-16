@@ -8,7 +8,6 @@
 <meta name="theme-color" content="#46583D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,500&family=EB+Garamond:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="vendor/qrcode.min.js"></script>
 <style>
   :root{
     --ivory:#F6F1E9;
@@ -118,7 +117,7 @@
     border:2px solid var(--seal,rgba(0,0,0,.18));
   }
   .invite-card .seal::before{content:''; position:absolute; inset:-6px; border-radius:inherit; border:1px dashed var(--seal,rgba(0,0,0,.18)); opacity:.6;}
-  .invite-card .seal img,.invite-card .seal canvas{width:76px; height:76px; border-radius:inherit;}
+  .invite-card .seal img,.invite-card .seal canvas{width:76px; height:76px;}
   .invite-card .seal-cap{font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.2em; text-transform:uppercase; opacity:.7; margin-top:6px;}
 
   [data-layout="banner"] .eyebrow{margin:-40px -28px 0; padding:26px 28px 8px; background:var(--accent); color:var(--bg,#F6F1E9);}
@@ -303,8 +302,8 @@
   <div class="panel" id="panel-help">
     <h3 style="margin-top:0;">Getting this live in front of guests</h3>
     <ol style="line-height:2; font-size:15.5px;">
-      <li>Pick a look on the <b>Templates</b> tab (or fine-tune colors, photo, and event colors on <b>Design</b>).</li>
-      <li>Download this folder (index.html, invite.html, scanner.html, manifest.json, sw.js, vendor/).</li>
+      <li>Pick a look on the <b>Templates</b> tab (or fine-tune colors on <b>Design</b>).</li>
+      <li>Download this folder (index.html, invite.html, scanner.html, manifest.json, sw.js).</li>
       <li>Deploy it as a static site — drag-and-drop the folder onto <b>Netlify Drop</b>, or push it to a <b>GitHub repo</b> and enable GitHub Pages, or use <b>Vercel</b>. All are free and give you an HTTPS URL, which is required for camera access.</li>
       <li>Once live, come back to the <b>Guests</b> tab, click <b>Copy invite link</b> for each guest, and send it to them individually.</li>
       <li>On the wedding day, open <code>yourdomain.com/scanner.html</code> on the phone(s) at the entrance, tap "Start camera," and scan each guest's QR as they arrive. It works fully offline once loaded — no server needed.</li>
@@ -421,7 +420,7 @@ function ensureFont(gf){
 }
 function ensureFonts(hf, bf){ ensureFont(hf.gf); ensureFont(bf.gf); }
 
-// ---------- SHARED HELPERS ----------
+// ---------- CARD RENDERING (shared by Design preview and Template preview) ----------
 function partyTag(seats){
   if(seats<=1) return 'SINGLE';
   if(seats===2) return 'DOUBLE';
@@ -434,8 +433,6 @@ function eventColorsHTML(d){
   const dots = cols.map(c=>`<span class="ecolor" style="background:${c}"></span>`).join('');
   return `<div class="eventcolors"><div class="eclabel">Event Colors</div><div class="ecolors-row">${dots}</div></div>`;
 }
-
-// ---------- CARD RENDERING (shared by Design preview and Template preview) ----------
 function buildCardInner(d, guestName, seats, showSeal){
   const mono = ((d.p1||'')[0]||'').toUpperCase() + ((d.p2||'')[0]||'').toUpperCase();
   const photoBlock = d.photo ? `<div class="photoblock"><img src="${d.photo}" alt=""></div>` : '';
@@ -497,6 +494,47 @@ function fmtTime(t){
   return `${h12}:${String(m).padStart(2,'0')} ${ampm}`;
 }
 
+// ---------- DESIGN ----------
+function currentDesign(){
+  const prev = state.design || {};
+  return {
+    p1: document.getElementById('p1').value || 'Partner One',
+    p2: document.getElementById('p2').value || 'Partner Two',
+    wdate: document.getElementById('wdate').value,
+    wtime: document.getElementById('wtime').value,
+    venue: document.getElementById('venue').value,
+    city: document.getElementById('city').value,
+    eyebrow: document.getElementById('eyebrow').value,
+    cBg: document.getElementById('cBg').value,
+    cInk: document.getElementById('cInk').value,
+    cAccent: document.getElementById('cAccent').value,
+    cSeal: document.getElementById('cSeal').value,
+    layout: prev.layout || 'classic',
+    hf: prev.hf ?? 0,
+    bf: prev.bf ?? 0,
+    sc: prev.sc ?? 1,
+    photo: prev.photo || '',
+    showEventColors: document.getElementById('showEventColors').checked,
+    eventColors: [
+      document.getElementById('ec1').value,
+      document.getElementById('ec2').value,
+      document.getElementById('ec3').value,
+      document.getElementById('ec4').value
+    ],
+  };
+}
+function renderPreview(){
+  const d = currentDesign();
+  state.design = d;
+  saveState(state);
+  const card = document.getElementById('previewCard');
+  card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
+  applyCardTokens(card, d);
+}
+['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal','showEventColors','ec1','ec2','ec3','ec4'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', renderPreview);
+});
+
 // ---------- PHOTO UPLOAD ----------
 function resizeImageFile(file, maxDim, quality){
   return new Promise((resolve, reject)=>{
@@ -547,47 +585,6 @@ function removePhoto(){
   renderPreview();
   renderTemplatePreview();
 }
-
-// ---------- DESIGN ----------
-function currentDesign(){
-  const prev = state.design || {};
-  return {
-    p1: document.getElementById('p1').value || 'Partner One',
-    p2: document.getElementById('p2').value || 'Partner Two',
-    wdate: document.getElementById('wdate').value,
-    wtime: document.getElementById('wtime').value,
-    venue: document.getElementById('venue').value,
-    city: document.getElementById('city').value,
-    eyebrow: document.getElementById('eyebrow').value,
-    cBg: document.getElementById('cBg').value,
-    cInk: document.getElementById('cInk').value,
-    cAccent: document.getElementById('cAccent').value,
-    cSeal: document.getElementById('cSeal').value,
-    layout: prev.layout || 'classic',
-    hf: prev.hf ?? 0,
-    bf: prev.bf ?? 0,
-    sc: prev.sc ?? 1,
-    photo: prev.photo || '',
-    showEventColors: document.getElementById('showEventColors').checked,
-    eventColors: [
-      document.getElementById('ec1').value,
-      document.getElementById('ec2').value,
-      document.getElementById('ec3').value,
-      document.getElementById('ec4').value
-    ],
-  };
-}
-function renderPreview(){
-  const d = currentDesign();
-  state.design = d;
-  saveState(state);
-  const card = document.getElementById('previewCard');
-  card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
-  applyCardTokens(card, d);
-}
-['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal','showEventColors','ec1','ec2','ec3','ec4'].forEach(id=>{
-  document.getElementById(id).addEventListener('input', renderPreview);
-});
 
 // ---------- TEMPLATE PICKER ----------
 let tplState = { layoutIdx:0, hueIdx:4, moodIdx:0, headingIdx:0, bodyIdx:0, scaleIdx:1 };
@@ -682,7 +679,7 @@ function applyTemplate(){
 function uid(){ return 'g' + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4); }
 
 function addGuest(){
-  const name = document.getElementById('gName').value.trim();
+  const name = document.getElementById('gName').value.trim().replace(/\|/g, '/');
   const seats = parseInt(document.getElementById('gSeats').value) || 1;
   if(!name){ alert('Please enter a guest name.'); return; }
   state.guests.push({ id: uid(), name, seats, addedAt: Date.now() });
