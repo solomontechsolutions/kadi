@@ -162,6 +162,58 @@
   [data-layout="timeline"] .dline{position:relative; padding-left:14px;}
   [data-layout="timeline"] .dline::before{content:''; position:absolute; left:-2px; top:6px; width:6px; height:6px; border-radius:50%; background:var(--accent);}
 
+  /* --- Premium Website layout: full scrolling one-pager, not a token card --- */
+  [data-layout="premium"]{
+    width:380px; max-width:100%; padding:0; overflow:hidden; border-radius:10px;
+    align-items:stretch; text-align:left; display:block; min-height:0;
+  }
+  [data-layout="premium"] .p-hero{position:relative; height:320px; overflow:hidden; background:var(--seal,#333);}
+  [data-layout="premium"] .p-hero img{width:100%; height:100%; object-fit:cover; display:block;}
+  [data-layout="premium"] .p-hero-fallback{width:100%; height:100%; background:linear-gradient(155deg,var(--accent),var(--seal));}
+  [data-layout="premium"] .p-tear{position:absolute; left:-1%; right:-1%; bottom:-1px; width:102%; height:44px; display:block;}
+  [data-layout="premium"] .p-body{padding:28px 26px 6px; text-align:center;}
+  [data-layout="premium"] .p-eyebrow{font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.24em; text-transform:uppercase; opacity:.65;}
+  [data-layout="premium"] .p-names{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:32px; margin:8px 0 14px; line-height:1.1;}
+  [data-layout="premium"] .p-intro{font-family:var(--bodyfont,'EB Garamond',serif); font-size:14px; line-height:1.7; opacity:.85; margin-bottom:18px;}
+  [data-layout="premium"] .p-savedate{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:28px; margin:4px 0 14px;}
+  [data-layout="premium"] .p-daterow{display:flex; justify-content:center; align-items:baseline; gap:16px; padding:10px 0; border-top:1px solid currentColor; border-bottom:1px solid currentColor; opacity:.92; margin:0 0 18px; font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.06em; text-transform:uppercase;}
+  [data-layout="premium"] .p-daterow .p-daynum{font-family:var(--headfont); font-style:normal; font-size:26px; letter-spacing:0; text-transform:none;}
+  [data-layout="premium"] .p-rsvpbtn{display:inline-block; background:var(--accent,#B08D57); color:#fff; font-family:'Inter',sans-serif; font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:12px 30px; border-radius:6px; text-decoration:none; margin-bottom:26px; border:none; cursor:pointer;}
+  [data-layout="premium"] .p-schedule{display:flex; background:var(--accent,#B08D57);}
+  [data-layout="premium"] .p-schedule.single{justify-content:center;}
+  [data-layout="premium"] .p-schedule.single .p-eventcard{flex:none; width:100%;}
+  [data-layout="premium"] .p-eventcard{flex:1; color:#fff; padding:18px 16px 20px; min-width:0;}
+  [data-layout="premium"] .p-eventcard + .p-eventcard{border-left:1px solid rgba(255,255,255,.25);}
+  [data-layout="premium"] .p-eventcard .p-evdate{font-family:'Inter',sans-serif; font-size:10.5px; opacity:.85; text-transform:uppercase; letter-spacing:.04em;}
+  [data-layout="premium"] .p-eventcard .p-evname{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:22px; margin:2px 0 8px; line-height:1.1;}
+  [data-layout="premium"] .p-eventcard .p-evdesc{font-family:var(--bodyfont,'EB Garamond',serif); font-size:11.5px; line-height:1.5; opacity:.92; margin-bottom:8px;}
+  [data-layout="premium"] .p-eventcard .p-evattire{font-family:'Inter',sans-serif; font-size:10.5px; font-weight:700; margin-bottom:10px;}
+  [data-layout="premium"] .p-eventcard .p-evlink{font-family:'Inter',sans-serif; font-size:10.5px; text-decoration:underline; color:#fff; opacity:.9;}
+  [data-layout="premium"] .p-photocta{position:relative; margin-top:0; height:280px; overflow:hidden; background:var(--seal,#333);}
+  [data-layout="premium"] .p-photocta img{width:100%; height:100%; object-fit:cover; display:block;}
+  [data-layout="premium"] .p-photocta-fallback{width:100%; height:100%; background:linear-gradient(155deg,var(--seal),var(--accent));}
+  [data-layout="premium"] .p-photocta-overlay{position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.05) 65%); display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:22px 20px; text-align:center;}
+  [data-layout="premium"] .p-photocta-overlay .p-script{color:#fff; font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:21px;}
+  [data-layout="premium"] .p-photocta-overlay p{color:rgba(255,255,255,.85); font-family:var(--bodyfont,'EB Garamond',serif); font-size:11.5px; margin:8px 0 14px; line-height:1.5;}
+  [data-layout="premium"] .p-sharebtn{background:#fff; color:#222; font-family:'Inter',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; padding:10px 18px; border-radius:5px; text-decoration:none;}
+  [data-layout="premium"] .p-rsvpsection{padding:30px 24px 34px; text-align:center;}
+  [data-layout="premium"] .p-rsvptitle{font-size:26px; margin:0 0 6px;}
+  [data-layout="premium"] .p-rsvptitle .p-script2{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic;}
+  [data-layout="premium"] .p-rsvptitle .p-bold2{font-family:'Inter',sans-serif; font-weight:800; margin-left:6px;}
+  [data-layout="premium"] .p-rsvpnote{font-family:var(--bodyfont,'EB Garamond',serif); font-size:12.5px; opacity:.85; margin:6px 0 14px;}
+  [data-layout="premium"] .p-strict{font-family:'Inter',sans-serif; font-size:10.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:16px;}
+  [data-layout="premium"] .p-countdown{display:flex; justify-content:center; gap:12px; margin-top:22px;}
+  [data-layout="premium"] .p-countdown .p-cbox{text-align:center; min-width:34px;}
+  [data-layout="premium"] .p-countdown .p-cnum{font-family:var(--headfont,'Cormorant Garamond',serif); font-size:24px; display:block;}
+  [data-layout="premium"] .p-countdown .p-clabel{font-family:'Inter',sans-serif; font-size:8px; letter-spacing:.1em; text-transform:uppercase; opacity:.6; display:block;}
+  [data-layout="premium"] .p-entrypass{margin-top:26px; border:1px solid currentColor; border-radius:10px; padding:14px; display:flex; align-items:center; gap:14px; opacity:.95;}
+  [data-layout="premium"] .p-entrypass-label{font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.16em; text-transform:uppercase; opacity:.6; margin-bottom:4px;}
+  [data-layout="premium"] .p-entrypass .seal{margin:0; width:64px; height:64px; flex:none;}
+  [data-layout="premium"] .p-entrypass .seal img,[data-layout="premium"] .p-entrypass .seal canvas{width:48px; height:48px;}
+  [data-layout="premium"] .p-entrypass-name{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:17px;}
+  [data-layout="premium"] .p-entrypass-tag{font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.1em; text-transform:uppercase; opacity:.7; margin-top:2px;}
+  [data-layout="premium"] .eventcolors{padding:0 24px 22px; margin-top:0;}
+
   /* Guest table */
   table{width:100%; border-collapse:collapse; margin-top:18px; font-family:'Inter',sans-serif; font-size:13.5px;}
   th{text-align:left; font-size:11px; letter-spacing:.06em; text-transform:uppercase; color:var(--sage-light); padding:8px 10px; border-bottom:1px solid var(--line);}
@@ -182,14 +234,12 @@
     <h1>Invite Studio</h1>
     <div class="sub">Pick a template &middot; design your card &middot; build your guest list &middot; every invite carries its own entry code</div>
   </div>
-  <div class="sub">Step 3 of 3: host this folder anywhere with HTTPS to activate camera scanning at <b>scanner.html</b></div>
 </header>
 
 <nav>
   <button class="tab-btn active" data-tab="templates">Templates</button>
   <button class="tab-btn" data-tab="design">Design</button>
   <button class="tab-btn" data-tab="guests">Guests</button>
-  <button class="tab-btn" data-tab="help">Deploy &amp; Scan</button>
 </nav>
 
 <div class="wrap">
@@ -197,7 +247,7 @@
 
   <!-- TEMPLATES PANEL -->
   <div class="panel active" id="panel-templates">
-    <div class="callout"><b>50,000 combinations:</b> 10 layouts &times; 100 palettes (20 hues &times; 5 moods) &times; 50 type pairings (5 heading fonts &times; 5 body fonts &times; 2 scales). Mix and match below, hit <b>Shuffle</b> for a random one, or paste a code to jump straight to a combination.</div>
+    <div class="callout"><b>55,000 combinations:</b> 11 layouts &times; 100 palettes (20 hues &times; 5 moods) &times; 50 type pairings (5 heading fonts &times; 5 body fonts &times; 2 scales) &mdash; including <b>Premium Website</b>, a full scrolling one-page invite with a photo hero, event schedule, and live countdown. Mix and match below, hit <b>Shuffle</b> for a random one, or paste a code to jump straight to a combination.</div>
     <div class="grid">
       <div>
         <h3 style="margin-top:0;">Layout</h3>
@@ -257,6 +307,18 @@
           <div class="hint">Photo is compressed and embedded directly in each guest's invite link, so it still works with no server. A clear headshot or couple photo works best — very large images make the invite link longer.</div>
         </div>
 
+        <h3>Premium Website content <span class="label" style="text-transform:none; letter-spacing:0;">(used by the Premium Website layout)</span></h3>
+        <div class="field"><label>Invitation message</label><textarea id="introText" rows="3">With joyful hearts and the blessings of our families, we invite you to share the celebration of our love as we begin their life together.</textarea></div>
+        <div class="field"><label>Main event attire note</label><input id="ev1Attire" type="text" placeholder="e.g. Dress to impress"></div>
+        <div class="field"><label>Second ceremony name <span class="label" style="text-transform:none; letter-spacing:0;">(optional — e.g. Ruracio, Kitchen Party, Send-off)</span></label><input id="ev2Name" type="text" placeholder="Leave blank to show one event only"></div>
+        <div class="field"><label>Second ceremony date</label><input id="ev2Date" type="date"></div>
+        <div class="field"><label>Second ceremony time</label><input id="ev2Time" type="time"></div>
+        <div class="field"><label>Second ceremony venue</label><input id="ev2Venue" type="text"></div>
+        <div class="field"><label>Second ceremony description</label><textarea id="ev2Desc" rows="2"></textarea></div>
+        <div class="field"><label>Second ceremony attire note</label><input id="ev2Attire" type="text"></div>
+        <div class="field"><label>Photo-sharing link <span class="label" style="text-transform:none; letter-spacing:0;">(optional — Google Photos/Drive album URL)</span></label><input id="shareUrl" type="text" placeholder="https://photos.app.goo.gl/..."></div>
+        <div class="field"><label>RSVP link <span class="label" style="text-transform:none; letter-spacing:0;">(optional — Google Form/Tally URL)</span></label><input id="rsvpUrl" type="text" placeholder="https://forms.gle/..."></div>
+
         <h3>Palette (fine-tune)</h3>
         <div class="swatchrow"><span>Background</span><input type="color" id="cBg" value="#F6F1E9"></div>
         <div class="swatchrow"><span>Text / ink</span><input type="color" id="cInk" value="#2B2A26"></div>
@@ -298,20 +360,6 @@
     <div id="emptyState" class="empty" style="display:none;">No guests yet — add your first one above.</div>
   </div>
 
-  <!-- HELP PANEL -->
-  <div class="panel" id="panel-help">
-    <h3 style="margin-top:0;">Getting this live in front of guests</h3>
-    <ol style="line-height:2; font-size:15.5px;">
-      <li>Pick a look on the <b>Templates</b> tab (or fine-tune colors on <b>Design</b>).</li>
-      <li>Download this folder (index.html, invite.html, scanner.html, manifest.json, sw.js).</li>
-      <li>Deploy it as a static site — drag-and-drop the folder onto <b>Netlify Drop</b>, or push it to a <b>GitHub repo</b> and enable GitHub Pages, or use <b>Vercel</b>. All are free and give you an HTTPS URL, which is required for camera access.</li>
-      <li>Once live, come back to the <b>Guests</b> tab, click <b>Copy invite link</b> for each guest, and send it to them individually.</li>
-      <li>On the wedding day, open <code>yourdomain.com/scanner.html</code> on the phone(s) at the entrance, tap "Start camera," and scan each guest's QR as they arrive. It works fully offline once loaded — no server needed.</li>
-      <li>Optional: on that scanning phone, tap "Add to Home Screen" from the browser menu — it'll open full-screen like a native app (that's the PWA part).</li>
-    </ol>
-    <div class="callout"><b>Note on data:</b> guest data lives in this browser's local storage on your device, and each guest's QR is self-contained (their info is encoded directly in the code). There's no shared cloud database — this keeps it free and simple, but means check-ins are tracked per scanning device rather than synced live across multiple entrance phones.</div>
-  </div>
-
 </main>
 </div>
 <footer>Built for a wedding, not a corporation — no accounts, no ads, no tracking.</footer>
@@ -338,7 +386,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 });
 
 // ---------- TEMPLATE TOKEN SYSTEM ----------
-// 10 layouts x 100 palettes (20 hues x 5 moods) x 50 type pairings (5 heading x 5 body x 2 scales) = 50,000
+// 11 layouts x 100 palettes (20 hues x 5 moods) x 50 type pairings (5 heading x 5 body x 2 scales) = 55,000
 function hslToHex(h,s,l){
   s/=100; l/=100;
   const k = n => (n + h/30) % 12;
@@ -387,6 +435,7 @@ const LAYOUTS = [
   {key:'editorial',   name:'Editorial Left'},
   {key:'botanical',   name:'Botanical Corners'},
   {key:'timeline',    name:'Timeline Detail'},
+  {key:'premium',     name:'Premium Website'},
 ];
 
 function pad(n,len){ return String(n).padStart(len,'0'); }
@@ -463,6 +512,117 @@ function buildCardInner(d, guestName, seats, showSeal){
     </div>` : ''}
   `;
 }
+
+// ---------- PREMIUM WEBSITE LAYOUT (full one-pager, not a token card) ----------
+function fmtMonthDayYear(iso){
+  if(!iso) return {month:'', day:'', year:''};
+  const dt = new Date(iso+'T00:00:00');
+  return { month: dt.toLocaleDateString(undefined,{month:'long'}).toUpperCase(), day: dt.getDate(), year: dt.getFullYear() };
+}
+function mapsLink(venue, city){
+  const q = [venue, city].filter(Boolean).join(', ');
+  return q ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q) : '';
+}
+function tearEdgeSVG(color){
+  return `<svg class="p-tear" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,10 L0,5 L5,7 L11,3 L17,6 L23,2 L30,7 L37,3 L44,6.5 L51,2.5 L58,6 L65,2 L72,6.5 L79,3 L86,7 L93,2.5 L100,6 L100,10 Z" fill="${color}"></path></svg>`;
+}
+function buildEventCard(label, iso, time, venue, city, desc, attire){
+  const {month, day} = fmtMonthDayYear(iso);
+  const link = mapsLink(venue, city);
+  const place = [venue, city].filter(Boolean).join(', ');
+  return `
+    <div class="p-eventcard">
+      <div class="p-evdate">${month ? month.slice(0,3) : ''} ${day || ''}${time ? ' &middot; ' + fmtTime(time) : ''}</div>
+      <div class="p-evname">${label}</div>
+      ${desc ? `<div class="p-evdesc">${desc}</div>` : ''}
+      ${attire ? `<div class="p-evattire">Attire: ${attire}</div>` : ''}
+      ${place ? `<div class="p-evdesc" style="opacity:.85; margin-bottom:4px;">${place}</div>` : ''}
+      ${link ? `<a class="p-evlink" href="${link}" target="_blank" rel="noopener">Get Directions</a>` : ''}
+    </div>`;
+}
+function buildPremiumSite(d, guestName, seats, showSeal){
+  const heroInner = d.photo ? `<img src="${d.photo}" alt="">` : `<div class="p-hero-fallback"></div>`;
+  const heroBlock = `<div class="p-hero">${heroInner}${tearEdgeSVG(d.cBg)}</div>`;
+  const { month, day } = fmtMonthDayYear(d.wdate);
+  const hasSecond = !!(d.ev2Name && d.ev2Name.trim());
+  const scheduleHTML = hasSecond ? `
+    <div class="p-schedule">
+      ${buildEventCard(d.ev2Name, d.ev2Date, d.ev2Time, d.ev2Venue, '', d.ev2Desc, d.ev2Attire)}
+      ${buildEventCard('Wedding', d.wdate, d.wtime, d.venue, d.city, '', d.ev1Attire)}
+    </div>` : `
+    <div class="p-schedule single">
+      ${buildEventCard('Wedding', d.wdate, d.wtime, d.venue, d.city, '', d.ev1Attire)}
+    </div>`;
+  const photoCtaHTML = d.photo ? `
+    <div class="p-photocta">
+      <img src="${d.photo}" alt="">
+      <div class="p-photocta-overlay">
+        <div class="p-script">Share your photos with us</div>
+        <p>${d.introText || ''}</p>
+        ${d.shareUrl ? `<a class="p-sharebtn" href="${d.shareUrl}" target="_blank" rel="noopener">Share your memories here</a>` : ''}
+      </div>
+    </div>` : '';
+  const rsvpBtn = d.rsvpUrl
+    ? `<a class="p-rsvpbtn" href="${d.rsvpUrl}" target="_blank" rel="noopener">RSVP</a>`
+    : `<span class="p-rsvpbtn" style="opacity:.55; cursor:default;">RSVP</span>`;
+  const entryPass = guestName ? `
+    <div class="p-entrypass">
+      ${showSeal ? `<div class="seal"></div>` : ''}
+      <div>
+        <div class="p-entrypass-label">Your entry pass</div>
+        <div class="p-entrypass-name">${guestName}</div>
+        <div class="p-entrypass-tag">${partyTag(seats)}</div>
+      </div>
+    </div>` : '';
+
+  return `
+    ${heroBlock}
+    <div class="p-body">
+      <div class="p-eyebrow">${d.eyebrow || ''}</div>
+      <div class="p-names">${d.p1} &amp; ${d.p2}</div>
+      <div class="p-intro">${d.introText || ''}</div>
+      <div class="p-savedate">Save the date</div>
+      <div class="p-daterow"><span>${month}</span><span class="p-daynum">${day}</span><span>${fmtTime(d.wtime)}</span></div>
+      ${rsvpBtn}
+    </div>
+    ${scheduleHTML}
+    ${photoCtaHTML}
+    <div class="p-rsvpsection">
+      <div class="p-rsvptitle"><span class="p-script2">Please</span><span class="p-bold2">RSVP</span></div>
+      <div class="p-rsvpnote">The favour of your response is requested as soon as you can.</div>
+      <div class="p-strict">Strictly by invite only</div>
+      ${rsvpBtn}
+      ${eventColorsHTML(d)}
+      <div class="p-countdown">
+        <div class="p-cbox"><span class="p-cnum p-c-months">0</span><span class="p-clabel">Months</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-days">0</span><span class="p-clabel">Days</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-hours">0</span><span class="p-clabel">Hours</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-mins">0</span><span class="p-clabel">Min</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-secs">0</span><span class="p-clabel">Sec</span></div>
+      </div>
+      ${entryPass}
+    </div>
+  `;
+}
+function startCountdown(container, wdate, wtime){
+  const el = container.querySelector('.p-countdown');
+  if(!el || !wdate) return null;
+  const target = new Date(wdate + 'T' + (wtime || '00:00') + ':00');
+  function tick(){
+    const diff = Math.max(0, target - new Date());
+    const totalSec = Math.floor(diff/1000);
+    const days = Math.floor(totalSec/86400);
+    const months = Math.floor(days/30);
+    const remDays = days % 30;
+    const hours = Math.floor((totalSec%86400)/3600);
+    const mins = Math.floor((totalSec%3600)/60);
+    const secs = totalSec%60;
+    const set = (cls,val)=>{ const e = el.querySelector('.'+cls); if(e) e.textContent = String(val); };
+    set('p-c-months', months); set('p-c-days', remDays); set('p-c-hours', hours); set('p-c-mins', mins); set('p-c-secs', secs);
+  }
+  tick();
+  return setInterval(tick, 1000);
+}
 function applyCardTokens(card, d){
   const layout = LAYOUTS.some(l=>l.key===d.layout) ? d.layout : 'classic';
   card.dataset.layout = layout;
@@ -521,17 +681,30 @@ function currentDesign(){
       document.getElementById('ec3').value,
       document.getElementById('ec4').value
     ],
+    introText: document.getElementById('introText').value,
+    ev1Attire: document.getElementById('ev1Attire').value,
+    ev2Name: document.getElementById('ev2Name').value,
+    ev2Date: document.getElementById('ev2Date').value,
+    ev2Time: document.getElementById('ev2Time').value,
+    ev2Venue: document.getElementById('ev2Venue').value,
+    ev2Desc: document.getElementById('ev2Desc').value,
+    ev2Attire: document.getElementById('ev2Attire').value,
+    shareUrl: document.getElementById('shareUrl').value,
+    rsvpUrl: document.getElementById('rsvpUrl').value,
   };
 }
+let previewCountdownTimer = null;
 function renderPreview(){
   const d = currentDesign();
   state.design = d;
   saveState(state);
   const card = document.getElementById('previewCard');
-  card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
+  if(previewCountdownTimer){ clearInterval(previewCountdownTimer); previewCountdownTimer = null; }
+  card.innerHTML = d.layout === 'premium' ? buildPremiumSite(d, 'Guest Name', 2, true) : buildCardInner(d, 'Guest Name', 2, true);
   applyCardTokens(card, d);
+  if(d.layout === 'premium'){ previewCountdownTimer = startCountdown(card, d.wdate, d.wtime); }
 }
-['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal','showEventColors','ec1','ec2','ec3','ec4'].forEach(id=>{
+['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal','showEventColors','ec1','ec2','ec3','ec4','introText','ev1Attire','ev2Name','ev2Date','ev2Time','ev2Venue','ev2Desc','ev2Attire','shareUrl','rsvpUrl'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
 });
 
@@ -588,6 +761,7 @@ function removePhoto(){
 
 // ---------- TEMPLATE PICKER ----------
 let tplState = { layoutIdx:0, hueIdx:4, moodIdx:0, headingIdx:0, bodyIdx:0, scaleIdx:1 };
+let templateCountdownTimer = null;
 
 function buildPickers(){
   const layoutEl = document.getElementById('layoutPicker');
@@ -633,10 +807,16 @@ function renderTemplatePreview(){
     cBg: pal.cBg, cInk: pal.cInk, cAccent: pal.cAccent, cSeal: pal.cSeal,
     layout: LAYOUTS[tplState.layoutIdx].key, hf: tplState.headingIdx, bf: tplState.bodyIdx, sc: tplState.scaleIdx,
     photo: base.photo || '', showEventColors: base.showEventColors !== false, eventColors: base.eventColors || ['#46583D','#B08D57','#6C7F60','#C88B87'],
+    introText: base.introText || 'With joyful hearts and the blessings of our families, we invite you to share the celebration of our love as we begin their life together.',
+    ev1Attire: base.ev1Attire || '', ev2Name: base.ev2Name || '', ev2Date: base.ev2Date || '', ev2Time: base.ev2Time || '',
+    ev2Venue: base.ev2Venue || '', ev2Desc: base.ev2Desc || '', ev2Attire: base.ev2Attire || '',
+    shareUrl: base.shareUrl || '', rsvpUrl: base.rsvpUrl || '',
   };
   const card = document.getElementById('templatePreview');
-  card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
+  if(templateCountdownTimer){ clearInterval(templateCountdownTimer); templateCountdownTimer = null; }
+  card.innerHTML = d.layout === 'premium' ? buildPremiumSite(d, 'Guest Name', 2, true) : buildCardInner(d, 'Guest Name', 2, true);
   applyCardTokens(card, d);
+  if(d.layout === 'premium'){ templateCountdownTimer = startCountdown(card, d.wdate, d.wtime); }
   document.getElementById('templateCode').textContent =
     templateCode(tplState.layoutIdx, tplState.hueIdx, tplState.moodIdx, tplState.headingIdx, tplState.bodyIdx, tplState.scaleIdx)
     + ' — ' + LAYOUTS[tplState.layoutIdx].name + ' · ' + HUES[tplState.hueIdx] + ' ' + MOODS[tplState.moodIdx].name
@@ -703,7 +883,10 @@ function inviteLink(g){
     layout:d.layout||'classic', hf:d.hf??0, bf:d.bf??0, sc:d.sc??1,
     showEventColors: d.showEventColors!==false ? '1' : '0',
     ec1:(d.eventColors&&d.eventColors[0])||'', ec2:(d.eventColors&&d.eventColors[1])||'',
-    ec3:(d.eventColors&&d.eventColors[2])||'', ec4:(d.eventColors&&d.eventColors[3])||''
+    ec3:(d.eventColors&&d.eventColors[2])||'', ec4:(d.eventColors&&d.eventColors[3])||'',
+    introText:d.introText||'', ev1Attire:d.ev1Attire||'',
+    ev2Name:d.ev2Name||'', ev2Date:d.ev2Date||'', ev2Time:d.ev2Time||'', ev2Venue:d.ev2Venue||'', ev2Desc:d.ev2Desc||'', ev2Attire:d.ev2Attire||'',
+    shareUrl:d.shareUrl||'', rsvpUrl:d.rsvpUrl||''
   });
   if(d.photo) params.set('photo', d.photo);
   return 'invite.html?' + params.toString();
@@ -747,6 +930,16 @@ function renderGuests(){
     document.getElementById('cInk').value = d.cInk;
     document.getElementById('cAccent').value = d.cAccent;
     document.getElementById('cSeal').value = d.cSeal;
+    document.getElementById('introText').value = d.introText || document.getElementById('introText').value;
+    document.getElementById('ev1Attire').value = d.ev1Attire || '';
+    document.getElementById('ev2Name').value = d.ev2Name || '';
+    document.getElementById('ev2Date').value = d.ev2Date || '';
+    document.getElementById('ev2Time').value = d.ev2Time || '';
+    document.getElementById('ev2Venue').value = d.ev2Venue || '';
+    document.getElementById('ev2Desc').value = d.ev2Desc || '';
+    document.getElementById('ev2Attire').value = d.ev2Attire || '';
+    document.getElementById('shareUrl').value = d.shareUrl || '';
+    document.getElementById('rsvpUrl').value = d.rsvpUrl || '';
   }
   document.getElementById('showEventColors').checked = !(d && d.showEventColors === false);
   if(d && d.eventColors){

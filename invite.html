@@ -96,6 +96,57 @@
   [data-layout="timeline"] .details::before{content:''; position:absolute; left:3px; top:6px; bottom:6px; width:1px; background:var(--accent); opacity:.5;}
   [data-layout="timeline"] .dline{position:relative; padding-left:16px;}
   [data-layout="timeline"] .dline::before{content:''; position:absolute; left:-2px; top:7px; width:6px; height:6px; border-radius:50%; background:var(--accent);}
+
+  /* --- Premium Website layout: full scrolling one-pager, not a token card --- */
+  [data-layout="premium"]{
+    width:100%; max-width:460px; padding:0; overflow:hidden; border-radius:14px;
+    align-items:stretch; text-align:left; display:block; min-height:0;
+  }
+  [data-layout="premium"] .p-hero{position:relative; height:380px; overflow:hidden; background:var(--seal,#333);}
+  [data-layout="premium"] .p-hero img{width:100%; height:100%; object-fit:cover; display:block;}
+  [data-layout="premium"] .p-hero-fallback{width:100%; height:100%; background:linear-gradient(155deg,var(--accent),var(--seal));}
+  [data-layout="premium"] .p-tear{position:absolute; left:-1%; right:-1%; bottom:-1px; width:102%; height:50px; display:block;}
+  [data-layout="premium"] .p-body{padding:32px 30px 8px; text-align:center;}
+  [data-layout="premium"] .p-eyebrow{font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.24em; text-transform:uppercase; opacity:.65;}
+  [data-layout="premium"] .p-names{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:38px; margin:10px 0 16px; line-height:1.1;}
+  [data-layout="premium"] .p-intro{font-family:var(--bodyfont,'EB Garamond',serif); font-size:15px; line-height:1.7; opacity:.85; margin-bottom:20px;}
+  [data-layout="premium"] .p-savedate{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:32px; margin:4px 0 16px;}
+  [data-layout="premium"] .p-daterow{display:flex; justify-content:center; align-items:baseline; gap:18px; padding:12px 0; border-top:1px solid currentColor; border-bottom:1px solid currentColor; opacity:.92; margin:0 0 20px; font-family:'Inter',sans-serif; font-size:13px; letter-spacing:.06em; text-transform:uppercase;}
+  [data-layout="premium"] .p-daterow .p-daynum{font-family:var(--headfont); font-style:normal; font-size:30px; letter-spacing:0; text-transform:none;}
+  [data-layout="premium"] .p-rsvpbtn{display:inline-block; background:var(--accent,#B08D57); color:#fff; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; padding:13px 34px; border-radius:6px; text-decoration:none; margin-bottom:28px; border:none; cursor:pointer;}
+  [data-layout="premium"] .p-schedule{display:flex; background:var(--accent,#B08D57);}
+  [data-layout="premium"] .p-schedule.single{justify-content:center;}
+  [data-layout="premium"] .p-schedule.single .p-eventcard{flex:none; width:100%;}
+  [data-layout="premium"] .p-eventcard{flex:1; color:#fff; padding:20px 18px 22px; min-width:0;}
+  [data-layout="premium"] .p-eventcard + .p-eventcard{border-left:1px solid rgba(255,255,255,.25);}
+  [data-layout="premium"] .p-eventcard .p-evdate{font-family:'Inter',sans-serif; font-size:11px; opacity:.85; text-transform:uppercase; letter-spacing:.04em;}
+  [data-layout="premium"] .p-eventcard .p-evname{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:25px; margin:2px 0 8px; line-height:1.1;}
+  [data-layout="premium"] .p-eventcard .p-evdesc{font-family:var(--bodyfont,'EB Garamond',serif); font-size:12.5px; line-height:1.5; opacity:.92; margin-bottom:8px;}
+  [data-layout="premium"] .p-eventcard .p-evattire{font-family:'Inter',sans-serif; font-size:11px; font-weight:700; margin-bottom:10px;}
+  [data-layout="premium"] .p-eventcard .p-evlink{font-family:'Inter',sans-serif; font-size:11px; text-decoration:underline; color:#fff; opacity:.9;}
+  [data-layout="premium"] .p-photocta{position:relative; margin-top:0; height:320px; overflow:hidden; background:var(--seal,#333);}
+  [data-layout="premium"] .p-photocta img{width:100%; height:100%; object-fit:cover; display:block;}
+  [data-layout="premium"] .p-photocta-fallback{width:100%; height:100%; background:linear-gradient(155deg,var(--seal),var(--accent));}
+  [data-layout="premium"] .p-photocta-overlay{position:absolute; inset:0; background:linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,.05) 65%); display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:24px 22px; text-align:center;}
+  [data-layout="premium"] .p-photocta-overlay .p-script{color:#fff; font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:23px;}
+  [data-layout="premium"] .p-photocta-overlay p{color:rgba(255,255,255,.85); font-family:var(--bodyfont,'EB Garamond',serif); font-size:12.5px; margin:8px 0 16px; line-height:1.5;}
+  [data-layout="premium"] .p-sharebtn{background:#fff; color:#222; font-family:'Inter',sans-serif; font-size:11px; font-weight:700; letter-spacing:.03em; text-transform:uppercase; padding:11px 20px; border-radius:5px; text-decoration:none;}
+  [data-layout="premium"] .p-rsvpsection{padding:34px 28px 38px; text-align:center;}
+  [data-layout="premium"] .p-rsvptitle{font-size:29px; margin:0 0 6px;}
+  [data-layout="premium"] .p-rsvptitle .p-script2{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic;}
+  [data-layout="premium"] .p-rsvptitle .p-bold2{font-family:'Inter',sans-serif; font-weight:800; margin-left:6px;}
+  [data-layout="premium"] .p-rsvpnote{font-family:var(--bodyfont,'EB Garamond',serif); font-size:13.5px; opacity:.85; margin:6px 0 14px;}
+  [data-layout="premium"] .p-strict{font-family:'Inter',sans-serif; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; margin-bottom:18px;}
+  [data-layout="premium"] .p-countdown{display:flex; justify-content:center; gap:14px; margin-top:24px;}
+  [data-layout="premium"] .p-countdown .p-cbox{text-align:center; min-width:38px;}
+  [data-layout="premium"] .p-countdown .p-cnum{font-family:var(--headfont,'Cormorant Garamond',serif); font-size:27px; display:block;}
+  [data-layout="premium"] .p-countdown .p-clabel{font-family:'Inter',sans-serif; font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.6; display:block;}
+  [data-layout="premium"] .p-entrypass{margin-top:28px; border:1px solid currentColor; border-radius:10px; padding:16px; display:flex; align-items:center; gap:16px; opacity:.95;}
+  [data-layout="premium"] .p-entrypass-label{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; opacity:.6; margin-bottom:4px;}
+  [data-layout="premium"] .p-entrypass .seal{margin:0; flex:none;}
+  [data-layout="premium"] .p-entrypass-name{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:19px;}
+  [data-layout="premium"] .p-entrypass-tag{font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.7; margin-top:2px;}
+  [data-layout="premium"] .eventcolors{padding:0 24px 22px; margin-top:0;}
 </style>
 </head>
 <body>
@@ -115,6 +166,9 @@ const d = {
   photo: get('photo',''),
   showEventColors: get('showEventColors','1') === '1',
   eventColors: [get('ec1'), get('ec2'), get('ec3'), get('ec4')],
+  introText: get('introText'), ev1Attire: get('ev1Attire'),
+  ev2Name: get('ev2Name'), ev2Date: get('ev2Date'), ev2Time: get('ev2Time'), ev2Venue: get('ev2Venue'), ev2Desc: get('ev2Desc'), ev2Attire: get('ev2Attire'),
+  shareUrl: get('shareUrl'), rsvpUrl: get('rsvpUrl'),
 };
 const guestId = get('id');
 const guestName = get('name');
@@ -139,7 +193,7 @@ const SCALES = [
   {name:'Intimate', nameSize:'34px', detailSize:'15.5px'},
   {name:'Grand',    nameSize:'46px', detailSize:'18px'},
 ];
-const VALID_LAYOUTS = ['classic','banner','framed','arch','split','monogram','minimalLine','editorial','botanical','timeline'];
+const VALID_LAYOUTS = ['classic','banner','framed','arch','split','monogram','minimalLine','editorial','botanical','timeline','premium'];
 
 const loadedFonts = new Set();
 function ensureFont(gf){
@@ -176,6 +230,117 @@ function eventColorsHTML(design){
   return `<div class="eventcolors"><div class="eclabel">Event Colors</div><div class="ecolors-row">${dots}</div></div>`;
 }
 
+// ---------- PREMIUM WEBSITE LAYOUT (full one-pager, not a token card) ----------
+function fmtMonthDayYear(iso){
+  if(!iso) return {month:'', day:'', year:''};
+  const dt = new Date(iso+'T00:00:00');
+  return { month: dt.toLocaleDateString(undefined,{month:'long'}).toUpperCase(), day: dt.getDate(), year: dt.getFullYear() };
+}
+function mapsLink(venue, city){
+  const q = [venue, city].filter(Boolean).join(', ');
+  return q ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q) : '';
+}
+function tearEdgeSVG(color){
+  return `<svg class="p-tear" viewBox="0 0 100 10" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg"><path d="M0,10 L0,5 L5,7 L11,3 L17,6 L23,2 L30,7 L37,3 L44,6.5 L51,2.5 L58,6 L65,2 L72,6.5 L79,3 L86,7 L93,2.5 L100,6 L100,10 Z" fill="${color}"></path></svg>`;
+}
+function buildEventCard(label, iso, time, venue, city, desc, attire){
+  const {month, day} = fmtMonthDayYear(iso);
+  const link = mapsLink(venue, city);
+  const place = [venue, city].filter(Boolean).join(', ');
+  return `
+    <div class="p-eventcard">
+      <div class="p-evdate">${month ? month.slice(0,3) : ''} ${day || ''}${time ? ' &middot; ' + fmtTime(time) : ''}</div>
+      <div class="p-evname">${label}</div>
+      ${desc ? `<div class="p-evdesc">${desc}</div>` : ''}
+      ${attire ? `<div class="p-evattire">Attire: ${attire}</div>` : ''}
+      ${place ? `<div class="p-evdesc" style="opacity:.85; margin-bottom:4px;">${place}</div>` : ''}
+      ${link ? `<a class="p-evlink" href="${link}" target="_blank" rel="noopener">Get Directions</a>` : ''}
+    </div>`;
+}
+function buildPremiumSite(d, guestName, seats){
+  const heroInner = d.photo ? `<img src="${d.photo}" alt="">` : `<div class="p-hero-fallback"></div>`;
+  const heroBlock = `<div class="p-hero">${heroInner}${tearEdgeSVG(d.cBg)}</div>`;
+  const { month, day } = fmtMonthDayYear(d.wdate);
+  const hasSecond = !!(d.ev2Name && d.ev2Name.trim());
+  const scheduleHTML = hasSecond ? `
+    <div class="p-schedule">
+      ${buildEventCard(d.ev2Name, d.ev2Date, d.ev2Time, d.ev2Venue, '', d.ev2Desc, d.ev2Attire)}
+      ${buildEventCard('Wedding', d.wdate, d.wtime, d.venue, d.city, '', d.ev1Attire)}
+    </div>` : `
+    <div class="p-schedule single">
+      ${buildEventCard('Wedding', d.wdate, d.wtime, d.venue, d.city, '', d.ev1Attire)}
+    </div>`;
+  const photoCtaHTML = d.photo ? `
+    <div class="p-photocta">
+      <img src="${d.photo}" alt="">
+      <div class="p-photocta-overlay">
+        <div class="p-script">Share your photos with us</div>
+        <p>${d.introText || ''}</p>
+        ${d.shareUrl ? `<a class="p-sharebtn" href="${d.shareUrl}" target="_blank" rel="noopener">Share your memories here</a>` : ''}
+      </div>
+    </div>` : '';
+  const rsvpBtn = d.rsvpUrl
+    ? `<a class="p-rsvpbtn" href="${d.rsvpUrl}" target="_blank" rel="noopener">RSVP</a>`
+    : `<span class="p-rsvpbtn" style="opacity:.55; cursor:default;">RSVP</span>`;
+  const entryPass = `
+    <div class="p-entrypass">
+      <div class="seal" id="sealBox"></div>
+      <div>
+        <div class="p-entrypass-label">Your entry pass</div>
+        <div class="p-entrypass-name">${guestName}</div>
+        <div class="p-entrypass-tag">${partyTag(seats)}</div>
+      </div>
+    </div>`;
+
+  return `
+    ${heroBlock}
+    <div class="p-body">
+      <div class="p-eyebrow">${d.eyebrow || ''}</div>
+      <div class="p-names">${d.p1} &amp; ${d.p2}</div>
+      <div class="p-intro">${d.introText || ''}</div>
+      <div class="p-savedate">Save the date</div>
+      <div class="p-daterow"><span>${month}</span><span class="p-daynum">${day}</span><span>${fmtTime(d.wtime)}</span></div>
+      ${rsvpBtn}
+    </div>
+    ${scheduleHTML}
+    ${photoCtaHTML}
+    <div class="p-rsvpsection">
+      <div class="p-rsvptitle"><span class="p-script2">Please</span><span class="p-bold2">RSVP</span></div>
+      <div class="p-rsvpnote">The favour of your response is requested as soon as you can.</div>
+      <div class="p-strict">Strictly by invite only</div>
+      ${rsvpBtn}
+      ${eventColorsHTML(d)}
+      <div class="p-countdown">
+        <div class="p-cbox"><span class="p-cnum p-c-months">0</span><span class="p-clabel">Months</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-days">0</span><span class="p-clabel">Days</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-hours">0</span><span class="p-clabel">Hours</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-mins">0</span><span class="p-clabel">Min</span></div>
+        <div class="p-cbox"><span class="p-cnum p-c-secs">0</span><span class="p-clabel">Sec</span></div>
+      </div>
+      ${entryPass}
+    </div>
+  `;
+}
+function startCountdown(container, wdate, wtime){
+  const el = container.querySelector('.p-countdown');
+  if(!el || !wdate) return null;
+  const target = new Date(wdate + 'T' + (wtime || '00:00') + ':00');
+  function tick(){
+    const diff = Math.max(0, target - new Date());
+    const totalSec = Math.floor(diff/1000);
+    const days = Math.floor(totalSec/86400);
+    const months = Math.floor(days/30);
+    const remDays = days % 30;
+    const hours = Math.floor((totalSec%86400)/3600);
+    const mins = Math.floor((totalSec%3600)/60);
+    const secs = totalSec%60;
+    const set = (cls,val)=>{ const e = el.querySelector('.'+cls); if(e) e.textContent = String(val); };
+    set('p-c-months', months); set('p-c-days', remDays); set('p-c-hours', hours); set('p-c-mins', mins); set('p-c-secs', secs);
+  }
+  tick();
+  return setInterval(tick, 1000);
+}
+
 if(!guestId || !guestName){
   document.getElementById('card').style.display='none';
   document.getElementById('fallback').style.display='block';
@@ -203,7 +368,7 @@ if(!guestId || !guestName){
 
   const photoBlock = d.photo ? `<div class="photoblock"><img src="${d.photo}" alt=""></div>` : '';
 
-  card.innerHTML = `
+  card.innerHTML = layout === 'premium' ? buildPremiumSite(d, guestName, seats) : `
     ${photoBlock}
     <div class="mono-mark">${mono}</div>
     <div class="eyebrow">${d.eyebrow}</div>
@@ -229,6 +394,8 @@ if(!guestId || !guestName){
     <button class="addwallet" onclick="window.print()">Save / print this invite</button>
   `;
 
+  if(layout === 'premium'){ startCountdown(card, d.wdate, d.wtime); }
+
   // Payload the door-scanner will decode. Self-contained, no server lookup needed.
   // Compact pipe-delimited format (not JSON) keeps the QR small enough to scan reliably
   // off a phone screen — every extra character here adds modules, and more modules
@@ -239,7 +406,7 @@ if(!guestId || !guestName){
   // pixels to stay scannable; the split layout's QR sits in a narrower column so it
   // gets a smaller-but-still-solid size. Keep the QRCode pixel size and the CSS display
   // size identical so the canvas is never upscaled (which would blur it and break scans).
-  const qrSize = layout === 'split' ? 150 : 200;
+  const qrSize = layout === 'split' ? 150 : (layout === 'premium' ? 130 : 200);
   card.style.setProperty('--qrsize', qrSize + 'px');
 
   try{
