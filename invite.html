@@ -97,6 +97,79 @@
   [data-layout="timeline"] .dline{position:relative; padding-left:16px;}
   [data-layout="timeline"] .dline::before{content:''; position:absolute; left:-2px; top:7px; width:6px; height:6px; border-radius:50%; background:var(--accent);}
 
+  [data-layout="watercolor"]{
+    background-image:
+      radial-gradient(circle at 8% 6%, color-mix(in srgb, var(--accent) 40%, transparent) 0%, transparent 40%),
+      radial-gradient(circle at 94% 96%, color-mix(in srgb, var(--seal) 35%, transparent) 0%, transparent 44%);
+    background-repeat:no-repeat;
+  }
+  [data-layout="watercolor"] .names{font-size:calc(var(--namesize,42px) * 1.05);}
+  [data-layout="watercolor"] .divider{width:64px; opacity:.7;}
+
+  [data-layout="artdeco"]{border:1px solid var(--accent); position:relative;}
+  [data-layout="artdeco"]::before{
+    content:''; position:absolute; top:0; left:50%; transform:translateX(-50%); width:150px; height:76px;
+    background:repeating-conic-gradient(from -90deg at 50% 100%, var(--accent) 0deg 8deg, transparent 8deg 16deg);
+    opacity:.5; border-radius:76px 76px 0 0; pointer-events:none;
+  }
+  [data-layout="artdeco"] .names{letter-spacing:.03em; padding-top:14px;}
+  [data-layout="artdeco"] .divider{width:84px; height:3px; position:relative; background:var(--accent);}
+  [data-layout="artdeco"] .divider::before,[data-layout="artdeco"] .divider::after{content:''; position:absolute; top:50%; width:7px; height:7px; background:var(--accent); transform:translateY(-50%) rotate(45deg);}
+  [data-layout="artdeco"] .divider::before{left:-15px;}
+  [data-layout="artdeco"] .divider::after{right:-15px;}
+
+  [data-layout="kraftRustic"]{background-image:repeating-linear-gradient(45deg, rgba(0,0,0,.02) 0 2px, transparent 2px 5px);}
+  [data-layout="kraftRustic"] .eyebrow{position:relative; padding-top:16px;}
+  [data-layout="kraftRustic"] .eyebrow::before{content:''; position:absolute; top:-8px; left:50%; transform:translateX(-50%) rotate(-2deg); width:64px; height:15px; border:1px dashed var(--accent); opacity:.6;}
+  [data-layout="kraftRustic"] .seal{border-radius:5px; transform:rotate(-3deg);}
+  [data-layout="kraftRustic"] .seal::before{border-radius:5px;}
+
+  [data-layout="filmStrip"]{padding-top:60px; padding-bottom:58px; position:relative;}
+  [data-layout="filmStrip"]::before,[data-layout="filmStrip"]::after{
+    content:''; position:absolute; left:0; right:0; height:12px;
+    background-image:repeating-linear-gradient(90deg, var(--accent) 0 10px, transparent 10px 24px);
+    background-position:center; opacity:.22; pointer-events:none;
+  }
+  [data-layout="filmStrip"]::before{top:16px;}
+  [data-layout="filmStrip"]::after{bottom:16px;}
+
+  [data-layout="terrazzo"]{
+    background-image:
+      radial-gradient(circle at 15% 18%, color-mix(in srgb, var(--accent) 60%, transparent) 0 5px, transparent 6px),
+      radial-gradient(circle at 82% 14%, color-mix(in srgb, var(--seal) 55%, transparent) 0 4px, transparent 5px),
+      radial-gradient(circle at 72% 88%, color-mix(in srgb, var(--accent) 55%, transparent) 0 6px, transparent 7px),
+      radial-gradient(circle at 22% 84%, color-mix(in srgb, var(--seal) 55%, transparent) 0 4px, transparent 5px),
+      radial-gradient(circle at 90% 55%, color-mix(in srgb, var(--accent) 55%, transparent) 0 4px, transparent 5px);
+    background-repeat:no-repeat;
+  }
+  [data-layout="terrazzo"] .names{font-style:normal; font-weight:700;}
+  [data-layout="terrazzo"] .divider{height:4px; border-radius:2px;}
+
+  [data-layout="starryNight"]{
+    background-image:
+      radial-gradient(1.6px 1.6px at 18% 14%, var(--accent) 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 74% 24%, var(--accent) 50%, transparent 51%),
+      radial-gradient(1.6px 1.6px at 42% 8%, var(--accent) 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 90% 12%, var(--accent) 50%, transparent 51%),
+      radial-gradient(1.6px 1.6px at 60% 20%, var(--accent) 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 10% 30%, var(--accent) 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 30% 92%, var(--accent) 50%, transparent 51%),
+      radial-gradient(1.6px 1.6px at 85% 88%, var(--accent) 50%, transparent 51%);
+    background-repeat:no-repeat; opacity:1;
+  }
+  [data-layout="starryNight"] .divider{background:linear-gradient(90deg, transparent, var(--accent), transparent); width:130px; height:1px;}
+
+  [data-layout="laceScallop"]{position:relative;}
+  [data-layout="laceScallop"]::before{content:''; position:absolute; inset:9px; border:1px dashed var(--accent); opacity:.45; border-radius:3px; pointer-events:none;}
+  [data-layout="laceScallop"] .names{font-size:calc(var(--namesize,42px) * .92);}
+  [data-layout="laceScallop"] .divider{width:34px;}
+
+  [data-layout="postcard"]{align-items:flex-start; text-align:left; padding-right:92px; position:relative;}
+  [data-layout="postcard"] .eyebrow{max-width:78%;}
+  [data-layout="postcard"]::before{content:''; position:absolute; top:92px; right:24px; width:50px; height:64px; border:2px dashed var(--accent); opacity:.6;}
+  [data-layout="postcard"]::after{content:''; position:absolute; top:116px; right:84px; width:42px; height:42px; border-radius:50%; border:1.5px solid var(--accent); opacity:.3;}
+  [data-layout="postcard"] .divider{margin-left:0;}
+
   /* --- Premium Website layout: full scrolling one-pager, not a token card --- */
   [data-layout="premium"]{
     width:100%; max-width:460px; padding:0; overflow:hidden; border-radius:14px;
@@ -222,7 +295,7 @@ const SCALES = [
   {name:'Intimate', nameSize:'34px', detailSize:'15.5px'},
   {name:'Grand',    nameSize:'46px', detailSize:'18px'},
 ];
-const VALID_LAYOUTS = ['classic','banner','framed','arch','split','monogram','minimalLine','editorial','botanical','timeline','premium'];
+const VALID_LAYOUTS = ['classic','banner','framed','arch','split','monogram','minimalLine','editorial','botanical','timeline','watercolor','artdeco','kraftRustic','filmStrip','terrazzo','starryNight','laceScallop','postcard','premium'];
 
 const loadedFonts = new Set();
 function ensureFont(gf){
