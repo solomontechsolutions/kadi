@@ -96,12 +96,29 @@
 const params = new URLSearchParams(window.location.search);
 const get = (k, d='') => params.get(k) || d;
 
+// The couple's card design, baked in so every guest link only needs to carry
+// that guest's own id/name/seats instead of repeating the whole design every time.
+// Kept in sync with index.html's INVITE_DEFAULTS — index.html only adds a URL
+// param when a guest's link actually differs from these (e.g. after the couple
+// customizes something), so this is the "nothing customized" baseline, not a cap.
+const INVITE_DEFAULTS = {
+  p1:'Amara', p2:'Julian', wdate:'2027-02-14', wtime:'16:30',
+  venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
+  cBg:'#f6f1e9', cInk:'#2b2a26', cAccent:'#b08d57', cSeal:'#46583d',
+  layout:'classic', hf:0, bf:0, sc:1,
+};
+
 const d = {
-  p1: get('p1','Partner One'), p2: get('p2','Partner Two'),
-  wdate: get('wdate'), wtime: get('wtime'), venue: get('venue'), city: get('city'),
-  eyebrow: get('eyebrow'),
-  cBg: get('cBg','#F6F1E9'), cInk: get('cInk','#2B2A26'), cAccent: get('cAccent','#B08D57'), cSeal: get('cSeal','#46583D'),
-  layout: get('layout','classic'), hf: parseInt(get('hf','0'),10) || 0, bf: parseInt(get('bf','0'),10) || 0, sc: parseInt(get('sc','1'),10) || 0,
+  p1: get('p1', INVITE_DEFAULTS.p1), p2: get('p2', INVITE_DEFAULTS.p2),
+  wdate: get('wdate', INVITE_DEFAULTS.wdate), wtime: get('wtime', INVITE_DEFAULTS.wtime),
+  venue: get('venue', INVITE_DEFAULTS.venue), city: get('city', INVITE_DEFAULTS.city),
+  eyebrow: get('eyebrow', INVITE_DEFAULTS.eyebrow),
+  cBg: get('cBg', INVITE_DEFAULTS.cBg), cInk: get('cInk', INVITE_DEFAULTS.cInk),
+  cAccent: get('cAccent', INVITE_DEFAULTS.cAccent), cSeal: get('cSeal', INVITE_DEFAULTS.cSeal),
+  layout: get('layout', INVITE_DEFAULTS.layout),
+  hf: parseInt(get('hf', INVITE_DEFAULTS.hf), 10) || 0,
+  bf: parseInt(get('bf', INVITE_DEFAULTS.bf), 10) || 0,
+  sc: parseInt(get('sc', INVITE_DEFAULTS.sc), 10) || 0,
 };
 const guestId = get('id');
 const guestName = get('name');

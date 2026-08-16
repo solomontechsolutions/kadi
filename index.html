@@ -472,6 +472,9 @@ function renderPreview(){
   const card = document.getElementById('previewCard');
   card.innerHTML = buildCardInner(d, 'Guest Name', 2, true);
   applyCardTokens(card, d);
+  // Guest invite links embed whatever in the design differs from the baked-in
+  // defaults, so the table's links must stay in sync with every design edit.
+  renderGuests();
 }
 ['p1','p2','wdate','wtime','venue','city','eyebrow','cBg','cInk','cAccent','cSeal'].forEach(id=>{
   document.getElementById(id).addEventListener('input', renderPreview);
@@ -584,15 +587,31 @@ function removeGuest(id){
   saveState(state);
   renderGuests();
 }
+// Must match invite.html's INVITE_DEFAULTS exactly — invite.html falls back to these
+// when a URL param is missing, so a guest link only needs to carry a field when it
+// actually differs from this baseline. That keeps ordinary links down to just
+// id/name(/seats), while anything the couple customizes still reaches the guest.
+const INVITE_DEFAULTS = {
+  p1:'Amara', p2:'Julian', wdate:'2027-02-14', wtime:'16:30',
+  venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
+  cBg:'#f6f1e9', cInk:'#2b2a26', cAccent:'#b08d57', cSeal:'#46583d',
+  layout:'classic', hf:0, bf:0, sc:1,
+};
 function inviteLink(g){
-  const d = state.design;
-  const params = new URLSearchParams({
-    id:g.id, name:g.name, seats:g.seats,
-    p1:d.p1,p2:d.p2,wdate:d.wdate,wtime:d.wtime,venue:d.venue,city:d.city,eyebrow:d.eyebrow,
-    cBg:d.cBg,cInk:d.cInk,cAccent:d.cAccent,cSeal:d.cSeal,
-    layout:d.layout||'classic', hf:d.hf??0, bf:d.bf??0, sc:d.sc??1
+  const d = state.design || {};
+  const params = { id: g.id, name: g.name };
+  if (g.seats && Number(g.seats) !== 1) params.seats = g.seats;
+  const design = {
+    p1:d.p1, p2:d.p2, wdate:d.wdate, wtime:d.wtime, venue:d.venue, city:d.city, eyebrow:d.eyebrow,
+    cBg:d.cBg, cInk:d.cInk, cAccent:d.cAccent, cSeal:d.cSeal,
+    layout:d.layout||'classic', hf:d.hf??0, bf:d.bf??0, sc:d.sc??1,
+  };
+  // Colors from <input type=color> are always lowercase hex; compare case-insensitively
+  // so an unchanged color never gets re-added to the URL just because of casing.
+  Object.keys(INVITE_DEFAULTS).forEach(key=>{
+    if (String(design[key]).toLowerCase() !== String(INVITE_DEFAULTS[key]).toLowerCase()) params[key] = design[key];
   });
-  return 'invite.html?' + params.toString();
+  return 'invite.html?' + new URLSearchParams(params).toString();
 }
 function copyLink(g){
   const url = new URL(inviteLink(g), window.location.href).href;
