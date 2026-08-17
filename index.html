@@ -323,7 +323,11 @@
     <div class="callout"><b>95,000 combinations:</b> 19 layouts &times; 100 palettes (20 hues &times; 5 moods) &times; 50 type pairings (5 heading fonts &times; 5 body fonts &times; 2 scales) &mdash; including <b>Premium Website</b>, a full scrolling one-page invite with a photo hero, event schedule, and live countdown. Mix and match below, hit <b>Shuffle</b> for a random one, or paste a code to jump straight to a combination.</div>
     <div class="grid">
       <div>
-        <h3 style="margin-top:0;">Layout</h3>
+        <h3 style="margin-top:0;">Event type</h3>
+        <div class="chiprow" id="eventPresetPicker"></div>
+        <div class="hint" style="margin:-6px 0 16px;">Jumps to a starting look for that event &mdash; still fully yours to customize below afterward.</div>
+
+        <h3>Layout</h3>
         <div class="chiprow" id="layoutPicker"></div>
 
         <h3>Palette</h3>
@@ -544,6 +548,18 @@ const LAYOUTS = [
   {key:'laceScallop', name:'Delicate Lace'},
   {key:'postcard',    name:'Vintage Postcard'},
   {key:'premium',     name:'Premium Website'},
+];
+
+// Curated starting points per event type (layout + palette + type), mirroring the
+// event categories couples/organizers in this market actually use Kadi for. These
+// are a first pass at "what suits this event" — easy to retune, not locked in;
+// picking one just jumps the picker to that combo, same as Shuffle does.
+const EVENT_PRESETS = [
+  { key:'wedding',      name:'Wedding',         layoutKey:'premium',     hueIdx:4,  moodIdx:0, headingIdx:0, bodyIdx:0, scaleIdx:1 },
+  { key:'sendoff',      name:'Send-Off',        layoutKey:'monogram',    hueIdx:1,  moodIdx:1, headingIdx:1, bodyIdx:1, scaleIdx:1 },
+  { key:'kitchenparty', name:'Kitchen Party',   layoutKey:'banner',      hueIdx:18, moodIdx:3, headingIdx:1, bodyIdx:2, scaleIdx:1 },
+  { key:'corporate',    name:'Corporate Event', layoutKey:'minimalLine', hueIdx:15, moodIdx:2, headingIdx:3, bodyIdx:3, scaleIdx:0 },
+  { key:'anniversary',  name:'Anniversary',     layoutKey:'watercolor',  hueIdx:19, moodIdx:1, headingIdx:0, bodyIdx:0, scaleIdx:1 },
 ];
 
 function pad(n,len){ return String(n).padStart(len,'0'); }
@@ -875,6 +891,19 @@ let tplState = { layoutIdx:0, hueIdx:4, moodIdx:0, headingIdx:0, bodyIdx:0, scal
 let templateCountdownTimer = null;
 
 function buildPickers(){
+  const presetEl = document.getElementById('eventPresetPicker');
+  presetEl.innerHTML = EVENT_PRESETS.map(p=>`<button class="chip" data-key="${p.key}">${p.name}</button>`).join('');
+  presetEl.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{
+    const preset = EVENT_PRESETS.find(p=>p.key===btn.dataset.key);
+    const layoutIdx = LAYOUTS.findIndex(l=>l.key===preset.layoutKey);
+    tplState = {
+      layoutIdx: layoutIdx>=0 ? layoutIdx : 0,
+      hueIdx:preset.hueIdx, moodIdx:preset.moodIdx,
+      headingIdx:preset.headingIdx, bodyIdx:preset.bodyIdx, scaleIdx:preset.scaleIdx,
+    };
+    renderTemplatePreview();
+  }));
+
   const layoutEl = document.getElementById('layoutPicker');
   layoutEl.innerHTML = LAYOUTS.map((l,i)=>`<button class="chip" data-i="${i}">${l.name}</button>`).join('');
   layoutEl.querySelectorAll('.chip').forEach(btn=>btn.addEventListener('click', ()=>{ tplState.layoutIdx=+btn.dataset.i; renderTemplatePreview(); }));
