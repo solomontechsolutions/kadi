@@ -220,6 +220,15 @@
   [data-layout="premium"] .p-entrypass-name{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:19px;}
   [data-layout="premium"] .p-entrypass-tag{font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.7; margin-top:2px;}
   [data-layout="premium"] .eventcolors{padding:0 24px 22px; margin-top:0;}
+
+  /* --- Ornament density: independent of layout, applies on top of any of the 19 --- */
+  .invite-card .ornament-tl,.invite-card .ornament-br{
+    position:absolute; width:14px; height:14px; border:1px solid var(--accent,#B08D57); opacity:0; pointer-events:none;
+  }
+  .invite-card .ornament-tl{top:10px; left:10px; border-right:none; border-bottom:none;}
+  .invite-card .ornament-br{bottom:10px; right:10px; border-left:none; border-top:none;}
+  [data-ornament="accent"] .ornament-tl,[data-ornament="accent"] .ornament-br{opacity:.6;}
+  [data-ornament="frame"]{box-shadow: inset 0 0 0 1.5px var(--accent,#B08D57), 0 24px 60px -16px rgba(0,0,0,.35);}
 </style>
 </head>
 <body>
@@ -239,7 +248,7 @@ const INVITE_DEFAULTS = {
   p1:'Amara', p2:'Julian', wdate:'2027-02-14', wtime:'16:30',
   venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
   cBg:'#f2f3ec', cInk:'#2f331f', cAccent:'#8d9e47', cSeal:'#616f2a',
-  layout:'premium', hf:0, bf:0, sc:1,
+  layout:'premium', hf:0, bf:0, sc:1, ornament:'none',
   // The couple's photo is baked in here rather than ever traveling in a guest link —
   // as a compressed data URL it can be tens of KB, which would make every link huge.
   // index.html never adds a `photo` URL param; update this value (and redeploy) when
@@ -260,6 +269,7 @@ const d = {
   hf: parseInt(get('hf', INVITE_DEFAULTS.hf), 10) || 0,
   bf: parseInt(get('bf', INVITE_DEFAULTS.bf), 10) || 0,
   sc: parseInt(get('sc', INVITE_DEFAULTS.sc), 10) || 0,
+  ornament: get('ornament', INVITE_DEFAULTS.ornament),
   photo: get('photo', INVITE_DEFAULTS.photo),
   showEventColors: get('showEventColors', INVITE_DEFAULTS.showEventColors ? '1' : '0') === '1',
   eventColors: [
@@ -296,6 +306,7 @@ const SCALES = [
   {name:'Grand',    nameSize:'46px', detailSize:'18px'},
 ];
 const VALID_LAYOUTS = ['classic','banner','framed','arch','split','monogram','minimalLine','editorial','botanical','timeline','watercolor','artdeco','kraftRustic','filmStrip','terrazzo','starryNight','laceScallop','postcard','premium'];
+const VALID_ORNAMENTS = ['none','accent','frame'];
 
 const loadedFonts = new Set();
 function ensureFont(gf){
@@ -395,6 +406,7 @@ function buildPremiumSite(d, guestName, seats){
     </div>`;
 
   return `
+    <div class="ornament-tl"></div><div class="ornament-br"></div>
     ${heroBlock}
     <div class="p-body">
       <div class="p-eyebrow">${d.eyebrow || ''}</div>
@@ -458,6 +470,7 @@ if(!guestId || !guestName){
   const mono = ((d.p1||'')[0]||'').toUpperCase() + ((d.p2||'')[0]||'').toUpperCase();
 
   card.dataset.layout = layout;
+  card.dataset.ornament = VALID_ORNAMENTS.includes(d.ornament) ? d.ornament : 'none';
   card.style.background = d.cBg;
   card.style.color = d.cInk;
   card.style.setProperty('--bg', d.cBg);
@@ -474,6 +487,7 @@ if(!guestId || !guestName){
   const photoBlock = d.photo ? `<div class="photoblock"><img src="${d.photo}" alt=""></div>` : '';
 
   card.innerHTML = layout === 'premium' ? buildPremiumSite(d, guestName, seats) : `
+    <div class="ornament-tl"></div><div class="ornament-br"></div>
     ${photoBlock}
     <div class="mono-mark">${mono}</div>
     <div class="eyebrow">${d.eyebrow}</div>
