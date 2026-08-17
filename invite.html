@@ -214,7 +214,7 @@
   [data-layout="premium"] .p-countdown .p-cbox{text-align:center; min-width:38px;}
   [data-layout="premium"] .p-countdown .p-cnum{font-family:var(--headfont,'Cormorant Garamond',serif); font-size:27px; display:block;}
   [data-layout="premium"] .p-countdown .p-clabel{font-family:'Inter',sans-serif; font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; opacity:.6; display:block;}
-  [data-layout="premium"] .p-entrypass{margin-top:28px; border:1px solid currentColor; border-radius:10px; padding:16px; display:flex; align-items:center; gap:16px; opacity:.95;}
+  [data-layout="premium"] .p-entrypass{margin-top:28px; border:1px solid currentColor; border-radius:10px; padding:16px; display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:16px; opacity:.95;}
   [data-layout="premium"] .p-entrypass-label{font-family:'Inter',sans-serif; font-size:9.5px; letter-spacing:.16em; text-transform:uppercase; opacity:.6; margin-bottom:4px;}
   [data-layout="premium"] .p-entrypass .seal{margin:0; flex:none;}
   [data-layout="premium"] .p-entrypass-name{font-family:var(--headfont,'Cormorant Garamond',serif); font-style:italic; font-size:19px;}
@@ -522,11 +522,27 @@ if(!guestId || !guestName){
   // packed into the same physical size means fewer pixels per module for a camera to resolve.
   const payload = ['WED1', guestId, guestName, String(seats)].join('|');
 
-  // A denser QR (more characters -> more modules) needs proportionally more physical
-  // pixels to stay scannable; the split layout's QR sits in a narrower column so it
-  // gets a smaller-but-still-solid size. Keep the QRCode pixel size and the CSS display
-  // size identical so the canvas is never upscaled (which would blur it and break scans).
-  const qrSize = layout === 'split' ? 150 : (layout === 'premium' ? 130 : 200);
+  // Real scans are rarely perfect: a guest's phone screen photographed at an angle, in
+  // imperfect light, slightly out of focus. Using the highest error-correction level (H,
+  // ~30% recoverable) gives jsQR real headroom to still decode correctly instead of
+  // returning garbled data that fails the WED1 check ("Unrecognized code" despite a QR
+  // genuinely being there). The tradeoff is more modules per character, so probe the
+  // actual module count for this payload first and size the QR to keep a healthy minimum
+  // pixels-per-module — a short name gets a compact, sharp code; a long household name's
+  // QR grows to compensate rather than getting denser and harder to resolve.
+  const baseQrSize = layout === 'split' ? 150 : (layout === 'premium' ? 130 : 200);
+  const maxQrSize = layout === 'split' ? 220 : (layout === 'premium' ? 300 : 290);
+  let moduleCount = 29;
+  try{
+    const probeDiv = document.createElement('div');
+    probeDiv.style.cssText = 'position:absolute; left:-9999px;';
+    document.body.appendChild(probeDiv);
+    const probe = new QRCode(probeDiv, { text: payload, width: 10, height: 10, correctLevel: QRCode.CorrectLevel.H });
+    moduleCount = probe._oQRCode.moduleCount;
+    probeDiv.remove();
+  } catch(e){ /* fall back to the moduleCount default above */ }
+  const minPxPerModule = 6.2;
+  const qrSize = Math.round(Math.min(maxQrSize, Math.max(baseQrSize, moduleCount * minPxPerModule)));
   card.style.setProperty('--qrsize', qrSize + 'px');
 
   try{
@@ -535,7 +551,7 @@ if(!guestId || !guestName){
       text: payload,
       width: qrSize, height: qrSize,
       colorDark: d.cInk, colorLight: d.cBg,
-      correctLevel: QRCode.CorrectLevel.M
+      correctLevel: QRCode.CorrectLevel.H
     });
   } catch(err){
     document.getElementById('sealBox').innerHTML =
