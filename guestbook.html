@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leave a Message</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#616f2a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="vendor/supabase.js"></script>
+<style>
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; background:#f2f3ec; color:#2f331f;
+    font-family:'EB Garamond',serif; padding:36px 16px 60px;
+  }
+  .wrap{max-width:520px; margin:0 auto;}
+  h1{font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:500; font-size:32px; margin:0 0 6px; text-align:center;}
+  .sub{font-family:'Inter',sans-serif; font-size:12.5px; letter-spacing:.03em; color:#5c6650; text-align:center; margin-bottom:28px;}
+  form{background:#fff; border-radius:10px; padding:22px 20px; box-shadow:0 10px 30px -14px rgba(47,51,31,.28); margin-bottom:32px;}
+  label{display:block; font-family:'Inter',sans-serif; font-size:11.5px; letter-spacing:.03em; color:#5c6650; margin-bottom:5px;}
+  input[type=text],textarea{
+    width:100%; padding:10px 12px; border:1px solid rgba(47,51,31,.18); border-radius:6px;
+    font-family:'EB Garamond',serif; font-size:16px; background:#f9f9f5; color:#2f331f; margin-bottom:14px; resize:vertical;
+  }
+  .honey{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden;}
+  button[type=submit]{
+    font-family:'Inter',sans-serif; font-size:13px; font-weight:600; letter-spacing:.03em;
+    background:#8d9e47; color:#fff; border:none; padding:11px 22px; border-radius:6px; cursor:pointer; width:100%;
+  }
+  button[type=submit]:disabled{opacity:.6; cursor:default;}
+  #msgStatus{font-family:'Inter',sans-serif; font-size:12.5px; text-align:center; margin:-18px 0 24px; min-height:1.2em;}
+  #msgStatus.ok{color:#4b6b2a;}
+  #msgStatus.bad{color:#9a3b2e;}
+  .wall-title{font-family:'Inter',sans-serif; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#5c6650; margin:0 0 14px; text-align:center;}
+  .msg{background:#fff; border-radius:8px; padding:16px 18px; margin-bottom:12px; box-shadow:0 4px 14px -8px rgba(47,51,31,.2);}
+  .msg .who{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:18px; margin-bottom:4px;}
+  .msg .text{font-size:15px; line-height:1.6; white-space:pre-wrap; word-break:break-word;}
+  .msg .when{font-family:'Inter',sans-serif; font-size:10px; color:#8a9178; margin-top:8px;}
+  .empty,.loading{font-family:'Inter',sans-serif; font-size:13px; color:#5c6650; text-align:center; padding:20px 0;}
+  .setup{background:#fff3ea; border:1px solid #e8c9a8; border-radius:8px; padding:16px 18px; font-family:'Inter',sans-serif; font-size:12.5px; color:#6b4a2c; line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Leave a Message</h1>
+  <div class="sub">For Amara &amp; Julian</div>
+
+  <form id="msgForm">
+    <label for="msgName">Your name</label>
+    <input type="text" id="msgName" maxlength="80" required>
+    <label for="msgText">Your message</label>
+    <textarea id="msgText" rows="4" maxlength="500" placeholder="Share your wishes, a favorite memory, or advice for the couple..." required></textarea>
+    <input type="text" class="honey" id="msgHoney" name="website" autocomplete="off" tabindex="-1">
+    <button type="submit" id="msgSubmitBtn">Send message</button>
+  </form>
+  <div id="msgStatus"></div>
+
+  <div class="wall-title">Messages from your friends and family</div>
+  <div id="msgList"><div class="loading">Loading messages…</div></div>
+</div>
+
+<script>
+// Fill these in from the Supabase dashboard: Project Settings -> API.
+// The anon/public key is designed to be embedded in client-side code like
+// this -- it's not a secret. Access control is enforced by the Row Level
+// Security policies in supabase/schema.sql (public insert + public read
+// only, no update/delete), not by hiding this key.
+const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SITE_ID = 'kadi-nur8';
+
+const configured = SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
+const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function fmtWhen(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined, {month:'short', day:'numeric', year:'numeric'});
+}
+function renderMessages(rows){
+  const list = document.getElementById('msgList');
+  if(!rows || !rows.length){
+    list.innerHTML = '<div class="empty">Be the first to leave a message.</div>';
+    return;
+  }
+  list.innerHTML = rows.map(r => `
+    <div class="msg">
+      <div class="who">${escapeHtml(r.guest_name)}</div>
+      <div class="text">${escapeHtml(r.message)}</div>
+      <div class="when">${fmtWhen(r.created_at)}</div>
+    </div>
+  `).join('');
+}
+async function loadMessages(){
+  if(!sb) return;
+  const list = document.getElementById('msgList');
+  const { data, error } = await sb.from('messages').select('guest_name,message,created_at')
+    .eq('site_id', SITE_ID).order('created_at', { ascending:false }).limit(200);
+  if(error){
+    list.innerHTML = '<div class="empty">Could not load messages right now — please refresh.</div>';
+    return;
+  }
+  renderMessages(data);
+}
+
+if(!configured){
+  document.getElementById('msgForm').style.display = 'none';
+  document.getElementById('msgList').innerHTML =
+    '<div class="setup"><b>Guestbook not set up yet.</b> Add your Supabase project URL and anon key to guestbook.html\'s SUPABASE_URL / SUPABASE_ANON_KEY constants, run supabase/schema.sql once in the Supabase SQL editor, and redeploy.</div>';
+} else {
+  document.getElementById('msgForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if(document.getElementById('msgHoney').value) return; // honeypot tripped, silently ignore
+    const guest_name = document.getElementById('msgName').value.trim();
+    const message = document.getElementById('msgText').value.trim();
+    if(!guest_name || !message) return;
+    const btn = document.getElementById('msgSubmitBtn');
+    const status = document.getElementById('msgStatus');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    status.className = ''; status.textContent = '';
+    const { error } = await sb.from('messages').insert({ site_id: SITE_ID, guest_name, message });
+    btn.disabled = false; btn.textContent = 'Send message';
+    if(error){
+      status.className = 'bad';
+      status.textContent = 'Something went wrong — please try again.';
+      return;
+    }
+    document.getElementById('msgForm').reset();
+    status.className = 'ok';
+    status.textContent = 'Thank you! Your message has been added below.';
+    loadMessages();
+  });
+  loadMessages();
+}
+
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
+</script>
+</body>
+</html>

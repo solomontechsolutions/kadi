@@ -420,6 +420,9 @@ function buildPremiumSite(d, guestName, seats){
         <div class="p-cbox"><span class="p-cnum p-c-secs">0</span><span class="p-clabel">Sec</span></div>
       </div>
       ${entryPass}
+      <div style="margin-top:22px;">
+        <a class="p-rsvpbtn" href="guestbook.html" style="text-decoration:none;">Leave a message for us</a>
+      </div>
     </div>
   `;
 }
@@ -494,6 +497,7 @@ if(!guestId || !guestName){
       <div class="seal-cap">present this code at entry</div>
     </div>
     <button class="addwallet" onclick="window.print()">Save / print this invite</button>
+    <a class="addwallet" href="guestbook.html" style="text-decoration:none; margin-left:10px;">Leave us a message</a>
   `;
 
   if(layout === 'premium'){ startCountdown(card, d.wdate, d.wtime); }
