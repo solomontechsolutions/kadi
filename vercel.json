@@ -15,5 +15,14 @@
 
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+
+  "//outputDirectory": [
+    "The build was already running after framework was pinned -- the generated",
+    "public/engine/ files are live and they are gitignored, so they can only",
+    "have come from prebuild. What was still broken is that /_next/static 404s,",
+    "meaning .next was being discarded and public/ served as a flat static",
+    "directory. That is an explicit Output Directory override on the project."
+  ],
+  "outputDirectory": ".next"
 }
