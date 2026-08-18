@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "//": [
+    "The project predates this repo being a Next.js app -- it was created when",
+    "Kadi was four static HTML files, so its dashboard settings serve the",
+    "output directory as static assets and never run a build. After the",
+    "migration that left / with nothing to serve (404) while /invite.html and",
+    "/scanner.html kept working, because those are real files under public/.",
+    "",
+    "Pinning the framework here rather than fixing it only in the dashboard",
+    "keeps the deployment config in the repo, so a future project re-create or",
+    "a preview branch cannot silently go back to serving static files."
+  ],
+
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install"
+}
