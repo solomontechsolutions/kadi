@@ -1,0 +1,307 @@
+/* ============================================================================
+   Kadi Genome Engine -- composable card CSS
+   ----------------------------------------------------------------------------
+   Every rule in this file is scoped to exactly ONE axis, and each axis touches
+   only the hook it owns (see the contract at the top of kadi-genome.js).
+
+   The hard rule that makes 277,112 layouts possible instead of 57:
+     NOTHING here attaches ::before/::after to .invite-card.
+   Decoration that needs pseudo-elements gets its own real layer (.k-frame,
+   .k-motif) so two axes can never contend for the same pseudo-element. The old
+   system broke precisely here -- [data-layout="framed"]::before and
+   [data-layout="botanical"]::before could not coexist, so "layout" had to stay
+   a single-choice enum forever.
+
+   Colour comes in as --bg/--ink/--accent/--seal; type as --headfont/--bodyfont/
+   --namesize/--detailsize. No axis hardcodes a colour.
+   ========================================================================== */
+
+/* -------------------------------------------------------------- card shell */
+.invite-card{
+  position:relative;
+  box-sizing:border-box;
+  width:100%;
+  max-width:460px;
+  min-height:560px;
+  padding:44px 34px 38px;
+  background:var(--bg,#F6F1E9);
+  color:var(--ink,#2B2A26);
+  font-family:var(--bodyfont,'EB Garamond',serif);
+  overflow:hidden;
+  isolation:isolate;
+}
+
+/* Decorative layers sit behind content; content never needs a z-index fight. */
+.k-frame,.k-motif{ position:absolute; inset:0; pointer-events:none; z-index:0; }
+.k-content{ position:relative; z-index:1; display:flex; flex-direction:column; min-height:100%; }
+
+.k-eyebrow{ font-family:'Inter',sans-serif; font-size:10.5px; letter-spacing:.28em;
+  text-transform:uppercase; opacity:.75; }
+.k-names{ font-family:var(--headfont,'Cormorant Garamond',serif); font-weight:500;
+  font-size:var(--namesize,38px); line-height:1.15; margin:14px 0 10px; }
+.invite-card.k-italic .k-names{ font-style:italic; }
+.k-amp{ display:block; font-size:.55em; opacity:.6; margin:2px 0; }
+.k-crest{ display:none; font-family:var(--headfont); font-size:calc(var(--namesize,38px) * .82);
+  letter-spacing:.06em; opacity:.9; line-height:1; }
+.k-detail{ font-size:var(--detailsize,15.5px); line-height:1.9; }
+.k-dlabel{ display:none; font-family:'Inter',sans-serif; font-size:9.5px;
+  letter-spacing:.18em; text-transform:uppercase; opacity:.55; }
+.k-guest{ margin-top:20px; }
+.k-guestline{ font-family:'Inter',sans-serif; font-size:12px; letter-spacing:.05em; opacity:.75; }
+.k-guestname{ font-family:var(--headfont,'Cormorant Garamond',serif); font-size:20px; margin-top:2px; }
+.invite-card.k-italic .k-guestname{ font-style:italic; }
+.k-colors{ margin-top:18px; }
+.k-eclabel{ font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.2em;
+  text-transform:uppercase; opacity:.65; margin-bottom:8px; }
+.k-ecolors{ display:flex; gap:8px; }
+.k-ecolor{ width:16px; height:16px; border-radius:50%; box-shadow:0 0 0 1px rgba(0,0,0,.12); }
+/* .k-foot is the one element the align axis and the seal/guest blocks share.
+   It carries the margin-top:auto that pins the footer to the card bottom, so
+   the align axis can re-flow it without also owning the spacing. */
+.k-foot{ margin-top:auto; width:100%; display:flex; flex-direction:column; gap:4px; }
+.k-sealwrap{ padding-top:24px; }
+.k-sealrow{ display:flex; align-items:center; gap:12px; }
+.k-seal{ width:54px; height:54px; border-radius:50%; background:var(--seal,#7B6A4E); flex:none; }
+.k-sealcap{ font-family:'Inter',sans-serif; font-size:9px; letter-spacing:.2em;
+  text-transform:uppercase; opacity:.7; margin-top:6px; }
+.k-ptag{ font-family:'Inter',sans-serif; font-size:10px; letter-spacing:.14em;
+  text-transform:uppercase; border:1px solid currentColor; opacity:.8;
+  padding:4px 10px; border-radius:20px; }
+
+/* ================================================================= 1. FRAME
+   Owns: card radius / padding / clip-path, and the .k-frame layer.          */
+.invite-card[data-frame="plain"]  { }
+
+.invite-card[data-frame="rule"] .k-frame{
+  border:1px solid var(--accent); margin:13px; }
+
+.invite-card[data-frame="double"]{ padding:52px 40px 44px; }
+.invite-card[data-frame="double"] .k-frame{
+  border:1px solid var(--accent); margin:12px;
+  box-shadow:inset 0 0 0 1px var(--bg), inset 0 0 0 5px var(--accent); }
+
+.invite-card[data-frame="arch"]{
+  border-radius:190px 190px 6px 6px; padding-top:70px; }
+
+/* Notches are punched with radial gradients on the layer, not on the card, so
+   the card keeps a paintable background for the wash/bleed media modes. */
+.invite-card[data-frame="notch"] .k-frame{
+  background:
+    radial-gradient(circle at 0 50%,   var(--stage,#fff) 11px, transparent 12px),
+    radial-gradient(circle at 100% 50%, var(--stage,#fff) 11px, transparent 12px);
+  border-top:1px dashed var(--accent); border-bottom:1px dashed var(--accent);
+  margin:16px 0; }
+
+.invite-card[data-frame="deckle"] .k-frame{
+  background:
+    linear-gradient(-45deg, var(--stage,#fff) 6px, transparent 0) 0 0/14px 14px repeat-x,
+    linear-gradient( 45deg, var(--stage,#fff) 6px, transparent 0) 0 100%/14px 14px repeat-x; }
+
+.invite-card[data-frame="panel"]{ padding:34px 26px; }
+.invite-card[data-frame="panel"] .k-frame{
+  margin:18px; background:color-mix(in srgb, var(--accent) 9%, transparent);
+  border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius:3px; }
+.invite-card[data-frame="panel"] .k-content{ padding:22px 18px; }
+
+.invite-card[data-frame="scallop"] .k-frame{
+  margin:9px; border:1px solid var(--accent); border-radius:3px;
+  -webkit-mask:radial-gradient(circle at 50% 0, transparent 7px, #000 8px) 0 0/16px 16px repeat-x,
+               linear-gradient(#000,#000) 0 16px/100% calc(100% - 32px) no-repeat,
+               radial-gradient(circle at 50% 100%, transparent 7px, #000 8px) 0 100%/16px 16px repeat-x;
+          mask:radial-gradient(circle at 50% 0, transparent 7px, #000 8px) 0 0/16px 16px repeat-x,
+               linear-gradient(#000,#000) 0 16px/100% calc(100% - 32px) no-repeat,
+               radial-gradient(circle at 50% 100%, transparent 7px, #000 8px) 0 100%/16px 16px repeat-x; }
+
+/* ================================================================ 2. HEADER
+   Owns: .k-header internals only.                                           */
+.invite-card[data-header="inline"] .k-amp{ display:inline; font-size:.5em; margin:0 .28em; }
+
+.invite-card[data-header="crest"] .k-crest{ display:block; margin-bottom:6px; }
+.invite-card[data-header="crest"] .k-names{ font-size:calc(var(--namesize,38px) * .78); }
+
+.invite-card[data-header="banner"] .k-header{
+  background:var(--accent); color:var(--bg);
+  margin:-44px -34px 18px; padding:34px 34px 24px; }
+.invite-card[data-header="banner"] .k-eyebrow{ opacity:.9; }
+
+.invite-card[data-header="vrule"] .k-header{
+  border-left:2px solid var(--accent); padding-left:18px; text-align:left; }
+
+.invite-card[data-header="split"] .k-names{
+  display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+.invite-card[data-header="split"] .k-amp{ display:inline; font-size:.42em; }
+
+.invite-card[data-header="label"] .k-eyebrow{
+  display:inline-block; border:1px solid currentColor; padding:6px 14px; border-radius:2px; }
+
+/* ================================================================= 3. MEDIA
+   Owns: .k-media only.                                                      */
+.k-media{ display:none; }
+.k-media img{ display:block; width:100%; height:100%; object-fit:cover; }
+
+.invite-card[data-media="bleed"] .k-media{
+  display:block; margin:-44px -34px 22px; height:210px; }
+
+.invite-card[data-media="circle"] .k-media{
+  display:block; width:120px; height:120px; border-radius:50%; overflow:hidden;
+  margin-bottom:18px; box-shadow:0 0 0 1px var(--accent); }
+
+.invite-card[data-media="window"] .k-media{
+  display:block; width:160px; height:200px; border-radius:80px 80px 4px 4px;
+  overflow:hidden; margin-bottom:18px; box-shadow:0 0 0 1px var(--accent); }
+
+.invite-card[data-media="polaroid"] .k-media{
+  display:block; width:150px; height:150px; padding:9px 9px 30px; margin-bottom:18px;
+  background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.16); transform:rotate(-2.5deg); }
+.invite-card[data-media="polaroid"] .k-media img{ height:100%; }
+
+.invite-card[data-media="side"] .k-content{ display:grid; grid-template-columns:118px 1fr; gap:22px; }
+/* Column is pinned explicitly: with grid-row:1/-1 alone, auto-placement is free
+   to drop the photo into column 2 and shove the text under it. */
+.invite-card[data-media="side"] .k-media{
+  display:block; grid-column:1; grid-row:1 / -1; align-self:stretch;
+  min-height:220px; border-radius:2px; overflow:hidden; }
+.invite-card[data-media="side"] .k-content > :not(.k-media){ grid-column:2; }
+
+/* Wash is the one media mode that paints the whole card, so it rides the
+   .k-frame layer rather than a box in the content flow. */
+.invite-card[data-media="wash"] .k-media{
+  display:block; position:absolute; inset:0; z-index:0; opacity:.14; }
+
+/* ================================================================= 4. MOTIF
+   Owns: .k-motif and its children. Density (axis 5) only resizes these.      */
+.k-motif{ display:none; }
+.k-mc{ position:absolute; width:var(--mo-size,58px); height:var(--mo-size,58px);
+  opacity:var(--mo-alpha,.5); }
+.k-mc-tl{ top:14px;  left:14px;  }
+.k-mc-tr{ top:14px;  right:14px; transform:scaleX(-1); }
+.k-mc-bl{ bottom:14px; left:14px;  transform:scaleY(-1); }
+.k-mc-br{ bottom:14px; right:14px; transform:scale(-1); }
+.k-mring{ position:absolute; inset:22px; border:1px solid var(--accent);
+  opacity:calc(var(--mo-alpha,.5) * .55); display:none; }
+
+.invite-card:not([data-motif="none"]) .k-motif{ display:block; }
+
+.invite-card[data-motif="botanical"] .k-mc{
+  border-top:1px solid var(--accent); border-left:1px solid var(--accent);
+  border-radius:14px 0 0 0;
+  background:
+    radial-gradient(6px 3px at 22% 14%, var(--accent) 60%, transparent 61%),
+    radial-gradient(6px 3px at 46% 10%, var(--accent) 60%, transparent 61%),
+    radial-gradient(3px 6px at 12% 40%, var(--accent) 60%, transparent 61%),
+    radial-gradient(3px 6px at  9% 64%, var(--accent) 60%, transparent 61%);
+  background-repeat:no-repeat; }
+
+.invite-card[data-motif="mandala"] .k-mc{
+  border-radius:50%;
+  background:
+    repeating-conic-gradient(from 0deg, var(--accent) 0deg 4deg, transparent 4deg 12deg),
+    radial-gradient(circle, transparent 42%, var(--accent) 43% 46%, transparent 47%);
+  -webkit-mask:radial-gradient(circle, #000 62%, transparent 63%);
+          mask:radial-gradient(circle, #000 62%, transparent 63%); }
+
+.invite-card[data-motif="deco"] .k-mc{
+  background:
+    linear-gradient(135deg, var(--accent) 0 2px, transparent 2px) 0 0/100% 100%,
+    linear-gradient(135deg, transparent 0 10px, var(--accent) 10px 12px, transparent 12px) 0 0/100% 100%,
+    linear-gradient(135deg, transparent 0 20px, var(--accent) 20px 22px, transparent 22px) 0 0/100% 100%;
+  background-repeat:no-repeat; }
+
+.invite-card[data-motif="floral"] .k-mc{
+  background:
+    radial-gradient(circle at 30% 30%, var(--accent) 5px, transparent 6px),
+    radial-gradient(circle at 55% 22%, var(--accent) 3px, transparent 4px),
+    radial-gradient(circle at 22% 55%, var(--accent) 3px, transparent 4px),
+    radial-gradient(circle at 58% 58%, var(--accent) 7px, transparent 8px),
+    radial-gradient(circle at 78% 40%, var(--accent) 2px, transparent 3px);
+  background-repeat:no-repeat; }
+
+.invite-card[data-motif="geo"] .k-mc{
+  background:
+    linear-gradient(var(--accent),var(--accent)) 0 0/100% 1px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) 0 0/1px 100% no-repeat,
+    linear-gradient(var(--accent),var(--accent)) 0 12px/40% 1px no-repeat,
+    linear-gradient(var(--accent),var(--accent)) 12px 0/1px 40% no-repeat; }
+
+.invite-card[data-motif="wreath"] .k-mc{
+  border:1px solid var(--accent); border-radius:50% 0 50% 0;
+  background:radial-gradient(circle at 50% 50%, transparent 55%, var(--accent) 56% 58%, transparent 59%); }
+
+.invite-card[data-motif="confetti"] .k-mc{
+  background:
+    radial-gradient(1.6px 1.6px at 18% 22%, var(--accent) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 62% 14%, var(--accent) 50%, transparent 51%),
+    radial-gradient(1.8px 1.8px at 34% 58%, var(--accent) 50%, transparent 51%),
+    radial-gradient(1.2px 1.2px at 76% 66%, var(--accent) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 12% 82%, var(--accent) 50%, transparent 51%);
+  background-repeat:no-repeat; }
+
+/* =============================================================== 5. DENSITY
+   Owns: the size/alpha vars and which corners show. Draws nothing itself.   */
+.invite-card[data-density="accent"]{ --mo-size:46px; --mo-alpha:.42; }
+.invite-card[data-density="accent"] .k-mc-tr,
+.invite-card[data-density="accent"] .k-mc-bl{ display:none; }
+
+.invite-card[data-density="frame"]{ --mo-size:74px; --mo-alpha:.55; }
+.invite-card[data-density="frame"] .k-mring{ display:block; }
+
+/* ================================================================== 6. RULE
+   Owns: .k-rule only.                                                       */
+.k-rule{ margin:16px 0; height:1px; }
+.invite-card[data-rule="none"] .k-rule{ display:none; }
+.invite-card[data-rule="hairline"] .k-rule{ width:64px; background:var(--accent); }
+.invite-card[data-rule="ornate"] .k-rule{
+  width:150px; height:9px; background:
+    linear-gradient(var(--accent),var(--accent)) 0 50%/100% 1px no-repeat,
+    radial-gradient(circle at 50% 50%, var(--accent) 3.5px, transparent 4px); }
+.invite-card[data-rule="dots"] .k-rule{
+  width:130px; height:3px;
+  background:radial-gradient(circle, var(--accent) 1.4px, transparent 1.5px) 0 0/13px 3px repeat-x; }
+.invite-card[data-rule="laurel"] .k-rule{
+  width:130px; height:11px; background:
+    linear-gradient(var(--accent),var(--accent)) 0 50%/100% 1px no-repeat,
+    radial-gradient(5px 2.5px at 22% 30%, var(--accent) 60%, transparent 61%),
+    radial-gradient(5px 2.5px at 78% 70%, var(--accent) 60%, transparent 61%); }
+.invite-card[data-rule="diamond"] .k-rule{
+  width:120px; height:9px; background:
+    linear-gradient(var(--accent),var(--accent)) 0 50%/100% 1px no-repeat,
+    linear-gradient(45deg, var(--accent) 50%, transparent 51%) calc(50% - 4px) 0/8px 8px no-repeat;
+  background-blend-mode:normal; }
+
+/* ================================================================== 7. BODY
+   Owns: .k-body internals only.                                             */
+.invite-card[data-body="twocol"] .k-body{
+  display:grid; grid-template-columns:1fr 1fr; gap:6px 20px; }
+
+.invite-card[data-body="timeline"] .k-body{
+  border-left:1px solid var(--accent); padding-left:20px; text-align:left; }
+.invite-card[data-body="timeline"] .k-detail{ position:relative; padding-bottom:8px; }
+
+.invite-card[data-body="boxed"] .k-body{ display:grid; gap:8px; }
+.invite-card[data-body="boxed"] .k-detail{
+  border:1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  padding:10px 14px; border-radius:2px; line-height:1.5; }
+
+.invite-card[data-body="grid"] .k-detail{
+  border-bottom:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  padding-bottom:6px; margin-bottom:6px; }
+.invite-card[data-body="grid"] .k-detail:last-child{ border-bottom:none; }
+.invite-card[data-body="grid"] .k-dlabel{ display:block; }
+
+/* ================================================================= 8. ALIGN
+   Owns: alignment on .k-content only.                                       */
+.invite-card[data-align="center"] .k-content{ align-items:center; text-align:center; }
+.invite-card[data-align="center"] .k-rule{ margin-left:auto; margin-right:auto; }
+.invite-card[data-align="center"] .k-foot{ align-items:center; }
+
+.invite-card[data-align="left"] .k-content{ align-items:flex-start; text-align:left; }
+.invite-card[data-align="left"] .k-foot{ align-items:flex-start; }
+
+.invite-card[data-align="split"] .k-content{ align-items:stretch; text-align:left; }
+.invite-card[data-align="split"] .k-foot{
+  flex-direction:row; justify-content:space-between; align-items:flex-end; gap:20px; }
+.invite-card[data-align="split"] .k-sealwrap{ padding-top:0; }
+
+/* Side-panel media re-grids .k-content, so the align axis must not also try to
+   stack it -- these two are the only axes that touch that element. */
+.invite-card[data-media="side"][data-align="center"] .k-content{ text-align:left; align-items:stretch; }

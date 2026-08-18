@@ -1,0 +1,13 @@
+# Local design inspiration (83MB of screen recordings and screenshots).
+# Reference material for building templates, not source -- keeping it out of
+# git avoids bloating every clone with video that only matters on one machine.
+Designs/
+
+# Next.js / node
+node_modules/
+.next/
+out/
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts

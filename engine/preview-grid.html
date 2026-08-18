@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kadi Genome — Design Space Proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=EB+Garamond:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kadi-genome.css">
+<style>
+  :root{ --stage:#EFEBE4; }
+  body{ margin:0; background:#EFEBE4; font-family:'Inter',sans-serif; color:#2B2A26; }
+  header{ padding:26px 32px; border-bottom:1px solid #d9d2c7; background:#fff;
+    position:sticky; top:0; z-index:10; }
+  h1{ margin:0 0 6px; font-size:19px; font-weight:600; letter-spacing:.01em; }
+  .stat{ font-size:13px; color:#6b6459; }
+  .stat b{ color:#2B2A26; }
+  .controls{ margin-top:14px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  button{ font:inherit; font-size:12.5px; padding:8px 16px; border-radius:5px; cursor:pointer;
+    border:1px solid #cfc7bb; background:#fff; }
+  button.primary{ background:#46583D; color:#fff; border-color:#46583D; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px,1fr));
+    gap:28px; padding:32px; }
+  .cell{ background:var(--stage); }
+  .cell .invite-card{ max-width:none; min-height:480px; }
+  .code{ font-family:ui-monospace, monospace; font-size:11px; color:#6b6459;
+    margin-top:8px; word-break:break-all; }
+  .axes{ font-size:10.5px; color:#8a8175; margin-top:3px; line-height:1.5; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Kadi Genome — design space proof</h1>
+  <div class="stat" id="stat">counting…</div>
+  <div class="controls">
+    <button class="primary" onclick="draw()">Reshuffle</button>
+    <button onclick="drawLegacy()">Show the 18 legacy layouts</button>
+    <button onclick="drawAxis('frame')">Vary frame only</button>
+    <button onclick="drawAxis('header')">Vary header only</button>
+    <button onclick="drawAxis('motif')">Vary motif only</button>
+    <button onclick="drawAxis('body')">Vary body only</button>
+  </div>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<script src="kadi-genome.js"></script>
+<script src="kadi-render.js"></script>
+<script>
+const K = window.KadiGenome, R = window.KadiRender;
+
+const DESIGN = {
+  p1:'Amara', p2:'Julian', wdate:'2027-02-14', wtime:'16:30',
+  venue:'The Old Botanical Hall', city:'Dar es Salaam',
+  eyebrow:'Together with their families',
+  showEventColors:true, eventColors:['#8C1F28','#C9A227','#2F4858'],
+  hf:0, bf:0, sc:1,
+};
+
+// A deterministic sample of the valid space: walking every genome and keeping
+// every Nth one gives an even spread across all axes, where Math.random() would
+// clump and hide whole regions of the space behind luck.
+function sample(n, seed){
+  const all = [];
+  K.forEachGenome(g => all.push(g));
+  const step = Math.floor(all.length / n);
+  const out = [];
+  for (let i = 0; i < n; i++) out.push(all[(i * step + seed) % all.length]);
+  return out;
+}
+
+function paint(genomes, palettes){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  genomes.forEach((g, i) => {
+    const p = palettes ? palettes[i] : K.paletteFromIndices((i * 7) % 20, i % 5);
+    const d = Object.assign({}, DESIGN, p, { hf:i % 5, bf:(i * 3) % 5, sc:i % 2 });
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    const card = document.createElement('div');
+    card.className = 'invite-card';
+    cell.appendChild(card);
+    const meta = document.createElement('div');
+    meta.className = 'code';
+    cell.appendChild(meta);
+    grid.appendChild(cell);
+    R.renderCard(card, Object.assign({ genome:g }, d), 'Neema Mushi', 2, true);
+    meta.innerHTML = K.genomeCode(g) +
+      '<div class="axes">' + K.AXES.map(a => a.key + ':' + g[a.key]).join(' · ') + '</div>';
+  });
+}
+
+let seed = 0;
+function draw(){ seed += 137; paint(sample(24, seed)); }
+
+function drawLegacy(){
+  const keys = Object.keys(K.LEGACY_LAYOUTS).filter(k => k !== 'premium');
+  paint(keys.map(k => K.genomeFromLegacyLayout(k)));
+  // Label with the legacy name so a regression is obvious at a glance.
+  document.querySelectorAll('.code').forEach((el, i) => {
+    el.innerHTML = '<b>' + keys[i] + '</b> — ' + el.innerHTML;
+  });
+}
+
+// Holding every other axis fixed is the real test of independence: if changing
+// one axis changes nothing visible, that axis is not carrying its weight.
+function drawAxis(axisKey){
+  const base = K.defaultGenome();
+  base.motif = 'botanical'; base.density = 'accent';
+  const out = [];
+  K.AXIS_BY_KEY[axisKey].values.forEach(v => {
+    const g = Object.assign({}, base, { [axisKey]: v.key });
+    if (axisKey === 'motif' && v.key === 'none') g.density = 'none';
+    if (K.isValid(g)) out.push(g);
+  });
+  paint(out, out.map(() => K.paletteFromIndices(4, 0)));
+  document.querySelectorAll('.code').forEach((el, i) => {
+    el.innerHTML = '<b>' + axisKey + ' = ' + out[i][axisKey] + '</b>';
+  });
+}
+
+const valid = K.countValid();
+const raw = K.AXES.reduce((n,a) => n * a.values.length, 1);
+document.getElementById('stat').innerHTML =
+  '<b>' + valid.toLocaleString() + '</b> valid structural layouts ' +
+  '(' + raw.toLocaleString() + ' raw, ' + (100*valid/raw).toFixed(1) + '% survive pruning) · ' +
+  '× 100 palettes × 50 type pairings = <b>' + (valid*5000).toLocaleString() + '</b> combinations';
+
+draw();
+</script>
+</body>
+</html>
