@@ -15,11 +15,7 @@
    (invite.html). Before this file existed those two carried divergent copies of
    the same layout CSS, so every new design had to be hand-ported twice.
    ========================================================================== */
-(function (global) {
-'use strict';
-
-const K = global.KadiGenome;
-if (!K) throw new Error('kadi-render.js requires kadi-genome.js to load first');
+import * as K from './kadi-genome.js';
 
 /* ------------------------------------------------------------- formatting */
 function esc(s) {
@@ -167,8 +163,14 @@ function renderCard(card, d, guestName, seats, showSeal) {
   return true;
 }
 
-global.KadiRender = {
+export {
   esc, fmtDate, fmtTime, partyTag, monogram,
   buildCard, applyTokens, applyGenome, renderCard,
 };
-})(window);
+
+if (typeof window !== 'undefined') {
+  window.KadiRender = {
+    esc, fmtDate, fmtTime, partyTag, monogram,
+    buildCard, applyTokens, applyGenome, renderCard,
+  };
+}

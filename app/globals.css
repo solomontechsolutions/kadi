@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/* The genome engine's card CSS, imported after Tailwind so its axis rules win
+   over preflight. This is the same file the legacy static pages load from
+   /engine -- there is deliberately no Next-specific copy of it. */
+@import "../engine/kadi-genome.css";
+
+@theme {
+  /* Kadi's own palette. Named after what they are for, not their hue, so a
+     rebrand changes these values and nothing else. */
+  --color-ink: #23231F;
+  --color-ink-soft: #5C594F;
+  --color-ink-faint: #8C877A;
+  --color-ivory: #F7F4EE;
+  --color-paper: #FFFFFF;
+  --color-sage: #46583D;
+  --color-sage-deep: #33422C;
+  --color-sage-soft: #E8EDE4;
+  --color-line: #E2DDD2;
+  --color-line-soft: #EFEBE3;
+  --color-gold: #B08D57;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+html, body { height: 100%; }
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* The template gallery paints hundreds of cards whose own backgrounds come from
+   their palette. --stage tells the frame axis what colour to punch ticket
+   notches and deckle edges out to, so a card reads as cut paper against
+   whatever surface it happens to be sitting on. */
+.card-stage { --stage: var(--color-ivory); }
+.card-stage-paper { --stage: var(--color-paper); }
+
+/* Gallery thumbnails are real cards rendered small, not images: the design
+   space is far too large to pre-render, and a live card is always in sync with
+   the engine. Transform-scale keeps type proportions honest where a width
+   change would reflow them into a different design. */
+.thumb {
+  width: 100%;
+  aspect-ratio: 5 / 7;
+  overflow: hidden;
+  position: relative;
+  background: var(--color-ivory);
+}
+.thumb > .invite-card {
+  position: absolute;
+  top: 0; left: 0;
+  width: 460px;
+  min-height: 644px;
+  transform-origin: top left;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .lift { transition: transform .18s ease, box-shadow .18s ease; }
+  .lift:hover { transform: translateY(-3px); }
+}

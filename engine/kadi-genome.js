@@ -25,10 +25,11 @@
        body     -> .k-body internals
        align    -> alignment on .k-content only
 
-   Loaded as a plain script (no build step): defines window.KadiGenome.
+   Ships as a native ES module. Next imports it directly; the legacy static
+   pages load the identical file via <script type="module">, and it also pins
+   itself onto window so non-module inline scripts on those pages can reach it.
+   One file, two consumers, no build step and no second copy to drift.
    ========================================================================== */
-(function (global) {
-'use strict';
 
 /* ---------------------------------------------------------------- palettes */
 function hslToHex(h, s, l) {
@@ -181,9 +182,11 @@ const RULES = [
   // two-column or label-grid detail layouts inside that nests columns in columns.
   g => !(g.align === 'split' && (g.body === 'twocol' || g.body === 'grid')),
 
-  // A full ornament frame plus a drawn card frame is two concentric borders
-  // fighting for the same 12px of margin.
-  g => !(g.density === 'frame' && (g.frame === 'double' || g.frame === 'scallop')),
+  // NOTE: "full ornament + a drawn frame" is deliberately NOT pruned. It looks
+  // like a clash on paper, but the ornament ring sits at inset:22px and the
+  // frame layer at margin:9-13px, so they nest concentrically -- and the old
+  // system shipped exactly this pairing (framed/laceScallop with ornament=frame).
+  // Pruning it silently downgraded those existing invites to no ornament at all.
 
   // Boxed detail panels supply their own separators, making a divider redundant
   // rather than decorative.
@@ -267,7 +270,7 @@ function genomeFromLegacyLayout(key) {
   // A legacy key is a fixed point of the new system, so if a pruning rule
   // rejects it the rule is wrong about real designs -- surface that loudly in
   // dev rather than silently shipping a different-looking card.
-  if (!isValid(g) && global.console) {
+  if (!isValid(g)) {
     console.warn('[kadi] legacy layout "' + key + '" maps to a pruned genome', g);
   }
   return g;
@@ -285,11 +288,19 @@ function genomeFromDesign(d) {
   }
   const legacy = genomeFromLegacyLayout(d.layout);
   if (legacy) {
-    // The old standalone ornament axis rode alongside layout; fold it in, but
-    // never let it override a motif the legacy layout itself established.
-    if (d.ornament && d.ornament !== 'none' && !legacy.__site && legacy.motif === 'none') {
-      legacy.motif = 'botanical';
+    // The old ornament axis was independent of layout, so it decides DENSITY
+    // even when the layout already brought a motif -- ?ornament=frame has to
+    // stay the fuller card it rendered as. Only the motif family defers to the
+    // layout, since that is the part the layout name actually described.
+    if (d.ornament && d.ornament !== 'none' && !legacy.__site) {
+      const before = { motif: legacy.motif, density: legacy.density };
+      if (legacy.motif === 'none') legacy.motif = 'botanical';
       legacy.density = d.ornament === 'frame' ? 'frame' : 'accent';
+      // Some layouts own a frame that a full ornament ring would collide with
+      // (laceScallop's scalloped edge, framed's double rule). Those were always
+      // rendered at the layout's own level, so fall back rather than emit a
+      // genome the pruner rejects.
+      if (!isValid(legacy)) { legacy.motif = before.motif; legacy.density = before.density; }
     }
     return legacy;
   }
@@ -299,7 +310,9 @@ function genomeFromDesign(d) {
 /* ------------------------------------------------------------------ fonts */
 const loadedFonts = new Set();
 function ensureFont(gf) {
-  if (!gf || loadedFonts.has(gf)) return;
+  // Guarded rather than assumed: this module is imported during server render
+  // too, where touching document would crash the whole page.
+  if (!gf || typeof document === 'undefined' || loadedFonts.has(gf)) return;
   loadedFonts.add(gf);
   const link = document.createElement('link');
   link.rel = 'stylesheet';
@@ -307,7 +320,7 @@ function ensureFont(gf) {
   document.head.appendChild(link);
 }
 
-global.KadiGenome = {
+export {
   hslToHex, HUES, hueDeg, MOODS, paletteFromIndices,
   HEADING_FONTS, BODY_FONTS, SCALES,
   AXES, AXIS_BY_KEY, axisIndex,
@@ -316,4 +329,15 @@ global.KadiGenome = {
   LEGACY_LAYOUTS, genomeFromLegacyLayout, genomeFromDesign,
   ensureFont,
 };
-})(window);
+
+if (typeof window !== 'undefined') {
+  window.KadiGenome = {
+    hslToHex, HUES, hueDeg, MOODS, paletteFromIndices,
+    HEADING_FONTS, BODY_FONTS, SCALES,
+    AXES, AXIS_BY_KEY, axisIndex,
+    isValid, countValid, forEachGenome,
+    defaultGenome, genomeCode, parseGenomeCode,
+    LEGACY_LAYOUTS, genomeFromLegacyLayout, genomeFromDesign,
+    ensureFont,
+  };
+}

@@ -45,10 +45,11 @@
 
 <div class="grid" id="grid"></div>
 
-<script src="kadi-genome.js"></script>
-<script src="kadi-render.js"></script>
-<script>
-const K = window.KadiGenome, R = window.KadiRender;
+<script type="module">
+// Imported rather than read off window: a plain <script> would race the module
+// graph and sometimes find KadiGenome undefined.
+import * as K from './kadi-genome.js';
+import * as R from './kadi-render.js';
 
 const DESIGN = {
   p1:'Amara', p2:'Julian', wdate:'2027-02-14', wtime:'16:30',
@@ -126,6 +127,10 @@ document.getElementById('stat').innerHTML =
   '<b>' + valid.toLocaleString() + '</b> valid structural layouts ' +
   '(' + raw.toLocaleString() + ' raw, ' + (100*valid/raw).toFixed(1) + '% survive pruning) · ' +
   '× 100 palettes × 50 type pairings = <b>' + (valid*5000).toLocaleString() + '</b> combinations';
+
+// Module scope is not global scope, so the inline onclick handlers in the
+// markup above cannot see these without being handed over explicitly.
+Object.assign(window, { draw, drawLegacy, drawAxis, K, R });
 
 draw();
 </script>
