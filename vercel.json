@@ -2,27 +2,22 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
 
   "//": [
-    "The project predates this repo being a Next.js app -- it was created when",
-    "Kadi was four static HTML files, so its dashboard settings serve the",
-    "output directory as static assets and never run a build. After the",
-    "migration that left / with nothing to serve (404) while /invite.html and",
-    "/scanner.html kept working, because those are real files under public/.",
+    "This project was created when Kadi was four static HTML files, so its",
+    "dashboard settings served a static output directory and never used the",
+    "build output. After the Next.js migration that left / returning 404 while",
+    "/invite.html and /scanner.html kept working -- those are real files under",
+    "public/, which was being served flat while .next was discarded.",
     "",
-    "Pinning the framework here rather than fixing it only in the dashboard",
-    "keeps the deployment config in the repo, so a future project re-create or",
-    "a preview branch cannot silently go back to serving static files."
+    "Fixed in the dashboard (Framework Preset -> Next.js, Output Directory",
+    "override cleared). Declaring the framework here as well keeps the intent",
+    "in the repo, so a project re-create or a preview branch cannot silently",
+    "revert to serving static files.",
+    "",
+    "Deliberately no outputDirectory: Vercel's Next.js builder manages its own",
+    "output, and pinning it here fights the builder rather than helping it."
   ],
 
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "installCommand": "npm install",
-
-  "//outputDirectory": [
-    "The build was already running after framework was pinned -- the generated",
-    "public/engine/ files are live and they are gitignored, so they can only",
-    "have come from prebuild. What was still broken is that /_next/static 404s,",
-    "meaning .next was being discarded and public/ served as a flat static",
-    "directory. That is an explicit Output Directory override on the project."
-  ],
-  "outputDirectory": ".next"
+  "installCommand": "npm install"
 }
