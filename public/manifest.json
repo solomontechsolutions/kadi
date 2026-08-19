@@ -1,6 +1,6 @@
 {
-  "name": "Wedding Entry Check-In",
-  "short_name": "Wedding Check-In",
+  "name": "Mwaliko Door Check-In",
+  "short_name": "Mwaliko Door",
   "start_url": "scanner.html",
   "display": "standalone",
   "background_color": "#1B1B18",

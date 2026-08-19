@@ -25,4 +25,4 @@ await writeFile(
   'Edits here are silently destroyed. Change /engine instead.\n'
 );
 
-console.log('[kadi] synced engine/ -> public/engine/');
+console.log('[mwaliko] synced engine/ -> public/engine/');

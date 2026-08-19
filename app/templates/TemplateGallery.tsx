@@ -42,8 +42,8 @@ export default function TemplateGallery({ initialCategory }: { initialCategory: 
           Find a card that fits the occasion
         </h1>
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-ink-soft">
-          Every card here is generated live from Kadi&rsquo;s design engine, so what you
-          see is exactly what you can edit. Pick one to open it in the studio — the
+          Every card here is generated live from Mwaliko&rsquo;s design engine, so what you
+          see is exactly what you can edit. Pick one to open it in the studio. The
           layout, palette and type are all still yours to change.
         </p>
       </div>

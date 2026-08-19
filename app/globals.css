@@ -2,11 +2,14 @@
 
 /* The genome engine's card CSS, imported after Tailwind so its axis rules win
    over preflight. This is the same file the legacy static pages load from
-   /engine -- there is deliberately no Next-specific copy of it. */
-@import "../engine/kadi-genome.css";
+   /engine, so there is deliberately no Next-specific copy of it.
+
+   Note the engine sets its own font stacks per type pairing. The site fonts
+   below dress the chrome only and never reach inside a card. */
+@import "../engine/mwaliko-genome.css";
 
 @theme {
-  /* Kadi's own palette. Named after what they are for, not their hue, so a
+  /* Mwaliko's palette. Named after what they are for, not their hue, so a
      rebrand changes these values and nothing else. */
   --color-ink: #23231F;
   --color-ink-soft: #5C594F;
@@ -20,17 +23,54 @@
   --color-line-soft: #EFEBE3;
   --color-gold: #B08D57;
 
-  --font-display: 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  /* Apple's system faces, requested by name.
+   *
+   * San Francisco and New York cannot be downloaded and served: Apple licenses
+   * them for use on Apple platforms, so a webfont copy would be redistribution.
+   * What is legitimate, and what every Apple site does, is to ask the operating
+   * system for them. -apple-system and BlinkMacSystemFont resolve to SF on
+   * macOS, iOS and iPadOS; ui-serif resolves to New York. Elsewhere the stack
+   * falls through to each platform's nearest equivalent, which is why Segoe UI
+   * and Roboto follow rather than a generic sans.
+   *
+   * The upside beyond the look: zero font downloads, so no flash of unstyled
+   * text and one less network round trip on a slow connection. */
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display',
+    'Helvetica Neue', 'Segoe UI', Roboto, system-ui, sans-serif;
+  --font-display:
+    ui-serif, 'New York', -apple-system-ui-serif, Iowan Old Style,
+    Apple Garamond, Georgia, 'Times New Roman', serif;
+
+  /* Motion vocabulary. One easing curve and three durations, so every
+     transition on the site reads as the same hand rather than a pile of
+     one-off values. The curve is a gentle overshoot-free ease-out: things
+     arrive and settle, they do not bounce. */
+  --ease-out-soft: cubic-bezier(.22, .61, .36, 1);
+  --dur-fast: .18s;
+  --dur-mid: .42s;
+  --dur-slow: .9s;
 }
 
 html, body { height: 100%; }
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--color-ivory);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  /* SF ships proper optical sizing and tabular figures. Asking for them costs
+     nothing where the face is absent. */
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+}
+
+/* Display type in New York wants slightly tighter tracking than the browser
+   default at large sizes, matching how Apple sets its own headlines. */
+.font-\[family-name\:var\(--font-display\)\] {
+  letter-spacing: -0.012em;
 }
 
 /* The template gallery paints hundreds of cards whose own backgrounds come from
@@ -59,7 +99,117 @@ body {
   transform-origin: top left;
 }
 
+/* ---------------------------------------------------------------------------
+   Motion
+   ---------------------------------------------------------------------------
+   Everything below animates transform and opacity only. Those two are the
+   properties a browser can hand to the compositor, so they run off the main
+   thread and hold 60fps on the mid-range Android phones most guests open an
+   invitation on. Animating width, top or box-shadow instead is what makes a
+   site feel expensive to build and cheap to use.
+
+   The whole block sits inside prefers-reduced-motion: no-preference. Anyone who
+   has asked their system to calm down gets the finished layout with no movement
+   at all, which is the point of the setting.
+   ------------------------------------------------------------------------- */
+
+/* Reveal elements start hidden only when we know motion is welcome AND
+   JavaScript is running to un-hide them. Without this guard a failed script
+   would leave the page permanently blank, which is the classic scroll-reveal
+   bug. */
 @media (prefers-reduced-motion: no-preference) {
-  .lift { transition: transform .18s ease, box-shadow .18s ease; }
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity var(--dur-slow) var(--ease-out-soft),
+      transform var(--dur-slow) var(--ease-out-soft);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+  [data-reveal='shown'] {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lift { transition: transform var(--dur-fast) var(--ease-out-soft), box-shadow var(--dur-fast) var(--ease-out-soft); }
   .lift:hover { transform: translateY(-3px); }
+
+  /* Category and template tiles. The border and shadow shift together so the
+     tile reads as lifting off the page rather than just changing colour. */
+  .tile {
+    transition:
+      transform var(--dur-mid) var(--ease-out-soft),
+      box-shadow var(--dur-mid) var(--ease-out-soft),
+      border-color var(--dur-mid) var(--ease-out-soft);
+  }
+  .tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 40px -18px rgba(35, 35, 31, .28);
+  }
+  /* The arrow inside a tile slides on hover of the whole tile, not itself, so
+     the affordance belongs to the target you are actually aiming at. */
+  .tile .tile-arrow { transition: transform var(--dur-mid) var(--ease-out-soft); }
+  .tile:hover .tile-arrow { transform: translateX(4px); }
+
+  /* Hero cards breathe. Three different durations and delays keep them from
+     pulsing in unison, which would read as a loading state. */
+  .float-a { animation: float 7.5s var(--ease-out-soft) infinite; }
+  .float-b { animation: float 8.8s var(--ease-out-soft) infinite .6s; }
+  .float-c { animation: float 9.6s var(--ease-out-soft) infinite 1.2s; }
+
+  .nav-link::after {
+    transform: scaleX(0);
+    transition: transform var(--dur-mid) var(--ease-out-soft);
+  }
+  .nav-link:hover::after { transform: scaleX(1); }
+
+  /* Primary buttons carry a slow diagonal sheen on hover. It is the one purely
+     decorative flourish on the site, so it is kept to a single pass. */
+  .btn-sheen::before {
+    transition: transform var(--dur-slow) var(--ease-out-soft);
+  }
+  .btn-sheen:hover::before { transform: translateX(220%) skewX(-18deg); }
+  .btn-press { transition: transform var(--dur-fast) var(--ease-out-soft), background-color var(--dur-fast) var(--ease-out-soft); }
+  .btn-press:active { transform: scale(.975); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-9px); }
+}
+
+/* The nav underline and button sheen need their static geometry defined
+   outside the motion query, or they would vanish entirely for reduced-motion
+   users instead of simply not animating. */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -5px;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left;
+}
+
+.btn-sheen { position: relative; overflow: hidden; isolation: isolate; }
+.btn-sheen::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 42%;
+  transform: translateX(-160%) skewX(-18deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .22), transparent);
+  pointer-events: none;
+}
+
+/* Focus rings are never suppressed. Keyboard and switch-control users navigate
+   by them, and a site that hides them to look tidy is simply broken for those
+   people. */
+:where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 2px;
+  border-radius: 4px;
 }

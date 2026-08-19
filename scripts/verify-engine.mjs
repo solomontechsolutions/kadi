@@ -4,7 +4,7 @@
  * if they quietly break, put us straight back to "285,000 combinations that all
  * look the same" without anyone noticing until customers say so.
  */
-import * as K from '../engine/kadi-genome.js';
+import * as K from '../engine/mwaliko-genome.js';
 
 let failures = 0;
 const fail = (msg) => { console.error('  FAIL ' + msg); failures++; };

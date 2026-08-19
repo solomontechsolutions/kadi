@@ -1,5 +1,5 @@
 /* ============================================================================
-   Kadi Genome Engine
+   Mwaliko Genome Engine
    ----------------------------------------------------------------------------
    A card design is not picked from a list of layouts. It is COMPOSED from
    independent structural axes, each of which owns a disjoint slice of the DOM
@@ -271,7 +271,7 @@ function genomeFromLegacyLayout(key) {
   // rejects it the rule is wrong about real designs -- surface that loudly in
   // dev rather than silently shipping a different-looking card.
   if (!isValid(g)) {
-    console.warn('[kadi] legacy layout "' + key + '" maps to a pruned genome', g);
+    console.warn('[mwaliko] legacy layout "' + key + '" maps to a pruned genome', g);
   }
   return g;
 }
@@ -331,7 +331,7 @@ export {
 };
 
 if (typeof window !== 'undefined') {
-  window.KadiGenome = {
+  window.MwalikoGenome = {
     hslToHex, HUES, hueDeg, MOODS, paletteFromIndices,
     HEADING_FONTS, BODY_FONTS, SCALES,
     AXES, AXIS_BY_KEY, axisIndex,

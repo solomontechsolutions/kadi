@@ -1,5 +1,5 @@
 /* ============================================================================
-   Kadi Genome Engine -- renderer
+   Mwaliko Genome Engine -- renderer
    ----------------------------------------------------------------------------
    Builds the single DOM skeleton that every one of the 277,112 genomes styles.
    There is exactly ONE markup shape: axes never add or remove structural
@@ -15,7 +15,7 @@
    (invite.html). Before this file existed those two carried divergent copies of
    the same layout CSS, so every new design had to be hand-ported twice.
    ========================================================================== */
-import * as K from './kadi-genome.js';
+import * as K from './mwaliko-genome.js';
 
 /* ------------------------------------------------------------- formatting */
 function esc(s) {
@@ -169,7 +169,7 @@ export {
 };
 
 if (typeof window !== 'undefined') {
-  window.KadiRender = {
+  window.MwalikoRender = {
     esc, fmtDate, fmtTime, partyTag, monogram,
     buildCard, applyTokens, applyGenome, renderCard,
   };

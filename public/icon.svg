@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kadi">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Mwaliko">
   <rect width="512" height="512" rx="104" fill="#46583D"/>
   <circle cx="256" cy="256" r="182" fill="none" stroke="#F6F1E9" stroke-width="6"
           stroke-dasharray="3 15" opacity=".55"/>
-  <text x="256" y="312" font-family="Georgia, 'Times New Roman', serif" font-size="168"
-        letter-spacing="2" fill="#F6F1E9" text-anchor="middle">Kadi</text>
+  <text x="256" y="336" font-family="ui-serif, 'New York', Georgia, 'Times New Roman', serif"
+        font-size="248" fill="#F6F1E9" text-anchor="middle">M</text>
 </svg>

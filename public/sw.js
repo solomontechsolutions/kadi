@@ -1,6 +1,7 @@
-/* Kadi service worker.
+/* Mwaliko service worker.
  *
- * v4 changes the caching strategy, not just the asset list. v3 was cache-first
+ * This version changes the caching strategy, not just the asset list. An
+ * earlier version was cache-first
  * for every same-origin GET, which was fine when the whole site was four static
  * files -- but the app is now server-rendered, so cache-first would pin every
  * visitor to whatever HTML their browser happened to store first and they would
@@ -10,9 +11,9 @@
  * Strategy is now split by what the request actually is:
  *   - navigations  -> network-first, cache as offline fallback
  *   - static asset -> cache-first (hashed or versioned, safe to pin)
- *   - cross-origin -> never touched (Supabase REST, Google Fonts)
+ *   - cross-origin -> never touched (Supabase REST)
  */
-const CACHE = 'kadi-v4';
+const CACHE = 'mwaliko-v1';
 
 /* Only genuinely static things are precached. HTML is deliberately absent:
  * it is fetched fresh and merely *falls back* to cache when offline. */

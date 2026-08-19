@@ -2,7 +2,7 @@ import TemplateGallery from './TemplateGallery';
 import { CATEGORY_BY_KEY, CATEGORIES } from '@/lib/templates';
 
 export const metadata = {
-  title: 'Card Templates — Kadi',
+  title: 'Card Templates',
   description:
     'Browse digital invitation templates for weddings, send-offs, kitchen parties, ' +
     'birthdays, graduations, church events and corporate functions.',

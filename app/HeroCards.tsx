@@ -37,14 +37,18 @@ export default function HeroCards() {
 
   const cards = [0, 1, 2].map(o => POOL[(i * 3 + o) % POOL.length]);
 
+  /* The float lives on an outer wrapper and the static offset on the thumb
+     itself. Putting both on one element would mean the keyframes overwrite the
+     translate that staggers the three cards, flattening them into a row. */
+  const FLOAT = ['float-a', 'float-b', 'float-c'];
+  const OFFSET = ['', 'lg:-translate-y-6', 'lg:translate-y-3'];
+
   return (
     <div className="relative grid grid-cols-3 gap-4 lg:gap-5">
       {cards.map((t, n) => (
+        <div key={`${t.id}-${n}`} className={FLOAT[n]}>
         <div
-          key={`${t.id}-${n}`}
-          className={`thumb card-stage-paper rounded-xl border border-line shadow-[0_10px_30px_rgba(0,0,0,.09)] ${
-            n === 1 ? 'lg:-translate-y-6' : n === 2 ? 'lg:translate-y-3' : ''
-          }`}
+          className={`thumb card-stage-paper rounded-xl border border-line shadow-[0_10px_30px_rgba(0,0,0,.09)] ${OFFSET[n]}`}
         >
           <CardPreview
             design={{ ...SAMPLE, ...designFor(t) }}
@@ -52,6 +56,7 @@ export default function HeroCards() {
             guestName=""
             showSeal={false}
           />
+        </div>
         </div>
       ))}
     </div>

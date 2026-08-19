@@ -233,7 +233,7 @@
 </head>
 <body>
   <div class="invite-card" id="card"></div>
-  <div class="fallback" id="fallback">This invite link is missing its details — ask the couple to resend it to you.</div>
+  <div class="fallback" id="fallback">This invite link is missing its details. Ask the couple to resend it to you.</div>
 
 <script>
 const params = new URLSearchParams(window.location.search);
@@ -241,7 +241,7 @@ const get = (k, d='') => params.get(k) || d;
 
 // The couple's card design, baked in so every guest link only needs to carry
 // that guest's own id/name/seats instead of repeating the whole design every time.
-// Kept in sync with index.html's INVITE_DEFAULTS — index.html only adds a URL
+// Kept in sync with index.html's INVITE_DEFAULTS. index.html only adds a URL
 // param when a guest's link actually differs from these (e.g. after the couple
 // customizes something), so this is the "nothing customized" baseline, not a cap.
 const INVITE_DEFAULTS = {
@@ -249,7 +249,7 @@ const INVITE_DEFAULTS = {
   venue:'The Old Botanical Hall', city:'Dar es Salaam', eyebrow:'Together with their families',
   cBg:'#f2f3ec', cInk:'#2f331f', cAccent:'#8d9e47', cSeal:'#616f2a',
   layout:'premium', hf:0, bf:0, sc:1, ornament:'none',
-  // The couple's photo is baked in here rather than ever traveling in a guest link —
+  // The couple's photo is baked in here rather than ever traveling in a guest link:
   // as a compressed data URL it can be tens of KB, which would make every link huge.
   // index.html never adds a `photo` URL param; update this value (and redeploy) when
   // the couple sets/changes their photo.
@@ -518,7 +518,7 @@ if(!guestId || !guestName){
 
   // Payload the door-scanner will decode. Self-contained, no server lookup needed.
   // Compact pipe-delimited format (not JSON) keeps the QR small enough to scan reliably
-  // off a phone screen — every extra character here adds modules, and more modules
+  // off a phone screen. Every extra character here adds modules, and more modules
   // packed into the same physical size means fewer pixels per module for a camera to resolve.
   const payload = ['WED1', guestId, guestName, String(seats)].join('|');
 
@@ -528,7 +528,7 @@ if(!guestId || !guestName){
   // returning garbled data that fails the WED1 check ("Unrecognized code" despite a QR
   // genuinely being there). The tradeoff is more modules per character, so probe the
   // actual module count for this payload first and size the QR to keep a healthy minimum
-  // pixels-per-module — a short name gets a compact, sharp code; a long household name's
+  // pixels-per-module: a short name gets a compact, sharp code; a long household name's
   // QR grows to compensate rather than getting denser and harder to resolve.
   const baseQrSize = layout === 'split' ? 150 : (layout === 'premium' ? 130 : 200);
   const maxQrSize = layout === 'split' ? 220 : (layout === 'premium' ? 300 : 290);
@@ -556,7 +556,7 @@ if(!guestId || !guestName){
   } catch(err){
     document.getElementById('sealBox').innerHTML =
       `<div style="font-size:9px; padding:6px; word-break:break-all; font-family:monospace; line-height:1.3;">${guestId}</div>`;
-    document.getElementById('sealBox').title = 'QR code failed to generate — reload this page. Door staff can paste this ID manually.';
+    document.getElementById('sealBox').title = 'QR code failed to generate. Reload this page. Door staff can paste this ID manually.';
   }
 }
 

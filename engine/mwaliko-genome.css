@@ -1,8 +1,8 @@
 /* ============================================================================
-   Kadi Genome Engine -- composable card CSS
+   Mwaliko Genome Engine -- composable card CSS
    ----------------------------------------------------------------------------
    Every rule in this file is scoped to exactly ONE axis, and each axis touches
-   only the hook it owns (see the contract at the top of kadi-genome.js).
+   only the hook it owns (see the contract at the top of mwaliko-genome.js).
 
    The hard rule that makes 277,112 layouts possible instead of 57:
      NOTHING here attaches ::before/::after to .invite-card.

@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import * as R from '@/engine/kadi-render.js';
-import type { CardDesign } from '@/engine/kadi-render.js';
+import * as R from '@/engine/mwaliko-render.js';
+import type { CardDesign } from '@/engine/mwaliko-render.js';
 
 interface Props {
   design: CardDesign;

@@ -1,9 +1,12 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import SiteHeader, { Wordmark } from '@/components/SiteHeader';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Kadi — Digital Invitations',
+  title: {
+    default: 'Mwaliko, Digital Invitations for Every Occasion',
+    template: '%s | Mwaliko',
+  },
   description:
     'Design a digital invitation, share it with every guest, and track who is coming. ' +
     'Weddings, send-offs, kitchen parties, graduations and corporate events.',
@@ -11,80 +14,25 @@ export const metadata: Metadata = {
   icons: { icon: '/icon.svg' },
 };
 
-function Wordmark({ className = '' }: { className?: string }) {
-  /* Replaces the old A&J monogram, which was one couple's initials baked into
-   * the product chrome of a platform meant to serve every event. */
-  return (
-    <span className={`font-[family-name:var(--font-display)] tracking-tight ${className}`}>
-      Kadi
-    </span>
-  );
-}
-
-const NAV = [
-  { href: '/templates', label: 'Templates' },
-  { href: '/studio', label: 'Studio' },
-  { href: '/pricing', label: 'Pricing' },
-];
+/* No webfont links in <head> any more. The site now asks the operating system
+ * for its own faces, San Francisco and New York on Apple devices, so there is
+ * nothing to preconnect to and nothing to download before text can paint. */
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Inter:wght@400;500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body className="min-h-full flex flex-col">
-        {/* Full-bleed shell. The old studio was a fixed centre column that left
-            the left and right thirds of a desktop empty. */}
-        <header className="sticky top-0 z-50 border-b border-line bg-ivory/85 backdrop-blur-md">
-          <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-10 px-6 lg:px-10">
-            <Link href="/" className="flex items-center gap-2.5">
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-sage text-ivory">
-                <span className="font-[family-name:var(--font-display)] text-[15px] leading-none">K</span>
-              </span>
-              <Wordmark className="text-[22px] text-sage" />
-            </Link>
-
-            <nav className="hidden items-center gap-8 md:flex">
-              {NAV.map(item => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="text-[13.5px] text-ink-soft transition-colors hover:text-ink"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-
-            <div className="ml-auto flex items-center gap-3">
-              <Link href="/login" className="hidden text-[13.5px] text-ink-soft hover:text-ink sm:block">
-                Sign in
-              </Link>
-              <Link
-                href="/templates"
-                className="rounded-lg bg-sage px-4 py-2 text-[13px] font-medium text-ivory transition-colors hover:bg-sage-deep"
-              >
-                Start designing
-              </Link>
-            </div>
-          </div>
-        </header>
+        <SiteHeader />
 
         <main className="flex-1">{children}</main>
 
         <footer className="border-t border-line bg-paper">
-          <div className="mx-auto grid w-full max-w-[1600px] gap-8 px-6 py-12 sm:grid-cols-2 lg:grid-cols-4 lg:px-10">
+          <div className="mx-auto grid w-full max-w-[1600px] gap-8 px-6 py-12 sm:grid-cols-2 lg:grid-cols-5 lg:px-10">
             <div>
               <Wordmark className="text-[20px] text-sage" />
               <p className="mt-2 max-w-xs text-[13px] leading-relaxed text-ink-faint">
                 Digital invitations for weddings, send-offs, kitchen parties and
-                corporate events — designed, shared and tracked in one place.
+                corporate events. Designed, shared and tracked in one place.
               </p>
             </div>
             <FooterCol title="Product" links={[
@@ -103,10 +51,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ['Guestbook', '/guestbook.html'],
               ['Legacy studio', '/studio-legacy.html'],
             ]} />
+            <FooterCol title="Legal" links={[
+              ['Privacy Policy', '/privacy'],
+              ['Terms and Conditions', '/terms'],
+              ['Cookie Policy', '/cookies'],
+              ['Legal Notice', '/legal'],
+              ['Compliance', '/compliance'],
+            ]} />
           </div>
           <div className="border-t border-line-soft">
-            <div className="mx-auto w-full max-w-[1600px] px-6 py-5 text-[12px] text-ink-faint lg:px-10">
-              © {new Date().getFullYear()} Kadi
+            <div className="mx-auto flex w-full max-w-[1600px] flex-wrap items-center gap-x-5 gap-y-2 px-6 py-5 text-[12px] text-ink-faint lg:px-10">
+              <span>&copy; {new Date().getFullYear()} Mwaliko</span>
+              <span className="hidden sm:inline text-line">|</span>
+              <span>Operating in the United Republic of Tanzania</span>
             </div>
           </div>
         </footer>
@@ -122,7 +79,10 @@ function FooterCol({ title, links }: { title: string; links: [string, string][] 
       <ul className="mt-3 space-y-2">
         {links.map(([label, href]) => (
           <li key={href}>
-            <a href={href} className="text-[13px] text-ink-soft transition-colors hover:text-ink">
+            <a
+              href={href}
+              className="inline-block text-[13px] text-ink-soft transition-[color,transform] duration-200 ease-[cubic-bezier(.22,.61,.36,1)] hover:translate-x-0.5 hover:text-ink"
+            >
               {label}
             </a>
           </li>

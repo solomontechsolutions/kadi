@@ -110,7 +110,7 @@ document.getElementById('manualToggle').addEventListener('click', ()=>{
 
 async function startCamera(){
   if(typeof jsQR === 'undefined'){
-    statusEl.innerHTML = 'Scanner engine failed to load (vendor/jsQR.js). Reload this page — it needs to load fully at least once before it can work offline.';
+    statusEl.innerHTML = 'Scanner engine failed to load (vendor/jsQR.js). Reload this page. It needs to load fully at least once before it can work offline.';
     return;
   }
   statusEl.textContent = 'Requesting camera access…';
@@ -121,7 +121,7 @@ async function startCamera(){
     video.srcObject = stream;
     await video.play();
     document.getElementById('startBtn').style.display='none';
-    statusEl.textContent = 'Camera live — hold a guest\'s QR steady in the frame.';
+    statusEl.textContent = 'Camera live. Hold a guest\'s QR steady in the frame.';
     scanning = true;
     requestAnimationFrame(tick);
   } catch(err){
@@ -151,7 +151,7 @@ function tick(){
 
 function parseCheckinCode(text){
   // Current invite links encode a compact "WED1|id|name|seats" string (kept short so the
-  // QR stays physically scannable). Older invites may still carry the original JSON form —
+  // QR stays physically scannable). Older invites may still carry the original JSON form,
   // support both so links already sent out keep working.
   const raw = String(text || '');
   const parts = raw.split('|');
@@ -163,7 +163,7 @@ function parseCheckinCode(text){
     if(data && data.t === 'wedding-checkin' && data.id){
       return { id: data.id, name: data.name || '', seats: parseInt(data.seats, 10) || 1 };
     }
-  } catch(e){ /* not JSON either — fall through to null */ }
+  } catch(e){ /* not JSON either, fall through to null */ }
   return null;
 }
 
@@ -178,7 +178,7 @@ function handlePayload(text){
     existing.dupCount = (existing.dupCount||0) + 1;
     localStorage.setItem(STORE_KEY, JSON.stringify(checkedIn));
     updateStats();
-    return showResult('dup', data.name, `Already checked in — this code has now been scanned ${existing.dupCount+1} times.`);
+    return showResult('dup', data.name, `Already checked in. This code has now been scanned ${existing.dupCount+1} times.`);
   }
 
   checkedIn[data.id] = { status:'ok', name:data.name, seats:data.seats, at: Date.now(), dupCount:0 };

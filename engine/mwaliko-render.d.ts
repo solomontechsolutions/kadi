@@ -1,4 +1,4 @@
-import type { Genome } from './kadi-genome.js';
+import type { Genome } from './mwaliko-genome.js';
 
 /** Everything the card renderer needs. Palette and type live alongside the
  *  genome rather than inside it, so colour and font can change without

@@ -1,4 +1,4 @@
--- Kadi schema.
+-- Mwaliko schema.
 -- Run in the Supabase dashboard: SQL Editor -> New query -> paste -> Run.
 -- Safe to re-run; every statement is idempotent.
 
@@ -7,7 +7,7 @@ create extension if not exists pgcrypto;
 -- ---------------------------------------------------------------------------
 -- guestbook (pre-existing)
 -- ---------------------------------------------------------------------------
--- site_id scopes rows to one Kadi deployment. Only one value is used today
+-- site_id scopes rows to one Mwaliko deployment. Only one value is used today
 -- (kadi-nur8), but keeping it from day one means adding more sites later is
 -- just a new value, not a schema change.
 create table if not exists messages (

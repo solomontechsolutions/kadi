@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wedding Invite Studio</title>
+<title>Mwaliko Studio</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#46583D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -420,14 +420,14 @@
         <h3>Premium Website content <span class="label" style="text-transform:none; letter-spacing:0;">(used by the Premium Website layout)</span></h3>
         <div class="field"><label>Invitation message</label><textarea id="introText" rows="3">With joyful hearts and the blessings of our families, we invite you to share the celebration of our love as we begin their life together.</textarea></div>
         <div class="field"><label>Main event attire note</label><input id="ev1Attire" type="text" placeholder="e.g. Dress to impress"></div>
-        <div class="field"><label>Second ceremony name <span class="label" style="text-transform:none; letter-spacing:0;">(optional — e.g. Ruracio, Kitchen Party, Send-off)</span></label><input id="ev2Name" type="text" placeholder="Leave blank to show one event only"></div>
+        <div class="field"><label>Second ceremony name <span class="label" style="text-transform:none; letter-spacing:0;">(optional: e.g. Ruracio, Kitchen Party, Send-off)</span></label><input id="ev2Name" type="text" placeholder="Leave blank to show one event only"></div>
         <div class="field"><label>Second ceremony date</label><input id="ev2Date" type="date"></div>
         <div class="field"><label>Second ceremony time</label><input id="ev2Time" type="time"></div>
         <div class="field"><label>Second ceremony venue</label><input id="ev2Venue" type="text"></div>
         <div class="field"><label>Second ceremony description</label><textarea id="ev2Desc" rows="2"></textarea></div>
         <div class="field"><label>Second ceremony attire note</label><input id="ev2Attire" type="text"></div>
-        <div class="field"><label>Photo-sharing link <span class="label" style="text-transform:none; letter-spacing:0;">(optional — Google Photos/Drive album URL)</span></label><input id="shareUrl" type="text" placeholder="https://photos.app.goo.gl/..."></div>
-        <div class="field"><label>RSVP link <span class="label" style="text-transform:none; letter-spacing:0;">(optional — Google Form/Tally URL)</span></label><input id="rsvpUrl" type="text" placeholder="https://forms.gle/..."></div>
+        <div class="field"><label>Photo-sharing link <span class="label" style="text-transform:none; letter-spacing:0;">(optional: Google Photos/Drive album URL)</span></label><input id="shareUrl" type="text" placeholder="https://photos.app.goo.gl/..."></div>
+        <div class="field"><label>RSVP link <span class="label" style="text-transform:none; letter-spacing:0;">(optional: Google Form/Tally URL)</span></label><input id="rsvpUrl" type="text" placeholder="https://forms.gle/..."></div>
 
         <h3>Palette (fine-tune)</h3>
         <div class="swatchrow"><span>Background</span><input type="color" id="cBg" value="#f2f3ec"></div>
@@ -454,7 +454,7 @@
 
   <!-- GUESTS PANEL -->
   <div class="panel" id="panel-guests">
-    <div class="callout"><b>How this works:</b> each guest gets their own personalised card link (with their name baked in) to send via WhatsApp, email, or text. The <b>QR code</b> on their card is only for door staff — it encodes that guest's ID + party size so <code>scanner.html</code> can check them in with a camera, no internet lookup needed.</div>
+    <div class="callout"><b>How this works:</b> each guest gets their own personalised card link (with their name baked in) to send via WhatsApp, email, or text. The <b>QR code</b> on their card is only for door staff: it encodes that guest's ID + party size so <code>scanner.html</code> can check them in with a camera, no internet lookup needed.</div>
 
     <h3 style="margin-top:0;">Add a guest</h3>
     <div class="addrow">
@@ -467,18 +467,18 @@
       <thead><tr><th>Guest</th><th>Party</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody></tbody>
     </table>
-    <div id="emptyState" class="empty" style="display:none;">No guests yet — add your first one above.</div>
+    <div id="emptyState" class="empty" style="display:none;">No guests yet. Add your first one above.</div>
   </div>
 
 </main>
 </div>
-<footer>Built for a wedding, not a corporation — no accounts, no ads, no tracking.</footer>
+<footer>Mwaliko Studio. No account needed to design a card.</footer>
 
 <script>
 const STORE_KEY='wedding_studio_v1';
 // Picker mode (?mode=pick): a stripped-down view for sharing with the people
 // getting married so they can browse templates themselves, with no access to
-// guest data. There's no backend, so their pick can't sync automatically —
+// guest data. There's no backend, so their pick can't sync automatically,
 // they send the template code back (copy/WhatsApp/email) for the admin to
 // paste into the normal "Jump to a template code" box on their own device.
 const PICKER_MODE = new URLSearchParams(location.search).get('mode') === 'pick';
@@ -564,10 +564,10 @@ const LAYOUTS = [
 
 // Ornament density: an axis independent of layout. Rather than every layout baking
 // in its own fixed level of decoration, any of the 19 layouts can be paired with
-// none/a light accent/a full frame — this is what actually multiplies the design
+// none/a light accent/a full frame. This is what actually multiplies the design
 // space (19 layouts x 3 ornament levels) instead of needing more hand-built layouts
 // for every point on the "how decorated" spectrum. Implemented as a real DOM layer
-// (.ornament-tl/.ornament-br corner marks) plus a box-shadow ring for "frame" —
+// (.ornament-tl/.ornament-br corner marks) plus a box-shadow ring for "frame":
 // deliberately NOT using ::before/::after on the card, since many layouts already
 // use those for their own signature decoration (framed's double border, botanical's
 // corner brackets, etc.) and would silently lose it to a conflicting rule.
@@ -578,8 +578,8 @@ const ORNAMENTS = [
 ];
 
 // Curated starting points per event type (layout + palette + type), mirroring the
-// event categories couples/organizers in this market actually use Kadi for. These
-// are a first pass at "what suits this event" — easy to retune, not locked in;
+// event categories couples/organizers in this market actually use Mwaliko for. These
+// are a first pass at "what suits this event", easy to retune, not locked in;
 // picking one just jumps the picker to that combo, same as Shuffle does.
 const EVENT_PRESETS = [
   { key:'wedding',      name:'Wedding',         layoutKey:'premium',     hueIdx:4,  moodIdx:0, headingIdx:0, bodyIdx:0, scaleIdx:1, ornamentIdx:0 },
@@ -1004,11 +1004,11 @@ function renderTemplatePreview(){
   if(d.layout === 'premium'){ templateCountdownTimer = startCountdown(card, d.wdate, d.wtime); }
   const code = templateCode(tplState.layoutIdx, tplState.hueIdx, tplState.moodIdx, tplState.headingIdx, tplState.bodyIdx, tplState.scaleIdx, tplState.ornamentIdx);
   document.getElementById('templateCode').textContent =
-    code + ' — ' + LAYOUTS[tplState.layoutIdx].name + ' (' + ORNAMENTS[tplState.ornamentIdx].name + ' ornament) · ' + HUES[tplState.hueIdx] + ' ' + MOODS[tplState.moodIdx].name
+    code + ' / ' + LAYOUTS[tplState.layoutIdx].name + ' (' + ORNAMENTS[tplState.ornamentIdx].name + ' ornament) · ' + HUES[tplState.hueIdx] + ' ' + MOODS[tplState.moodIdx].name
     + ' · ' + HEADING_FONTS[tplState.headingIdx].name + ' + ' + BODY_FONTS[tplState.bodyIdx].name + ' (' + SCALES[tplState.scaleIdx].name + ')';
   if(PICKER_MODE){
     document.getElementById('pickShareCode').value = code;
-    const msg = `We picked this Kadi invite template — ${code} (${LAYOUTS[tplState.layoutIdx].name}, ${HUES[tplState.hueIdx]} ${MOODS[tplState.moodIdx].name}). Can you set it up?`;
+    const msg = `We picked this Mwaliko invite template: ${code} (${LAYOUTS[tplState.layoutIdx].name}, ${HUES[tplState.hueIdx]} ${MOODS[tplState.moodIdx].name}). Can you set it up?`;
     document.getElementById('pickShareWa').href = 'https://wa.me/?text=' + encodeURIComponent(msg);
     document.getElementById('pickShareMail').href = 'mailto:?subject=' + encodeURIComponent('Our invite template pick') + '&body=' + encodeURIComponent(msg);
   }
@@ -1079,7 +1079,7 @@ function removeGuest(id){
   saveState(state);
   renderGuests();
 }
-// Must match invite.html's INVITE_DEFAULTS exactly — invite.html falls back to these
+// Must match invite.html's INVITE_DEFAULTS exactly. invite.html falls back to these
 // when a URL param is missing, so a guest link only needs to carry a field when it
 // actually differs from this baseline. That keeps ordinary links down to just
 // id/name(/seats), while anything the couple customizes still reaches the guest.
@@ -1109,7 +1109,7 @@ function inviteLink(g){
     ev2Name:d.ev2Name||'', ev2Date:d.ev2Date||'', ev2Time:d.ev2Time||'', ev2Venue:d.ev2Venue||'', ev2Desc:d.ev2Desc||'', ev2Attire:d.ev2Attire||'',
     shareUrl:d.shareUrl||'', rsvpUrl:d.rsvpUrl||'',
     // photo intentionally excluded: it's never diffed/added to the URL (see
-    // INVITE_DEFAULTS.photo in invite.html — always baked in, never per-link).
+    // INVITE_DEFAULTS.photo in invite.html, always baked in, never per-link).
   };
   // Colors from <input type=color> are always lowercase hex; compare case-insensitively
   // so an unchanged color never gets re-added to the URL just because of casing.
@@ -1178,7 +1178,7 @@ function renderGuests(){
   if(d && d.photo) showPhotoPreview(d.photo);
   if(PICKER_MODE){
     document.getElementById('headerTitle').textContent = 'Pick Your Invite Look';
-    document.getElementById('headerSub').textContent = "Browse the templates below and pick whichever you love — there's no guest list or account here, just the design.";
+    document.getElementById('headerSub').textContent = "Browse the templates below and pick whichever you love. There's no guest list or account here, just the design.";
     const designTab = document.querySelector('.tab-btn[data-tab="design"]');
     const guestsTab = document.querySelector('.tab-btn[data-tab="guests"]');
     if(designTab) designTab.style.display = 'none';

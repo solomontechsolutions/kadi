@@ -101,7 +101,7 @@ async function loadMessages(){
   const { data, error } = await sb.from('messages').select('guest_name,message,created_at')
     .eq('site_id', SITE_ID).order('created_at', { ascending:false }).limit(200);
   if(error){
-    list.innerHTML = '<div class="empty">Could not load messages right now — please refresh.</div>';
+    list.innerHTML = '<div class="empty">Could not load messages right now. Please refresh.</div>';
     return;
   }
   renderMessages(data);
@@ -126,7 +126,7 @@ if(!configured){
     btn.disabled = false; btn.textContent = 'Send message';
     if(error){
       status.className = 'bad';
-      status.textContent = 'Something went wrong — please try again.';
+      status.textContent = 'Something went wrong. Please try again.';
       return;
     }
     document.getElementById('msgForm').reset();

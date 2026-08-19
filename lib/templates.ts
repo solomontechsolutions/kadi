@@ -1,7 +1,7 @@
 /* Curated surface over the generated design space.
  *
  * The engine can produce 315,360 structural layouts. Nobody browses that, and
- * m-kadi's gallery is the shape customers already understand: a grid of named
+ * the gallery is the shape customers already understand: a grid of named
  * cards under a category. So the gallery is a *window* onto the space, not a
  * separate hand-built library that would immediately drift from the engine.
  *
@@ -10,8 +10,8 @@
  * and index must always yield the same card, or a template someone picked on
  * Tuesday is a different design on Thursday and every saved invite breaks.
  */
-import * as K from '@/engine/kadi-genome.js';
-import type { Genome } from '@/engine/kadi-genome.js';
+import * as K from '@/engine/mwaliko-genome.js';
+import type { Genome } from '@/engine/mwaliko-genome.js';
 
 /* Re-exported so callers get the engine's type, not a structural lookalike.
    A local Record<string,string> would compile here and then fail to satisfy
@@ -47,7 +47,7 @@ export const CATEGORIES: Category[] = [
   {
     key: 'wedding',
     name: 'Weddings',
-    blurb: 'Harusi — from cathedral-formal to garden-intimate.',
+    blurb: 'Harusi, from cathedral-formal to garden-intimate.',
     pools: {
       frame: ['plain', 'rule', 'double', 'arch', 'deckle', 'scallop'],
       header: ['stacked', 'crest', 'inline', 'vrule', 'split'],
@@ -147,7 +147,7 @@ export const CATEGORIES: Category[] = [
   {
     key: 'graduation',
     name: 'Graduation',
-    blurb: 'Mahafali — academic, proud, photograph-led.',
+    blurb: 'Mahafali. Academic, proud, photograph-led.',
     pools: {
       frame: ['rule', 'double', 'plain', 'arch'],
       header: ['crest', 'label', 'stacked'],
