@@ -87,6 +87,28 @@ organiser supplies, and it renders disabled when no URL is given. There is no
 SMS sending anywhere in the codebase, and WhatsApp is a per-guest share link the
 organiser taps by hand. Marketing copy must say so.
 
+**Twelve archetypes, not one skeleton.** `engine/archetypes.js` holds twelve
+compositions, each with its own markup and its own CSS block in
+`engine/archetypes.css`. They share only the card box, the colour tokens, the
+two font tokens and the guest line. No archetype may use another's class prefix.
+
+This replaced the genome engine's central rule, "there is exactly ONE markup
+shape: axes never add or remove structural elements". That rule is what made all
+315,360 combinations share one silhouette, so every card was the same card in a
+different colour. `engine/mwaliko-render.js` still implements it and is marked
+superseded; only `engine/preview-grid.html` uses it now.
+
+Content and composition are separate layers. `InvitationData` is the shared
+contract; each archetype receives the identical object and may use, reorder,
+resize or omit any field. Never push a composition back into a shared layout.
+
+**Uniqueness is enforced, not asserted.** `npm run verify:designs` compares
+every archetype pairwise on the eight traits in `docs/design-matrix.md` and
+fails when two share more than three. It also fails on a shared class prefix, a
+duplicate markup structure from identical content, and a dangling ampersand on a
+single-subject card. Adding an archetype means adding a matrix row and passing
+that script.
+
 **The card engine is the source of truth.** The marketing site counts layouts by
 calling `countValid()` rather than quoting a number in prose, because hardcoded
 figures went stale twice. Hero and gallery cards are rendered by the same engine
@@ -101,14 +123,22 @@ validates the file against a closed schema and rejects unknown keys, including a
 ```
 npm run dev            # sync engine, then next dev
 npm run build          # sync engine, then next build
-npm run verify:engine  # check the engine's design space invariants
+npm run verify:engine   # the genome axis invariants
+npm run verify:designs  # the archetype similarity test
+npm run verify          # both
+npm run build:logo      # recut the logo assets from Logo.png
 ```
 
 ## Known state
 
-The `/studio` route is a landing page explaining the Studio, not the editor. The
-working editor is `public/studio-legacy.html`. Rebuilding it on the genome engine
-is the next milestone.
+`/studio` is the editor. It resolves `?template=<id>` on the server, so opening
+a card from the gallery lands on that exact composition, palette and type pair
+rather than on a default. `public/studio-legacy.html` survives for the guest
+list and entry codes only, which the new editor does not do yet.
+
+Still to build: saving a design to an account, uploading a guest list in the new
+editor, and collecting RSVPs in Mwaliko rather than in a form the organiser
+supplies. All three are labelled in the Studio and on the pricing page.
 
 Supabase is wired up in `lib/supabase/` but nothing under `app/` imports it yet,
 so no environment variables are needed to build or run the site. The guestbook

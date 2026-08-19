@@ -63,7 +63,6 @@ export default function HeroCards() {
               design={{ ...sampleFor(t.category), ...designFor(t) }}
               thumb
               guestName=""
-              showSeal={false}
             />
           </div>
         </div>

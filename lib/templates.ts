@@ -12,6 +12,7 @@
  */
 import * as K from '@/engine/mwaliko-genome.js';
 import type { Genome } from '@/engine/mwaliko-genome.js';
+import { ARCHETYPE_BY_ID } from '@/engine/archetypes.js';
 
 /* Re-exported so callers get the engine's type, not a structural lookalike.
    A local Record<string,string> would compile here and then fail to satisfy
@@ -22,6 +23,10 @@ export interface Template {
   id: string;
   name: string;
   category: string;
+  /* Which of the twelve compositions draws this card. This, not the genome, is
+     what makes two templates look like different designs rather than the same
+     design in another colour. */
+  archetype: string;
   genome: Genome;
   hueIdx: number;
   moodIdx: number;
@@ -41,11 +46,17 @@ export interface Category {
   heads: number[];
   bodies: number[];
   names: string[];
+  /* Which compositions this category may use. Categories draw from different
+     pools so that a Corporate card and a Wedding card are not the same design
+     with different words: weddings never get Poster, corporate never gets
+     Ornamental. See docs/design-matrix.md. */
+  archetypes: string[];
 }
 
 export const CATEGORIES: Category[] = [
   {
     key: 'wedding',
+    archetypes: ['editorial','ornamental','arch','botanical','luxury','fullbleed','typographic'],
     name: 'Weddings',
     blurb: 'Harusi, from cathedral-formal to garden-intimate.',
     pools: {
@@ -66,6 +77,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'sendoff',
+    archetypes: ['colorblock','poster','fullbleed','magazine','typographic','asymmetric'],
     name: 'Send-Off',
     blurb: 'Bold, photo-forward cards built for a full guest list.',
     pools: {
@@ -86,6 +98,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'kitchenparty',
+    archetypes: ['botanical','colorblock','ornamental','fullbleed','poster'],
     name: 'Kitchen Party',
     blurb: 'Warm, celebratory, unmistakably East African.',
     pools: {
@@ -106,6 +119,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'birthday',
+    archetypes: ['poster','typographic','colorblock','magazine','fullbleed'],
     name: 'Birthdays',
     blurb: 'Playful through to black-tie milestone.',
     pools: {
@@ -126,6 +140,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'corporate',
+    archetypes: ['swiss','asymmetric','magazine','editorial','colorblock'],
     name: 'Corporate',
     blurb: 'Conferences, launches, galas and AGMs.',
     pools: {
@@ -146,6 +161,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'graduation',
+    archetypes: ['editorial','arch','swiss','magazine','luxury'],
     name: 'Graduation',
     blurb: 'Mahafali. Academic, proud, photograph-led.',
     pools: {
@@ -166,6 +182,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'babyshower',
+    archetypes: ['botanical','luxury','arch','colorblock','editorial'],
     name: 'Baby Shower',
     blurb: 'Naming ceremonies, showers and first birthdays.',
     pools: {
@@ -186,6 +203,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'religious',
+    archetypes: ['arch','ornamental','editorial','luxury','swiss'],
     name: 'Church & Faith',
     blurb: 'Dedications, confirmations and church events.',
     pools: {
@@ -206,6 +224,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'anniversary',
+    archetypes: ['ornamental','editorial','luxury','typographic','botanical'],
     name: 'Anniversary',
     blurb: 'Silver, gold and everything between.',
     pools: {
@@ -226,6 +245,7 @@ export const CATEGORIES: Category[] = [
   },
   {
     key: 'memorial',
+    archetypes: ['luxury','editorial','arch','swiss'],
     name: 'Memorial',
     blurb: 'Restrained, dignified cards for remembrance.',
     pools: {
@@ -420,8 +440,13 @@ export function templatesFor(categoryKey: string, count = 24): Template[] {
     if (!seen.has(code)) {
       seen.add(code);
       const n = out.length;
+      /* Cycled rather than hashed. A hash would happily place three Poster
+         cards in a row, and the first screen of the gallery is exactly where
+         the library has to prove it is varied. */
+      const archetype = cat.archetypes[n % cat.archetypes.length];
       out.push({
-        id: `${cat.key}-${K.genomeCode(genome)}`,
+        id: `${cat.key}-${archetype}-${K.genomeCode(genome)}`,
+        archetype,
         name: `${pick(cat.names, i * 13)} ${String.fromCharCode(65 + (n % 26))}${n >= 26 ? Math.floor(n / 26) : ''}`,
         category: cat.key,
         genome,
@@ -443,7 +468,46 @@ export function featuredTemplates(perCategory = 3): Template[] {
   return CATEGORIES.flatMap(c => templatesFor(c.key, perCategory));
 }
 
+/* Resolve a template id back into the template it names.
+ *
+ * Ids are `category-archetype-genomeCode` and templatesFor is deterministic, so
+ * the walk that produced an id always reproduces it. That is what lets a link
+ * carry a design without a database behind it: /studio?template=wedding-arch-K0...
+ * rebuilds exactly the card the customer clicked in the gallery.
+ *
+ * Walks far enough to cover a heavily paged gallery, then gives up rather than
+ * looping forever on an id that was hand-edited or belongs to an older build. */
+export function findTemplate(id: string): Template | null {
+  const cat = id.split('-')[0];
+  const keys = CATEGORY_BY_KEY[cat] ? [cat] : CATEGORIES.map(c => c.key);
+  for (const k of keys) {
+    const found = templatesFor(k, 240).find(t => t.id === id);
+    if (found) return found;
+  }
+  return null;
+}
+
 export function designFor(t: Template) {
   const palette = K.paletteFromIndices(t.hueIdx, t.moodIdx);
-  return { ...palette, genome: t.genome, hf: t.hf, bf: t.bf, sc: t.sc };
+  const head = K.HEADING_FONTS[t.hf % K.HEADING_FONTS.length];
+  const body = K.BODY_FONTS[t.bf % K.BODY_FONTS.length];
+  return {
+    ...palette,
+    genome: t.genome,
+    hf: t.hf, bf: t.bf, sc: t.sc,
+    archetype: t.archetype,
+    headFont: head.css,
+    bodyFont: body.css,
+    /* Google Fonts are still fetched per card, so a gallery of 24 cards must
+       not request 24 stylesheets. ensureFont dedupes by family. */
+    headGf: head.gf,
+    bodyGf: body.gf,
+  };
+}
+
+/* The archetype's display name, for the caption under a gallery thumbnail. It
+   is the single most useful label there: it tells a browsing customer what
+   kind of design they are looking at. */
+export function archetypeName(t: Template): string {
+  return ARCHETYPE_BY_ID[t.archetype]?.name ?? '';
 }

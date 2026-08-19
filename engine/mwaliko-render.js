@@ -1,4 +1,13 @@
 /* ============================================================================
+   Mwaliko Genome Engine -- renderer  [SUPERSEDED]
+
+   Cards are now drawn by engine/archetypes.js, which gives each design its own
+   markup instead of restyling one shared skeleton. This file survives only
+   because engine/preview-grid.html uses it to prove the genome axes still
+   compose. Nothing customer-facing renders through it. Do not add designs here.
+   ----------------------------------------------------------------------------
+   Original header follows.
+
    Mwaliko Genome Engine -- renderer
    ----------------------------------------------------------------------------
    Builds the single DOM skeleton that every one of the 277,112 genomes styles.

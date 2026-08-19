@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import CardPreview from '@/components/CardPreview';
-import { CATEGORIES, templatesFor, designFor, sampleFor } from '@/lib/templates';
+import { CATEGORIES, templatesFor, designFor, sampleFor, archetypeName } from '@/lib/templates';
 
 const PER_PAGE = 24;
 
@@ -72,12 +72,15 @@ export default function TemplateGallery({ initialCategory }: { initialCategory: 
             className="lift group block"
           >
             <div className="thumb card-stage rounded-xl border border-line bg-paper shadow-[0_1px_2px_rgba(0,0,0,.04)] group-hover:shadow-[0_8px_24px_rgba(0,0,0,.10)]">
-              <CardPreview design={{ ...sample, ...designFor(t) }} thumb guestName="" showSeal={false} />
+              <CardPreview design={{ ...sample, ...designFor(t) }} thumb guestName="" />
             </div>
             <div className="mt-2.5 flex items-baseline justify-between gap-2">
               <span className="truncate text-[13.5px] text-ink">{t.name}</span>
+              {/* The archetype, not the category. The category is already the
+                  selected tab above; naming the composition is what tells a
+                  browsing customer why this card differs from the one beside it. */}
               <span className="shrink-0 text-[10.5px] uppercase tracking-wider text-ink-faint">
-                {active.name}
+                {archetypeName(t)}
               </span>
             </div>
           </Link>

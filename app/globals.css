@@ -7,6 +7,7 @@
    Note the engine sets its own font stacks per type pairing. The site fonts
    below dress the chrome only and never reach inside a card. */
 @import "../engine/mwaliko-genome.css";
+@import "../engine/archetypes.css";
 
 @theme {
   /* Mwaliko's palette, taken from the logo.
@@ -97,7 +98,7 @@ body {
   position: relative;
   background: var(--color-ivory);
 }
-.thumb > .invite-card {
+.thumb > .mw-card {
   position: absolute;
   top: 0; left: 0;
   width: 460px;

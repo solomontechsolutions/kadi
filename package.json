@@ -11,7 +11,9 @@
     "start": "next start",
     "lint": "next lint",
     "verify:engine": "node scripts/verify-engine.mjs",
-    "build:logo": "node scripts/build-logo.mjs"
+    "build:logo": "node scripts/build-logo.mjs",
+    "verify:designs": "node scripts/verify-designs.mjs",
+    "verify": "node scripts/verify-engine.mjs && node scripts/verify-designs.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",
