@@ -2,22 +2,20 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
 
   "//": [
-    "This project was created when Kadi was four static HTML files, so its",
-    "dashboard settings served a static output directory and never used the",
-    "build output. After the Next.js migration that left / returning 404 while",
-    "/invite.html and /scanner.html kept working -- those are real files under",
-    "public/, which was being served flat while .next was discarded.",
+    "Kadi began as a handful of static HTML files, and the Vercel project of",
+    "that era kept serving them after the Next.js migration -- it ran the build",
+    "and then discarded it in favour of a flat public/ directory, so / returned",
+    "404 while /invite.html and /scanner.html still resolved as real files.",
     "",
-    "Fixed in the dashboard (Framework Preset -> Next.js, Output Directory",
-    "override cleared). Declaring the framework here as well keeps the intent",
-    "in the repo, so a project re-create or a preview branch cannot silently",
-    "revert to serving static files.",
+    "Pinning the framework here is the guard against that recurring. Project",
+    "settings live in a dashboard nobody reviews; this file travels with the",
+    "code, so a re-created project or a preview branch builds as Next.js",
+    "whatever the dashboard happens to say.",
     "",
-    "Deliberately no outputDirectory: Vercel's Next.js builder manages its own",
-    "output, and pinning it here fights the builder rather than helping it."
+    "Nothing else is pinned on purpose. The Next.js builder owns its own build",
+    "command, install command and output directory, and overriding those is how",
+    "the original breakage happened."
   ],
 
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "installCommand": "npm install"
+  "framework": "nextjs"
 }
