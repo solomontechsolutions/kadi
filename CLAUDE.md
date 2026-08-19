@@ -140,9 +140,29 @@ Still to build: saving a design to an account, uploading a guest list in the new
 editor, and collecting RSVPs in Mwaliko rather than in a form the organiser
 supplies. All three are labelled in the Studio and on the pricing page.
 
-Supabase is wired up in `lib/supabase/` but nothing under `app/` imports it yet,
-so no environment variables are needed to build or run the site. The guestbook
-page talks to Supabase directly with its own client.
+Accounts, guest lists and RSVPs are built. Sign-in is a magic link (no
+passwords stored), sessions are refreshed in `middleware.ts`, and every mutation
+goes through a server action in `app/events/actions.ts`.
+
+The site still builds and runs with no Supabase credentials. `isConfigured` in
+`lib/supabase/config.ts` gates the account pages, `createClient()` on the server
+returns null rather than throwing, and the public pages never touch the
+database. A missing variable degrades the account features, it does not take the
+marketing site down.
+
+Two key names are accepted, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` and the older
+`NEXT_PUBLIC_SUPABASE_ANON_KEY`, because Supabase's Vercel integration has
+created both over time and a project can end up with either.
+
+**Supabase Auth needs its redirect URLs set** or magic links bounce: Site URL
+plus `/auth/callback` on every domain that serves the app, added under
+Authentication, URL Configuration.
+
+**A guest link never exposes the guest list.** There is deliberately no public
+select policy on `guests`. A guest is read through `guest_by_entry_code`, a
+security-definer function whose where-clause is the access control: one entry
+code returns exactly one row. Replies go through `submit_rsvp` the same way.
+RSVPs are append-only, so a changed mind is history rather than an overwrite.
 
 The legal pages carry deliberate `[bracketed]` placeholders wherever company
 registration details or contact addresses are required. They render highlighted

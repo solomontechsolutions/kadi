@@ -1,7 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useTransition } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { saveEvent } from '@/app/events/actions';
 import CardPreview from '@/components/CardPreview';
 import * as K from '@/engine/mwaliko-genome.js';
 import { ARCHETYPES } from '@/engine/archetypes.js';
@@ -54,12 +56,57 @@ function draftFrom(t: Template | null, category: string): Draft {
 }
 
 export default function StudioEditor({
-  template, category,
-}: { template: Template | null; category: string }) {
-  const [d, setD] = useState<Draft>(() => draftFrom(template, category));
+  template, category, saved, signedIn,
+}: {
+  template: Template | null;
+  category: string;
+  /* An event being edited again, rather than a template being opened for the
+     first time. Its stored design is the starting state, so reopening from the
+     dashboard returns you to exactly what you saved. */
+  saved?: { id: string; title: string; design: Partial<Draft> } | null;
+  signedIn: boolean;
+}) {
+  const router = useRouter();
+  const [d, setD] = useState<Draft>(() => ({
+    ...draftFrom(template, category),
+    ...(saved?.design ?? {}),
+  }));
   const [guest, setGuest] = useState('Neema Mushi');
   const [seats, setSeats] = useState(2);
   const [tab, setTab] = useState<'design' | 'details' | 'guests'>('design');
+  const [eventId, setEventId] = useState<string | null>(saved?.id ?? null);
+  const [saveState, setSaveState] = useState<'idle' | 'saved' | 'error'>('idle');
+  const [saveError, setSaveError] = useState('');
+  const [pending, start] = useTransition();
+
+  /* The title is derived rather than asked for. An organiser opening a template
+     wants to design, not to name a record, and "Amara and Julian" is a better
+     default than an empty required field they have to clear later. */
+  const title = [d.p1, d.p2].filter(Boolean).join(' and ') || 'Untitled event';
+
+  function persist() {
+    start(async () => {
+      setSaveError('');
+      const r = await saveEvent({
+        id: eventId ?? undefined,
+        title,
+        category: template?.category ?? category,
+        design: { ...d },
+        eventDate: d.wdate || null,
+      });
+      if (r.ok) {
+        setSaveState('saved');
+        if (r.id && !eventId) {
+          setEventId(r.id);
+          router.replace(`/studio?event=${r.id}`);
+        }
+        setTimeout(() => setSaveState('idle'), 2200);
+      } else {
+        setSaveState('error');
+        setSaveError(r.error);
+      }
+    });
+  }
 
   const set = <Kk extends keyof Draft>(k: Kk, v: Draft[Kk]) => setD(p => ({ ...p, [k]: v }));
 
@@ -86,12 +133,33 @@ export default function StudioEditor({
             {template ? template.name : 'Design your invitation'}
           </h1>
         </div>
-        <Link
-          href="/templates"
-          className="btn-press rounded-lg border border-line bg-paper px-4 py-2.5 text-[13px] text-ink-soft transition-colors hover:border-ink-faint hover:text-ink"
-        >
-          Change template
-        </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          {saveError && (
+            <span role="alert" className="text-[12.5px] text-ink-soft">{saveError}</span>
+          )}
+          <Link
+            href="/templates"
+            className="btn-press rounded-lg border border-line bg-paper px-4 py-2.5 text-[13px] text-ink-soft transition-colors hover:border-ink-faint hover:text-ink"
+          >
+            Change template
+          </Link>
+          {signedIn ? (
+            <button
+              onClick={persist}
+              disabled={pending}
+              className="btn-sheen btn-press rounded-lg bg-brand px-5 py-2.5 text-[13px] font-medium text-ivory hover:bg-brand-deep disabled:opacity-60"
+            >
+              {pending ? 'Saving' : saveState === 'saved' ? 'Saved' : eventId ? 'Save changes' : 'Save this design'}
+            </button>
+          ) : (
+            <Link
+              href="/login?next=/studio"
+              className="btn-sheen btn-press rounded-lg bg-brand px-5 py-2.5 text-[13px] font-medium text-ivory hover:bg-brand-deep"
+            >
+              Sign in to save
+            </Link>
+          )}
+        </div>
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_460px] lg:gap-12">
@@ -242,22 +310,33 @@ export default function StudioEditor({
                   <Text label="Guest name" value={guest} onChange={setGuest} />
                   <Text label="Seats" type="number" value={String(seats)} onChange={v => setSeats(Math.max(1, Number(v) || 1))} />
                 </div>
-                <div className="rounded-xl border border-line bg-paper p-5">
-                  <p className="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-faint">
-                    Not built yet
-                  </p>
-                  <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">
-                    Uploading a full guest list, saving this design to an account and
-                    collecting RSVPs here are the next pieces of work. Until they land, the
-                    existing editor still builds guest lists and entry codes.
-                  </p>
-                  <a
-                    href="/studio-legacy.html"
-                    className="btn-press mt-4 inline-block rounded-lg border border-line px-4 py-2.5 text-[13px] text-ink-soft transition-colors hover:border-ink-faint hover:text-ink"
-                  >
-                    Open the guest list builder
-                  </a>
-                </div>
+                {eventId ? (
+                  <div className="rounded-xl border border-line bg-paper p-5">
+                    <p className="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-faint">
+                      Guest list
+                    </p>
+                    <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">
+                      This design is saved. Add your guests, send each of them their own
+                      link, and watch the replies arrive.
+                    </p>
+                    <Link
+                      href={`/events/${eventId}`}
+                      className="btn-press mt-4 inline-block rounded-lg bg-brand px-4 py-2.5 text-[13px] font-medium text-ivory hover:bg-brand-deep"
+                    >
+                      Open the guest list
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="rounded-xl border border-line bg-paper p-5">
+                    <p className="text-[11px] font-semibold uppercase tracking-[.14em] text-ink-faint">
+                      Save first
+                    </p>
+                    <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">
+                      A guest list belongs to a saved event, because each guest link points
+                      at this design. Save the design and the guest list opens here.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
           </div>
