@@ -34,17 +34,22 @@ must not be changed casually:
 
 ## Conventions
 
-**Brand.** Navy `#16294A` with gold `#C89B3C`, taken from the logo. Colour
+**Brand.** Navy `#071F37` with gold `#C2903C`, sampled from `Logo.png` itself so the chrome and the artwork are the same two colours. Colour
 tokens in `app/globals.css` are named for their job (`brand`, `ink`, `line`) and
 never for their hue, because the previous set was called `sage` and had to be
 renamed the moment the brand stopped being green.
 
-**Logo.** `public/brand/logo.svg` is the full lockup with the tagline, used in
-the footer. `public/brand/logo-compact.svg` drops the tagline for the header,
-where the full lockup would render the tagline about three pixels tall.
-`public/brand/mark.svg` is the square monogram, copied to `public/icon.svg` for
-the favicon and the installed scanner app. Replacing any of these files
-rebrands every surface that uses it with no code change.
+**Logo.** `Logo.png` at the repository root is the delivered artwork and the
+source of truth. `npm run build:logo` cuts it into `public/brand/logo.png` (full
+lockup with the tagline, used in the footer), `public/brand/logo-compact.png`
+(tagline removed, used in the header, where the full lockup would set the
+tagline about three pixels tall), `public/brand/mark.png` and `public/icon.png`
+(square monogram on cream, for the favicon and the installed scanner app).
+Replace `Logo.png`, re-run the script, and every surface updates. The crop
+bounds inside the script are measured from the current artwork, so art with a
+different composition means re-measuring those six numbers. The script needs
+python3 with Pillow, and it deliberately does not run during `npm run build`:
+this is a once-a-rebrand job, not a per-deploy one.
 
 **Fonts.** The site chrome uses Apple's system faces, San Francisco through
 `-apple-system` and New York through `ui-serif`. They are never downloaded,

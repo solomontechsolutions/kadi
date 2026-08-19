@@ -10,7 +10,10 @@
 
 @theme {
   /* Mwaliko's palette, taken from the logo.
-     Navy is the brand colour, gold the accent, warm cream the ground. The
+     Navy #071F37 and gold #C2903C are sampled straight out of Logo.png, so
+     the chrome and the artwork are the same two colours rather than two
+     nearly-equal ones, which is the mismatch people notice without being able
+     to name it. Warm cream is the ground. The
      tokens are named for their job rather than their hue, because the last
      rename happened only because a token was called "sage" and the brand
      stopped being green. */
@@ -19,12 +22,12 @@
   --color-ink-faint: #8A93A6;
   --color-ivory: #F6F4EF;
   --color-paper: #FFFFFF;
-  --color-brand: #16294A;
-  --color-brand-deep: #0D1B33;
-  --color-brand-soft: #E7ECF4;
+  --color-brand: #071F37;
+  --color-brand-deep: #04121F;
+  --color-brand-soft: #E5EAF0;
   --color-line: #E3DFD6;
   --color-line-soft: #EFECE5;
-  --color-gold: #C89B3C;
+  --color-gold: #C2903C;
 
   /* Apple's system faces, requested by name.
    *

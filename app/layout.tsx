@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     'Design a digital invitation, share it with every guest, and track who is coming. ' +
     'Weddings, send-offs, kitchen parties, graduations and corporate events.',
   manifest: '/manifest.json',
-  icons: { icon: '/icon.svg' },
+  icons: { icon: '/icon.png' },
 };
 
 /* No webfont links in <head> any more. The site now asks the operating system

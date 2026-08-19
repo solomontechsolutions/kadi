@@ -10,7 +10,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "verify:engine": "node scripts/verify-engine.mjs"
+    "verify:engine": "node scripts/verify-engine.mjs",
+    "build:logo": "node scripts/build-logo.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.5.2",

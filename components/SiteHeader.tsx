@@ -9,14 +9,20 @@ const NAV = [
   { href: '/pricing', label: 'Pricing' },
 ];
 
-/* The logo is a plain <img> pointing at a file in public/brand, not inline SVG
- * and not next/image. That is what makes it swappable: dropping a new
- * public/brand/logo.svg over the old one rebrands every surface with no code
- * change at all. next/image would add nothing here, because an SVG has no
- * format to convert and no resolutions to negotiate.
+/* The logo is the supplied artwork, cropped by scripts/build-logo.mjs into the
+ * two shapes the site actually needs. Source of truth is Logo.png at the repo
+ * root; re-run that script after replacing it.
  *
- * Setting height and letting width follow means a replacement of any aspect
- * ratio sits correctly, rather than being stretched into the old one's shape. */
+ * `full` carries the INVITE / RSVP / WELCOME tagline and is used where there is
+ * room for it. The header uses the compact crop, because at the 30px a header
+ * allows, the tagline renders around three pixels tall.
+ *
+ * A plain <img> rather than next/image: the file is a fixed-size transparent
+ * PNG served from public, so there is no layout negotiation to do, and this
+ * keeps the header free of client-side image machinery.
+ *
+ * Setting height and letting width follow means replacement artwork of any
+ * aspect ratio sits correctly instead of stretching into the old shape. */
 export function Wordmark({
   className = '',
   height = 30,
@@ -24,7 +30,7 @@ export function Wordmark({
 }: { className?: string; height?: number; full?: boolean }) {
   return (
     <img
-      src={full ? '/brand/logo.svg' : '/brand/logo-compact.svg'}
+      src={full ? '/brand/logo.png' : '/brand/logo-compact.png'}
       alt="Mwaliko"
       style={{ height, width: 'auto' }}
       className={className}
