@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 120" role="img" aria-label="Mwaliko">
+  <!--
+    Header lockup: monogram and wordmark, no tagline.
+
+    The full lockup carries "INVITE / RSVP / WELCOME" beneath the wordmark. At
+    the 30px height a site header allows, that line renders around three pixels
+    tall: illegible, and it drags the wordmark down to a whisper to make room.
+    So the header wears this reduced mark and the footer wears the full one,
+    which is the ordinary way a lockup is adapted rather than a compromise.
+  -->
+  <path d="M8 96V24h22l26 43 26-43h22v72H88V49L69 81H51L32 49v47z" fill="#16294A"/>
+  <g transform="translate(46 8) rotate(-8)">
+    <rect width="40" height="52" rx="6" fill="#FFFFFF" stroke="#C89B3C" stroke-width="3"/>
+    <path d="M20 40V22" stroke="#C89B3C" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M20 27c-6 0-10-4-10-8 5 0 10 3 10 8zM20 27c6 0 10-4 10-8-5 0-10 3-10 8z" fill="#C89B3C"/>
+  </g>
+  <text x="124" y="82" font-family="ui-serif, 'New York', Georgia, 'Times New Roman', serif"
+        font-size="72" fill="#16294A">Mwaliko</text>
+</svg>

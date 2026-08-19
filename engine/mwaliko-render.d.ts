@@ -12,6 +12,10 @@ export interface CardDesign {
   city?: string;
   eyebrow?: string;
   photo?: string;
+  /** Keep an empty photo well visible when there is no photo. Editors want
+   *  this so the slot is discoverable; galleries do not, because an empty
+   *  well reads as a broken card. */
+  showPhotoWell?: boolean;
   showEventColors?: boolean;
   eventColors?: string[];
   cBg?: string;

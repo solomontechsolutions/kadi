@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 176" role="img" aria-label="Mwaliko">
+  <!--
+    Horizontal lockup: monogram, wordmark, tagline.
+
+    REPLACING THIS FILE
+    Drop your own artwork here at public/brand/logo.svg and every place the
+    logo appears picks it up. No code change is needed. Keep the artwork
+    roughly 3.6:1 and leave the background transparent, so it sits correctly on
+    both the cream header and the navy footer.
+  -->
+  <g fill="#16294A">
+    <!-- M, drawn as paths rather than set as text so it renders identically
+         everywhere, including on machines with no serif face installed. -->
+    <path d="M14 132V44h26l30 52 30-52h26v88h-22V83l-24 41h-20L36 83v49z"/>
+  </g>
+
+  <!-- The card tucked into the M's valley: a gold-edged invitation with a
+       sprig on it, echoing the botanical motif the engine draws on real cards. -->
+  <g transform="translate(58 20) rotate(-8)">
+    <rect width="46" height="60" rx="7" fill="#FFFFFF" stroke="#C89B3C" stroke-width="3"/>
+    <path d="M23 46V26" stroke="#C89B3C" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M23 32c-7 0-11-4-11-9 6 0 11 3 11 9zM23 32c7 0 11-4 11-9-6 0-11 3-11 9z" fill="#C89B3C"/>
+  </g>
+
+  <text x="182" y="112" font-family="ui-serif, 'New York', Georgia, 'Times New Roman', serif"
+        font-size="92" fill="#16294A">Mwaliko</text>
+
+  <g font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+     font-size="17" letter-spacing="5.5" fill="#55607A">
+    <text x="186" y="146">INVITE</text>
+    <text x="300" y="146">RSVP</text>
+    <text x="398" y="146">WELCOME</text>
+  </g>
+  <g fill="#C89B3C">
+    <circle cx="278" cy="140" r="3.2"/>
+    <circle cx="376" cy="140" r="3.2"/>
+  </g>
+</svg>

@@ -55,7 +55,7 @@ export default function StudioPage() {
         </Reveal>
         <Reveal as="h1" delay={90} className="mt-4 font-[family-name:var(--font-display)] text-[46px] leading-[1.04] text-ink lg:text-[62px]">
           Where a template becomes
-          <span className="block italic text-sage">your invitation.</span>
+          <span className="block italic text-brand">your invitation.</span>
         </Reveal>
         <Reveal as="p" delay={180} className="mt-6 text-[16px] leading-relaxed text-ink-soft">
           Templates show you what is possible. The Studio is the editor where you make one
@@ -66,7 +66,7 @@ export default function StudioPage() {
         <Reveal delay={270} className="mt-8 flex flex-wrap gap-3">
           <a
             href="/studio-legacy.html"
-            className="btn-sheen btn-press rounded-lg bg-sage px-6 py-3.5 text-[14px] font-medium text-ivory hover:bg-sage-deep"
+            className="btn-sheen btn-press rounded-lg bg-brand px-6 py-3.5 text-[14px] font-medium text-ivory hover:bg-brand-deep"
           >
             Open the Studio
           </a>
@@ -88,7 +88,7 @@ export default function StudioPage() {
                 className={`rounded-full px-2.5 py-1 text-[10.5px] font-medium uppercase tracking-[.1em] ${
                   s.where === 'In progress'
                     ? 'bg-ivory text-ink-faint ring-1 ring-line'
-                    : 'bg-sage-soft text-sage'
+                    : 'bg-brand-soft text-brand'
                 }`}
               >
                 {s.where}

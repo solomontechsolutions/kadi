@@ -9,19 +9,22 @@
 @import "../engine/mwaliko-genome.css";
 
 @theme {
-  /* Mwaliko's palette. Named after what they are for, not their hue, so a
-     rebrand changes these values and nothing else. */
-  --color-ink: #23231F;
-  --color-ink-soft: #5C594F;
-  --color-ink-faint: #8C877A;
-  --color-ivory: #F7F4EE;
+  /* Mwaliko's palette, taken from the logo.
+     Navy is the brand colour, gold the accent, warm cream the ground. The
+     tokens are named for their job rather than their hue, because the last
+     rename happened only because a token was called "sage" and the brand
+     stopped being green. */
+  --color-ink: #1C2231;
+  --color-ink-soft: #55607A;
+  --color-ink-faint: #8A93A6;
+  --color-ivory: #F6F4EF;
   --color-paper: #FFFFFF;
-  --color-sage: #46583D;
-  --color-sage-deep: #33422C;
-  --color-sage-soft: #E8EDE4;
-  --color-line: #E2DDD2;
-  --color-line-soft: #EFEBE3;
-  --color-gold: #B08D57;
+  --color-brand: #16294A;
+  --color-brand-deep: #0D1B33;
+  --color-brand-soft: #E7ECF4;
+  --color-line: #E3DFD6;
+  --color-line-soft: #EFECE5;
+  --color-gold: #C89B3C;
 
   /* Apple's system faces, requested by name.
    *
@@ -209,7 +212,7 @@ body {
    by them, and a site that hides them to look tidy is simply broken for those
    people. */
 :where(a, button, input, select, textarea):focus-visible {
-  outline: 2px solid var(--color-sage);
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
   border-radius: 4px;
 }

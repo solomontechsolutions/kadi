@@ -2,26 +2,35 @@
 
 import { useEffect, useState } from 'react';
 import CardPreview from '@/components/CardPreview';
-import { templatesFor, designFor } from '@/lib/templates';
+import { templatesFor, designFor, sampleFor } from '@/lib/templates';
 
-/* Three real cards from three different categories, cycling. They are rendered
- * by the same engine the studio uses, so the hero can never advertise a look
- * the product cannot actually produce. */
-const POOL = [
-  ...templatesFor('wedding', 6),
-  ...templatesFor('sendoff', 6),
-  ...templatesFor('graduation', 4),
-  ...templatesFor('corporate', 4),
-];
+/* Real cards from four different categories, cycling. They are rendered by the
+ * same engine the studio uses, so the hero can never advertise a look the
+ * product cannot actually produce.
+ *
+ * Each card carries its own category's sample content. Filling all four with
+ * one wedding couple was what made the hero, and the whole gallery behind it,
+ * look like a wedding-only product. */
+/* Interleaved, not concatenated. Stacking the categories end to end meant the
+ * three cards on screen at any moment came from the same category, so the hero
+ * opened on three weddings and only reached a corporate card forty seconds
+ * later, by which time most visitors have scrolled. Round-robin guarantees the
+ * first frame already shows the range. */
+function interleave(groups: ReturnType<typeof templatesFor>[]) {
+  const out: ReturnType<typeof templatesFor> = [];
+  const longest = Math.max(...groups.map(g => g.length));
+  for (let i = 0; i < longest; i++) {
+    for (const g of groups) if (g[i]) out.push(g[i]);
+  }
+  return out;
+}
 
-const SAMPLE = {
-  p1: 'Amara', p2: 'Julian',
-  wdate: '2027-02-14', wtime: '16:30',
-  venue: 'The Old Botanical Hall', city: 'Dar es Salaam',
-  eyebrow: 'Together with their families',
-  showEventColors: true,
-  eventColors: ['#8C1F28', '#C9A227', '#2F4858'],
-};
+const POOL = interleave([
+  templatesFor('wedding', 5),
+  templatesFor('corporate', 5),
+  templatesFor('sendoff', 5),
+  templatesFor('graduation', 5),
+]);
 
 export default function HeroCards() {
   const [i, setI] = useState(0);
@@ -47,16 +56,16 @@ export default function HeroCards() {
     <div className="relative grid grid-cols-3 gap-4 lg:gap-5">
       {cards.map((t, n) => (
         <div key={`${t.id}-${n}`} className={FLOAT[n]}>
-        <div
-          className={`thumb card-stage-paper rounded-xl border border-line shadow-[0_10px_30px_rgba(0,0,0,.09)] ${OFFSET[n]}`}
-        >
-          <CardPreview
-            design={{ ...SAMPLE, ...designFor(t) }}
-            thumb
-            guestName=""
-            showSeal={false}
-          />
-        </div>
+          <div
+            className={`thumb card-stage-paper rounded-xl border border-line shadow-[0_10px_30px_rgba(0,0,0,.09)] ${OFFSET[n]}`}
+          >
+            <CardPreview
+              design={{ ...sampleFor(t.category), ...designFor(t) }}
+              thumb
+              guestName=""
+              showSeal={false}
+            />
+          </div>
         </div>
       ))}
     </div>

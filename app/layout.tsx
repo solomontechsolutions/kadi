@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="border-t border-line bg-paper">
           <div className="mx-auto grid w-full max-w-[1600px] gap-8 px-6 py-12 sm:grid-cols-2 lg:grid-cols-5 lg:px-10">
             <div>
-              <Wordmark className="text-[20px] text-sage" />
+              <Wordmark full height={46} />
               <p className="mt-2 max-w-xs text-[13px] leading-relaxed text-ink-faint">
                 Digital invitations for weddings, send-offs, kitchen parties and
                 corporate events. Designed, shared and tracked in one place.
@@ -46,17 +46,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ['Kitchen Party', '/templates?category=kitchenparty'],
               ['Corporate', '/templates?category=corporate'],
             ]} />
-            <FooterCol title="Tools" links={[
-              ['Door scanner', '/scanner.html'],
-              ['Guestbook', '/guestbook.html'],
-              ['Legacy studio', '/studio-legacy.html'],
+            {/* The door scanner, the guestbook and the legacy studio used to be
+                listed here. They are organiser tools that open onto live event
+                data, so advertising them in the public footer showed prospective
+                customers another couple's guestbook. They stay reachable by
+                direct link for the organisers who need them. */}
+            <FooterCol title="Company" links={[
+              ['Contact', '/contact'],
+              ['Compliance', '/compliance'],
             ]} />
             <FooterCol title="Legal" links={[
               ['Privacy Policy', '/privacy'],
               ['Terms and Conditions', '/terms'],
               ['Cookie Policy', '/cookies'],
               ['Legal Notice', '/legal'],
-              ['Compliance', '/compliance'],
             ]} />
           </div>
           <div className="border-t border-line-soft">

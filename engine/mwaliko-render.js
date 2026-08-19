@@ -68,11 +68,17 @@ function motifHTML() {
 }
 
 function headerHTML(d) {
-  return '<div class="k-header">' +
+  /* The ampersand only exists to join two names. Emitting it unconditionally
+     was fine while every card was a wedding, but a card with a single subject
+     (a graduand, a company AGM, a person being remembered) rendered a dangling
+     "&" under the title. It is dropped, not hidden, so no axis can style an
+     ampersand that has nothing to join. */
+  const two = Boolean(d.p1) && Boolean(d.p2);
+  const amp = two ? '<span class="k-amp">&amp;</span>' : '';
+  return '<div class="k-header" data-names="' + (two ? 'two' : 'one') + '">' +
     '<div class="k-crest">' + esc(monogram(d)) + '</div>' +
     '<div class="k-eyebrow">' + esc(d.eyebrow || '') + '</div>' +
-    '<div class="k-names">' + esc(d.p1 || '') +
-      '<span class="k-amp">&amp;</span>' + esc(d.p2 || '') + '</div>' +
+    '<div class="k-names">' + esc(d.p1 || '') + amp + esc(d.p2 || '') + '</div>' +
   '</div>';
 }
 
@@ -153,11 +159,27 @@ function applyGenome(card, g) {
   K.AXES.forEach(a => card.setAttribute('data-' + a.key, g[a.key]));
 }
 
+/* A photo slot with no photo in it is not a design, it is a hole.
+ *
+ * Layouts in the media family reserve real space: "bleed" hands the photo the
+ * top third of the card, "side" a column beside the names. With no src that
+ * space renders as an empty rectangle and pushes the actual content off the
+ * card, which is why several gallery thumbnails looked blank.
+ *
+ * So an absent photo collapses the media axis to "none" at render time. The
+ * genome is untouched, meaning the card goes straight back to its photo layout
+ * the moment an image arrives. Callers that want the empty well on purpose,
+ * such as an editor showing where a photo will land, pass showPhotoWell. */
+function effectiveMedia(g, d) {
+  if (d.photo || d.showPhotoWell) return g.media;
+  return 'none';
+}
+
 /* One call does everything: structure, tokens, content. */
 function renderCard(card, d, guestName, seats, showSeal) {
   const g = K.genomeFromDesign(d);
   if (g.__site) return false;          // the scrolling site family renders elsewhere
-  applyGenome(card, g);
+  applyGenome(card, { ...g, media: effectiveMedia(g, d) });
   applyTokens(card, d);
   card.innerHTML = buildCard(d, guestName, seats, showSeal);
   return true;

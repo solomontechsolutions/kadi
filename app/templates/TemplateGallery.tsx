@@ -3,16 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import CardPreview from '@/components/CardPreview';
-import { CATEGORIES, templatesFor, designFor } from '@/lib/templates';
-
-const SAMPLE = {
-  p1: 'Amara', p2: 'Julian',
-  wdate: '2027-02-14', wtime: '16:30',
-  venue: 'The Old Botanical Hall', city: 'Dar es Salaam',
-  eyebrow: 'Together with their families',
-  showEventColors: true,
-  eventColors: ['#8C1F28', '#C9A227', '#2F4858'],
-};
+import { CATEGORIES, templatesFor, designFor, sampleFor } from '@/lib/templates';
 
 const PER_PAGE = 24;
 
@@ -26,6 +17,10 @@ export default function TemplateGallery({ initialCategory }: { initialCategory: 
   // window onto 315,360 layouts, so "load more" walks further into the space
   // instead of hitting the end of a hand-built list.
   const templates = useMemo(() => templatesFor(active.key, shown), [active.key, shown]);
+
+  /* Sample content follows the selected category, so a Corporate card reads as
+     a company AGM rather than as somebody's wedding. */
+  const sample = useMemo(() => sampleFor(active.key), [active.key]);
 
   function switchCategory(key: string) {
     setCategory(key);
@@ -57,7 +52,7 @@ export default function TemplateGallery({ initialCategory }: { initialCategory: 
               onClick={() => switchCategory(c.key)}
               className={`shrink-0 rounded-full border px-4 py-2 text-[13px] transition-colors ${
                 c.key === active.key
-                  ? 'border-sage bg-sage text-ivory'
+                  ? 'border-brand bg-brand text-ivory'
                   : 'border-line bg-paper text-ink-soft hover:border-ink-faint hover:text-ink'
               }`}
             >
@@ -77,7 +72,7 @@ export default function TemplateGallery({ initialCategory }: { initialCategory: 
             className="lift group block"
           >
             <div className="thumb card-stage rounded-xl border border-line bg-paper shadow-[0_1px_2px_rgba(0,0,0,.04)] group-hover:shadow-[0_8px_24px_rgba(0,0,0,.10)]">
-              <CardPreview design={{ ...SAMPLE, ...designFor(t) }} thumb guestName="" showSeal={false} />
+              <CardPreview design={{ ...sample, ...designFor(t) }} thumb guestName="" showSeal={false} />
             </div>
             <div className="mt-2.5 flex items-baseline justify-between gap-2">
               <span className="truncate text-[13.5px] text-ink">{t.name}</span>

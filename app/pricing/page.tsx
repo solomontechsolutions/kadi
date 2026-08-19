@@ -118,7 +118,7 @@ export default function PricingPage() {
         </Reveal>
         <Reveal as="h1" delay={90} className="mt-4 font-[family-name:var(--font-display)] text-[46px] leading-[1.04] text-ink lg:text-[62px]">
           Priced per card,
-          <span className="block italic text-sage">the way invitations always were.</span>
+          <span className="block italic text-brand">the way invitations always were.</span>
         </Reveal>
         <Reveal as="p" delay={180} className="mt-6 text-[16px] leading-relaxed text-ink-soft">
           No subscription and no monthly fee. You pay for the guests you actually invite,
@@ -163,7 +163,7 @@ function PriceCard({ tier }: { tier: Tier }) {
     <div
       className={`tile relative flex h-full flex-col rounded-2xl border p-7 ${
         featured
-          ? 'border-sage bg-sage text-ivory shadow-[0_24px_60px_-28px_rgba(70,88,61,.7)]'
+          ? 'border-brand bg-brand text-ivory shadow-[0_24px_60px_-28px_rgba(70,88,61,.7)]'
           : 'border-line bg-paper'
       }`}
     >
@@ -176,7 +176,7 @@ function PriceCard({ tier }: { tier: Tier }) {
       <h2 className={`font-[family-name:var(--font-display)] text-[27px] ${featured ? 'text-ivory' : 'text-ink'}`}>
         {tier.name}
       </h2>
-      <p className={`mt-1 text-[13px] ${featured ? 'text-sage-soft' : 'text-ink-faint'}`}>{tier.blurb}</p>
+      <p className={`mt-1 text-[13px] ${featured ? 'text-brand-soft' : 'text-ink-faint'}`}>{tier.blurb}</p>
 
       <p className="mt-6 flex items-baseline gap-1.5">
         <span
@@ -187,7 +187,7 @@ function PriceCard({ tier }: { tier: Tier }) {
           {tier.price}
         </span>
         {tier.unit && (
-          <span className={`text-[13px] ${featured ? 'text-sage-soft' : 'text-ink-faint'}`}>{tier.unit}</span>
+          <span className={`text-[13px] ${featured ? 'text-brand-soft' : 'text-ink-faint'}`}>{tier.unit}</span>
         )}
       </p>
 
@@ -200,8 +200,8 @@ function PriceCard({ tier }: { tier: Tier }) {
                 aria-hidden="true"
                 className={
                   on
-                    ? featured ? 'text-gold' : 'text-sage'
-                    : featured ? 'text-sage-deep' : 'text-line'
+                    ? featured ? 'text-gold' : 'text-brand'
+                    : featured ? 'text-brand-deep' : 'text-line'
                 }
               >
                 &#10003;
@@ -210,7 +210,7 @@ function PriceCard({ tier }: { tier: Tier }) {
                 className={
                   on
                     ? featured ? 'text-ivory' : 'text-ink-soft'
-                    : featured ? 'text-sage-deep' : 'text-ink-faint/60'
+                    : featured ? 'text-brand-deep' : 'text-ink-faint/60'
                 }
               >
                 {f.label}
@@ -226,7 +226,7 @@ function PriceCard({ tier }: { tier: Tier }) {
         className={`btn-sheen btn-press mt-8 rounded-lg px-5 py-3 text-center text-[13.5px] font-medium ${
           featured
             ? 'bg-gold text-ink hover:brightness-105'
-            : 'border border-sage text-sage hover:bg-sage hover:text-ivory'
+            : 'border border-brand text-brand hover:bg-brand hover:text-ivory'
         }`}
       >
         {tier.cta.label}

@@ -52,7 +52,7 @@ export default function Home() {
             </Reveal>
             <Reveal as="h1" delay={90} className="mt-4 font-[family-name:var(--font-display)] text-[52px] leading-[1.02] text-ink lg:text-[76px]">
               Every invitation you send,
-              <span className="block italic text-sage">designed for the occasion.</span>
+              <span className="block italic text-brand">designed for the occasion.</span>
             </Reveal>
             <Reveal as="p" delay={180} className="mt-6 max-w-xl text-[16px] leading-relaxed text-ink-soft">
               Choose a card, make it yours, add your guest list, and send. Mwaliko handles
@@ -63,7 +63,7 @@ export default function Home() {
             <Reveal delay={270} className="mt-9 flex flex-wrap items-center gap-3">
               <Link
                 href="/templates"
-                className="btn-sheen btn-press rounded-lg bg-sage px-6 py-3.5 text-[14px] font-medium text-ivory hover:bg-sage-deep"
+                className="btn-sheen btn-press rounded-lg bg-brand px-6 py-3.5 text-[14px] font-medium text-ivory hover:bg-brand-deep"
               >
                 Browse templates
               </Link>
@@ -104,7 +104,7 @@ export default function Home() {
               >
                 <h3 className="font-[family-name:var(--font-display)] text-[24px] text-ink">{name}</h3>
                 <p className="mt-2 text-[13.5px] leading-relaxed text-ink-soft">{blurb}</p>
-                <span className="mt-4 inline-flex items-center gap-1.5 text-[12.5px] text-sage">
+                <span className="mt-4 inline-flex items-center gap-1.5 text-[12.5px] text-brand">
                   Browse
                   <span className="tile-arrow" aria-hidden="true">&rarr;</span>
                 </span>
@@ -145,7 +145,7 @@ export default function Home() {
         <Reveal delay={180} className="mt-8">
           <Link
             href="/templates"
-            className="btn-sheen btn-press inline-block rounded-lg bg-sage px-7 py-3.5 text-[14px] font-medium text-ivory hover:bg-sage-deep"
+            className="btn-sheen btn-press inline-block rounded-lg bg-brand px-7 py-3.5 text-[14px] font-medium text-ivory hover:bg-brand-deep"
           >
             Browse templates
           </Link>

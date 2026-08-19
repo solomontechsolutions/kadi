@@ -248,6 +248,118 @@ export const CATEGORIES: Category[] = [
 
 export const CATEGORY_BY_KEY = Object.fromEntries(CATEGORIES.map(c => [c.key, c]));
 
+/* ---------------------------------------------------------------------------
+   Sample content per category
+   ---------------------------------------------------------------------------
+   Every card in the gallery used to be filled with the same wedding couple, so
+   a Corporate card announced "Amara & Julian, together with their families" and
+   a Memorial card did the same. The structural axes were already right for each
+   category; it was the words on top of them that made all ten categories read
+   as weddings.
+
+   Categories with a single subject leave p2 empty. The renderer drops the
+   ampersand when there is nothing to join, so "Annual General Meeting" no
+   longer trails a stray "&".
+
+   Event colours belong to celebrations. A board meeting and a funeral do not
+   have a colour scheme, and printing one on those cards is exactly the tell
+   that gave the whole gallery away as wedding stationery in disguise.
+   ------------------------------------------------------------------------- */
+export interface Sample {
+  p1: string;
+  p2: string;
+  eyebrow: string;
+  wdate: string;
+  wtime: string;
+  venue: string;
+  city: string;
+  showEventColors: boolean;
+  eventColors?: string[];
+}
+
+const CELEBRATION_COLORS = ['#8C1F28', '#C9A227', '#2F4858'];
+
+export const SAMPLES: Record<string, Sample> = {
+  wedding: {
+    p1: 'Amara', p2: 'Julian',
+    eyebrow: 'Together with their families',
+    wdate: '2027-02-14', wtime: '16:30',
+    venue: 'The Old Botanical Hall', city: 'Dar es Salaam',
+    showEventColors: true, eventColors: CELEBRATION_COLORS,
+  },
+  sendoff: {
+    p1: 'Amara', p2: 'Julian',
+    eyebrow: 'A send-off celebration for',
+    wdate: '2027-02-06', wtime: '18:00',
+    venue: 'Mlimani City Gardens', city: 'Dar es Salaam',
+    showEventColors: true, eventColors: ['#1F3A5F', '#C9A227', '#7A1F3D'],
+  },
+  kitchenparty: {
+    p1: 'Amara', p2: '',
+    eyebrow: 'A kitchen party in honour of',
+    wdate: '2027-01-24', wtime: '14:00',
+    venue: 'Kunduchi Beach Hall', city: 'Dar es Salaam',
+    showEventColors: true, eventColors: ['#B3282D', '#E0A32E', '#166B4A'],
+  },
+  birthday: {
+    p1: 'Neema', p2: '',
+    eyebrow: 'Fortieth birthday dinner for',
+    wdate: '2027-03-20', wtime: '19:30',
+    venue: 'The Terrace, Oyster Bay', city: 'Dar es Salaam',
+    showEventColors: true, eventColors: ['#12122B', '#C9A227', '#6D2E8C'],
+  },
+  corporate: {
+    /* No personal names at all. A corporate card announces the occasion, and
+       the host organisation sits in the eyebrow where a family would. */
+    p1: 'Annual General Meeting', p2: '',
+    eyebrow: 'Kilimanjaro Holdings PLC',
+    wdate: '2027-04-08', wtime: '09:00',
+    venue: 'Serena Hotel, Simba Hall', city: 'Dar es Salaam',
+    showEventColors: false,
+  },
+  graduation: {
+    p1: 'Baraka Mushi', p2: '',
+    eyebrow: 'A graduation dinner in honour of',
+    wdate: '2027-11-13', wtime: '17:00',
+    venue: 'Nkrumah Hall, University of Dar es Salaam', city: 'Dar es Salaam',
+    showEventColors: false,
+  },
+  babyshower: {
+    p1: 'Neema', p2: '',
+    eyebrow: 'A baby shower for',
+    wdate: '2027-05-15', wtime: '15:00',
+    venue: 'The Garden Room, Masaki', city: 'Dar es Salaam',
+    showEventColors: true, eventColors: ['#EBC7D4', '#C9A227', '#9BC4CB'],
+  },
+  religious: {
+    p1: 'Service of Dedication', p2: '',
+    eyebrow: 'You are warmly invited to a',
+    wdate: '2027-06-06', wtime: '10:00',
+    venue: 'Azania Front Cathedral', city: 'Dar es Salaam',
+    showEventColors: false,
+  },
+  anniversary: {
+    p1: 'Amara', p2: 'Julian',
+    eyebrow: 'Twenty-five years of',
+    wdate: '2027-02-14', wtime: '18:00',
+    venue: 'The Old Botanical Hall', city: 'Dar es Salaam',
+    showEventColors: true, eventColors: ['#C9A227', '#3A3A3A', '#8C1F28'],
+  },
+  memorial: {
+    p1: 'Joseph Mwakalinga', p2: '',
+    eyebrow: 'In loving memory of',
+    wdate: '2027-07-18', wtime: '11:00',
+    venue: 'St Peter’s Church, Oysterbay', city: 'Dar es Salaam',
+    showEventColors: false,
+  },
+};
+
+/* Falls back to the wedding sample rather than to nothing, so a category added
+   without a sample renders a complete card instead of an empty skeleton. */
+export function sampleFor(categoryKey: string): Sample {
+  return SAMPLES[categoryKey] ?? SAMPLES.wedding;
+}
+
 /* A small deterministic hash. Templates must be stable across sessions, servers
    and deploys, so nothing here may touch Math.random() or Date. */
 function mix(n: number): number {

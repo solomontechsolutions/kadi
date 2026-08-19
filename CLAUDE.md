@@ -34,6 +34,18 @@ must not be changed casually:
 
 ## Conventions
 
+**Brand.** Navy `#16294A` with gold `#C89B3C`, taken from the logo. Colour
+tokens in `app/globals.css` are named for their job (`brand`, `ink`, `line`) and
+never for their hue, because the previous set was called `sage` and had to be
+renamed the moment the brand stopped being green.
+
+**Logo.** `public/brand/logo.svg` is the full lockup with the tagline, used in
+the footer. `public/brand/logo-compact.svg` drops the tagline for the header,
+where the full lockup would render the tagline about three pixels tall.
+`public/brand/mark.svg` is the square monogram, copied to `public/icon.svg` for
+the favicon and the installed scanner app. Replacing any of these files
+rebrands every surface that uses it with no code change.
+
 **Fonts.** The site chrome uses Apple's system faces, San Francisco through
 `-apple-system` and New York through `ui-serif`. They are never downloaded,
 because Apple licenses them for Apple platforms only. Cards are unaffected: the
@@ -44,6 +56,18 @@ Every animation lives inside `@media (prefers-reduced-motion: no-preference)`,
 and anything that hides content until script runs must be visible by default if
 that script never arrives. `components/Reveal.tsx` and `components/CountUp.tsx`
 are the two primitives; prefer them over new one-off effects.
+
+**Sample content is per category.** `SAMPLES` in `lib/templates.ts` gives each
+category its own names, eyebrow, venue and colour policy. Every card in the
+gallery once rendered the same wedding couple, so a Corporate card announced
+"Amara & Julian, together with their families". A single subject leaves `p2`
+empty and the renderer drops the ampersand; corporate, graduation, faith and
+memorial cards carry no event colours.
+
+**Never publish organiser tools in the marketing footer.** The door scanner,
+the guestbook and the legacy studio open onto live event data. They were once
+listed publicly, which showed prospective customers a real guest's message on
+another couple's guestbook. They stay reachable by direct link only.
 
 **The card engine is the source of truth.** The marketing site counts layouts by
 calling `countValid()` rather than quoting a number in prose, because hardcoded

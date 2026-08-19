@@ -151,10 +151,10 @@ const sections: LegalSection[] = [
         <P>This notice sits alongside the rest of our policy set.</P>
         <List
           items={[
-            <Link href="/terms" className="text-sage underline underline-offset-2">Terms and Conditions</Link>,
-            <Link href="/privacy" className="text-sage underline underline-offset-2">Privacy Policy</Link>,
-            <Link href="/cookies" className="text-sage underline underline-offset-2">Cookie Policy</Link>,
-            <Link href="/compliance" className="text-sage underline underline-offset-2">Compliance</Link>,
+            <Link href="/terms" className="text-brand underline underline-offset-2">Terms and Conditions</Link>,
+            <Link href="/privacy" className="text-brand underline underline-offset-2">Privacy Policy</Link>,
+            <Link href="/cookies" className="text-brand underline underline-offset-2">Cookie Policy</Link>,
+            <Link href="/compliance" className="text-brand underline underline-offset-2">Compliance</Link>,
           ]}
         />
       </>

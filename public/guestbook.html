@@ -45,7 +45,7 @@
 <body>
 <div class="wrap">
   <h1>Leave a Message</h1>
-  <div class="sub">For Amara &amp; Julian</div>
+  <div class="sub" id="forWhom"></div>
 
   <form id="msgForm">
     <label for="msgName">Your name</label>
@@ -73,6 +73,18 @@ const SITE_ID = 'kadi-nur8';
 
 const configured = SUPABASE_URL.startsWith('http') && SUPABASE_ANON_KEY && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY';
 const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+/* Whose guestbook this is comes from the link, not from the file. It was
+   hardcoded to one couple, so every visitor to the bare URL was told they were
+   signing Amara and Julian's book. The subtitle now stays empty unless a name
+   is supplied, because an empty line reads as neutral where a stranger's name
+   reads as a mistake. */
+(function setSubject(){
+  const q = new URLSearchParams(location.search);
+  const names = [q.get('p1'), q.get('p2')].filter(Boolean);
+  const el = document.getElementById('forWhom');
+  if (names.length) el.textContent = 'For ' + names.join(' & ');
+})();
 
 function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

@@ -9,11 +9,26 @@ const NAV = [
   { href: '/pricing', label: 'Pricing' },
 ];
 
-export function Wordmark({ className = '' }: { className?: string }) {
+/* The logo is a plain <img> pointing at a file in public/brand, not inline SVG
+ * and not next/image. That is what makes it swappable: dropping a new
+ * public/brand/logo.svg over the old one rebrands every surface with no code
+ * change at all. next/image would add nothing here, because an SVG has no
+ * format to convert and no resolutions to negotiate.
+ *
+ * Setting height and letting width follow means a replacement of any aspect
+ * ratio sits correctly, rather than being stretched into the old one's shape. */
+export function Wordmark({
+  className = '',
+  height = 30,
+  full = false,
+}: { className?: string; height?: number; full?: boolean }) {
   return (
-    <span className={`font-[family-name:var(--font-display)] tracking-tight ${className}`}>
-      Mwaliko
-    </span>
+    <img
+      src={full ? '/brand/logo.svg' : '/brand/logo-compact.svg'}
+      alt="Mwaliko"
+      style={{ height, width: 'auto' }}
+      className={className}
+    />
   );
 }
 
@@ -44,11 +59,8 @@ export default function SiteHeader() {
       }`}
     >
       <div className="mx-auto flex h-16 w-full max-w-[1600px] items-center gap-10 px-6 lg:px-10">
-        <Link href="/" className="group flex items-center gap-2.5">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-sage text-ivory transition-transform duration-300 ease-[cubic-bezier(.22,.61,.36,1)] group-hover:scale-105">
-            <span className="font-[family-name:var(--font-display)] text-[15px] leading-none">M</span>
-          </span>
-          <Wordmark className="text-[22px] text-sage" />
+        <Link href="/" className="group flex items-center" aria-label="Mwaliko home">
+          <Wordmark className="transition-transform duration-300 ease-[cubic-bezier(.22,.61,.36,1)] group-hover:scale-[1.03]" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -69,7 +81,7 @@ export default function SiteHeader() {
           </Link>
           <Link
             href="/templates"
-            className="btn-sheen btn-press rounded-lg bg-sage px-4 py-2 text-[13px] font-medium text-ivory hover:bg-sage-deep"
+            className="btn-sheen btn-press rounded-lg bg-brand px-4 py-2 text-[13px] font-medium text-ivory hover:bg-brand-deep"
           >
             Start designing
           </Link>
