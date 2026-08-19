@@ -35,13 +35,19 @@ const STEPS = [
   {
     n: '04',
     title: 'Send and track',
-    body: 'Share links over WhatsApp or SMS, watch RSVPs arrive, and scan entry codes at the door on the night.',
+    body: 'Send each guest their link over WhatsApp, then scan entry codes at the door on the night. The scanner keeps working when the venue has no signal.',
     where: 'Working today',
   },
   {
     n: '05',
     title: 'Save to your account',
-    body: 'Come back to an event later, from any device, and keep several events side by side. This is the part being built now.',
+    body: 'Come back to an event later, from any device, and keep several events side by side.',
+    where: 'In progress',
+  },
+  {
+    n: '06',
+    title: 'Collect the RSVPs here',
+    body: 'Replies gathered in Mwaliko instead of in a separate form, shown against your guest list. Until this lands, the RSVP button on each card points at a form of your own.',
     where: 'In progress',
   },
 ];

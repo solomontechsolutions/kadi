@@ -16,8 +16,11 @@ const FEATURES = [
     body: 'Each guest gets their own link with their name on the card, their seat count, and a unique entry code.',
   },
   {
-    title: 'RSVPs that answer themselves',
-    body: 'Guests reply in a tap. You see who is coming, who is not, and how many seats are still open.',
+    /* Mwaliko does not collect RSVPs yet. The card carries a button pointing at
+       whatever form the organiser already uses, so this line describes the
+       button and not a reply inbox that does not exist. */
+    title: 'RSVPs land where you collect them',
+    body: 'Every card carries an RSVP button pointing at your own form, so replies arrive where you are already looking for them.',
   },
   {
     title: 'Doors that check themselves',
@@ -56,8 +59,8 @@ export default function Home() {
             </Reveal>
             <Reveal as="p" delay={180} className="mt-6 max-w-xl text-[16px] leading-relaxed text-ink-soft">
               Choose a card, make it yours, add your guest list, and send. Mwaliko handles
-              the personalised links, the RSVPs and the door, from harusi and send-offs
-              to graduations and corporate galas.
+              the personalised links and the door, from harusi and send-offs to
+              graduations and corporate galas.
             </Reveal>
 
             <Reveal delay={270} className="mt-9 flex flex-wrap items-center gap-3">

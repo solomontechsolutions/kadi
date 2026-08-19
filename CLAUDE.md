@@ -74,6 +74,19 @@ the guestbook and the legacy studio open onto live event data. They were once
 listed publicly, which showed prospective customers a real guest's message on
 another couple's guestbook. They stay reachable by direct link only.
 
+**Never advertise what is not built.** Every line on the pricing page carries a
+`status` of `live`, `soon` or `excluded`, and the type has no default, so adding
+a feature forces a decision about whether it exists. `soon` lines render a Soon
+chip and, where useful, a note saying what an organiser does in the meantime.
+The page once sold RSVP tracking, SMS delivery, a live entry dashboard and
+pledge tracking as though all four shipped; none had been written. Human
+services such as a bespoke design or an account manager do count as live.
+
+**RSVP is not built yet.** Cards carry an RSVP button pointing at a form the
+organiser supplies, and it renders disabled when no URL is given. There is no
+SMS sending anywhere in the codebase, and WhatsApp is a per-guest share link the
+organiser taps by hand. Marketing copy must say so.
+
 **The card engine is the source of truth.** The marketing site counts layouts by
 calling `countValid()` rather than quoting a number in prose, because hardcoded
 figures went stale twice. Hero and gallery cards are rendered by the same engine
